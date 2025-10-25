@@ -3,20 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\css\\login.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\css\\login.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\css\\login.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\css\\login.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\js\\login.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\js\\login.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\views\\shared\\_header.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\views\\shared\\_header.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\controllers\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -35,10 +43,6 @@
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\views\\shared\\_header.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\views\\shared\\_header.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\css\\footer.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\css\\footer.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
@@ -49,10 +53,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\css\\header.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\css\\header.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|c:\\users\\pc\\onedrive\\m\u00E1y t\u00EDnh\\webbtl\\cinestar_web\\cinestar\\web\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -66,7 +66,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -90,46 +90,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "login.js",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\js\\login.js",
               "RelativeDocumentMoniker": "Web\\wwwroot\\js\\login.js",
               "ToolTip": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\js\\login.js",
               "RelativeToolTip": "Web\\wwwroot\\js\\login.js",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAmwCQAAAADAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-10-25T16:45:47.758Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "login.css",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\login.css",
               "RelativeDocumentMoniker": "Web\\wwwroot\\css\\login.css",
-              "ToolTip": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\login.css*",
-              "RelativeToolTip": "Web\\wwwroot\\css\\login.css*",
-              "ViewState": "AgIAAGkAAAAAAAAAAAAAAIAAAAAbAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\login.css",
+              "RelativeToolTip": "Web\\wwwroot\\css\\login.css",
+              "ViewState": "AgIAAE4AAAAAAAAAAAAAAFYAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-10-25T16:45:15.569Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Account\\Login.cshtml",
-              "ToolTip": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Account\\Login.cshtml",
-              "RelativeToolTip": "Web\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA2AAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Account\\Login.cshtml*",
+              "RelativeToolTip": "Web\\Views\\Account\\Login.cshtml*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-10-25T16:43:45.125Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Account.cs",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Controllers\\Account.cs",
               "RelativeDocumentMoniker": "Web\\Controllers\\Account.cs",
@@ -137,12 +137,11 @@
               "RelativeToolTip": "Web\\Controllers\\Account.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-25T16:38:20.21Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-25T16:38:20.21Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Web\\Controllers\\HomeController.cs",
@@ -150,12 +149,11 @@
               "RelativeToolTip": "Web\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-25T16:27:31.903Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-25T16:27:31.903Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "Privacy.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Home\\Privacy.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Home\\Privacy.cshtml",
@@ -163,12 +161,11 @@
               "RelativeToolTip": "Web\\Views\\Home\\Privacy.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-25T12:22:46.913Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-25T12:22:46.913Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Home\\Index.cshtml",
@@ -176,8 +173,7 @@
               "RelativeToolTip": "Web\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-25T08:49:22.711Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-25T08:49:22.711Z"
             },
             {
               "$type": "Document",
@@ -193,7 +189,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "footer.css",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\footer.css",
               "RelativeDocumentMoniker": "Web\\wwwroot\\css\\footer.css",
@@ -201,12 +197,11 @@
               "RelativeToolTip": "Web\\wwwroot\\css\\footer.css",
               "ViewState": "AgIAALEAAAAAAAAAAAAlwMYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-25T03:35:18.838Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-25T03:35:18.838Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "header.css",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\header.css",
               "RelativeDocumentMoniker": "Web\\wwwroot\\css\\header.css",
@@ -218,19 +213,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 4,
               "Title": "site.css",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "Web\\wwwroot\\css\\site.css",
               "ToolTip": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\site.css",
               "RelativeToolTip": "Web\\wwwroot\\css\\site.css",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAACgAAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHcAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-25T03:34:11.668Z"
+              "WhenOpened": "2025-10-25T03:34:11.668Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "_Footer.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Shared\\_Footer.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Shared\\_Footer.cshtml",
@@ -242,20 +238,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 3,
               "Title": "_Header.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Shared\\_Header.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Shared\\_Header.cshtml",
               "ToolTip": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Shared\\_Header.cshtml",
               "RelativeToolTip": "Web\\Views\\Shared\\_Header.cshtml",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACoAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-10-25T03:32:24.689Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\M\u00E1y t\u00EDnh\\WebBTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Shared\\_Layout.cshtml",
@@ -263,8 +259,7 @@
               "RelativeToolTip": "Web\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAUwCAAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-25T03:31:13.864Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-25T03:31:13.864Z"
             }
           ]
         },

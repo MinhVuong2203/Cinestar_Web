@@ -2,6 +2,7 @@
 const registerBtn = document.getElementById('register-btn');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
+const switchLogin = document.getElementById('switch-login');
 
 function resetForm(form) {
     form.reset();
@@ -21,6 +22,14 @@ registerBtn.addEventListener('click', function () {
     registerBtn.classList.add('active');
     loginBtn.classList.remove('active');
     resetForm(loginForm);
+});
+
+switchLogin.addEventListener('click', function () {
+    loginForm.classList.add('active');
+    registerForm.classList.remove('active');
+    loginBtn.classList.add('active');
+    registerBtn.classList.remove('active');
+    resetForm(registerForm);
 });
 
 document.querySelectorAll('.toggle-password').forEach(function (icon) {
