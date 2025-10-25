@@ -1,6 +1,6 @@
 ﻿/* ===== FOOTER ===== */
 .site-footer {
-    background: linear-gradient(135deg, #6b47b8 0%, #4a3a98 100%);
+    background: linear-gradient(to left, #3762c8, #61379d);
     color: #fff;
     padding-top: 60px;
 }
@@ -67,7 +67,7 @@
 .social-links {
     display: flex;
     gap: 12px;
-    margin-bottom: 25px;
+    margin: 25px 0 25px 0;
 }
 
 .social-icon {
@@ -112,7 +112,7 @@
 
     .lang-btn img {
         width: 20px;
-        height: 14px;
+        height: 20px;
     }
 
     .lang-btn:hover,
@@ -157,7 +157,7 @@
 
 /* Footer Bottom */
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 2px solid rgba(255, 255, 255, 0.8);
     padding: 30px 0;
 }
 
@@ -191,8 +191,11 @@
             color: #f5d410;
         }
 
+.certification{
+    text-align: center;
+}
 .certification img {
-    height: 50px;
+    height: 75px;
 }
 
 /* Company Info */
@@ -240,4 +243,9 @@
         flex-wrap: wrap;
         justify-content: center;
     }
+}
+
+.circle{
+ 
+    border-radius: 50%;
 }

@@ -1,22 +1,4 @@
-﻿// Sticky Header với hiệu ứng
-let lastScroll = 0;
-const header = document.querySelector('.site-header');
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    if (currentScroll > 100) {
-        header.classList.add('scrolled');
-        // Hide header on scroll down, show on scroll up
-        if (currentScroll > lastScroll && currentScroll > 300) {
-            header.style.transform = 'translateY(-100%)';
-        } else {
-            header.style.transform = 'translateY(0)';
-        }
-    } else {
-        header.classList.remove('scrolled');
-    }
-    lastScroll = currentScroll;
-});
-
+﻿
 // Search functionality
 const searchInput = document.querySelector('.search-input');
 const searchBtn = document.querySelector('.search-btn');

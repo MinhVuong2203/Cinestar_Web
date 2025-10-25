@@ -15,7 +15,7 @@
 .header-wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
     gap: 30px;
 }
 
@@ -96,16 +96,16 @@
     cursor: pointer;
     color: #fff;
 }
-
-.flag-icon {
-    width: 20px;
-    height: 14px;
-    border-radius: 2px;
-}
+    
+    .flag-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+    }
 
 /* ===== BOTTOM NAVIGATION ===== */
 .header-nav {
-    background: #1a2332;
+/*    background: #0F172A;*/
     padding: 15px 0;
 }
 
@@ -113,6 +113,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: #fff;
 }
 
 .nav-left,
@@ -134,7 +135,7 @@
 }
 
     .nav-link:hover {
-        color: #f5d410;
+        color: #000;
     }
 
     .nav-link::after {
@@ -205,4 +206,7 @@
         flex-wrap: wrap;
         justify-content: center;
     }
+}
+.circle{
+    border-radius: 50%;
 }

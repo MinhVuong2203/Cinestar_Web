@@ -1,5 +1,6 @@
 ﻿<header class="site-header">
-    <!-- Main Header -->
+    <div class="container">
+
     <div class="header-main">
         <div class="container-fluid">
             <div class="header-wrapper">
@@ -10,12 +11,12 @@
 
                 <!-- CTA Buttons -->
                 <div class="cta-buttons">
-                    <a asp-controller="Booking" asp-action="Index" class="btn-cta btn-yellow btn-hover-purple btn-text-dark btn-text-hover-light">
-                        <i class="fa-thin fa-ticket"></i>
+                    <a asp-controller="Booking" asp-action="Index" class="btn-cta btn-yellow btn-hover-purple btn-text-light btn-text-hover-light">
+                            <i class="fa-solid fa-ticket" style="color: #ffffff;"></i>
                         <span>ĐẶT VÉ NGAY</span>
                     </a>
                     <a asp-controller="Booking" asp-action="Combo" class="btn-cta btn-purple btn-hover-orange btn-text-light">
-                        <i class="icon-popcorn"></i>
+                            <i class="fa-solid fa-glass-water"></i>
                         <span>ĐẶT BẮP NƯỚC</span>
                     </a>
                 </div>
@@ -25,7 +26,7 @@
                     <form asp-controller="Movie" asp-action="Search" method="get">
                         <input type="text" name="keyword" placeholder="Tìm phim, rạp" class="search-input" />
                         <button type="submit" class="search-btn">
-                            <i class="fa-thin fa-ticket"></i>
+                                <i class="fa-brands fa-searchengin" style="color: darkgray"></i>
                         </button>
                     </form>
                 </div>
@@ -35,24 +36,24 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <a asp-controller="Account" asp-action="Profile" class="user-profile">
-                            <i class="icon-user-circle"></i>
+                                <i class="fa-solid fa-user"></i>
                             <span>@User.Identity.Name</span>
                         </a>
                     }
                     else
                     {
                         <a asp-controller="Account" asp-action="Login" class="user-profile">
-                            <i class="icon-user-circle"></i>
+                                <i class="fa-solid fa-user"></i>
                             <span>NGUYÊN...</span>
                         </a>
                     }
 
+                </div>
                     <div class="language-selector">
-                        <img src="~/images/vn-flag.png" alt="VN" class="flag-icon" />
+                        <img class="flag-icon" src="~/image/VN.jpeg" alt="VN" class="flag-icon" />
                         <span>VN</span>
                         <i class="icon-chevron-down"></i>
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -64,11 +65,11 @@
                 <!-- Left Navigation -->
                 <div class="nav-left">
                     <a asp-controller="Cinema" asp-action="Select" class="nav-link">
-                        <i class="icon-map-marker"></i>
+                            <i class="fa-solid fa-location-dot"></i>
                         <span>Chọn rạp</span>
                     </a>
                     <a asp-controller="Showtime" asp-action="Index" class="nav-link">
-                        <i class="icon-calendar"></i>
+                            <i class="fa-solid fa-location-dot"></i>
                         <span>Lịch chiếu</span>
                     </a>
                 </div>
@@ -83,4 +84,7 @@
             </div>
         </div>
     </nav>
+
+    </div>
+    <!-- Main Header -->
 </header>
