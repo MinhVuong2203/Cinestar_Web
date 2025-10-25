@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinestar</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/header.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+</head>
+<body>
+    <div class="app">
+        @await Html.PartialAsync("_Header")
+        <main role="main">
+            @RenderBody()
+        </main>
+        @await Html.PartialAsync("_Footer")
+    </div>
+
+    <script src="~/js/site.js"></script>
+</body>
+</html>

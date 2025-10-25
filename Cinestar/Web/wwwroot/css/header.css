@@ -1,0 +1,248 @@
+﻿/* ===== HEADER MAIN ===== */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgb(15, 23, 42);
+}
+
+.header-main {
+    background: rgb(15, 23, 42);
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 30px;
+}
+
+/* Logo */
+.brand-logo img {
+    height: 50px;
+    display: block;
+}
+
+/* CTA Buttons */
+.cta-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.btn-ticket {
+    background: #f5d410;
+    color: #1a2332;
+}
+
+    .btn-ticket:hover {
+        background: #ffd000;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(245, 212, 16, 0.4);
+    }
+
+.btn-combo {
+    background: transparent;
+    color: #fff;
+    border: 2px solid #8b5cf6;
+}
+
+    .btn-combo:hover {
+        background: #8b5cf6;
+    }
+
+/* Search Bar */
+.header-search {
+    flex: 1;
+    max-width: 200px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.9);
+    color: rgb(151, 186, 225);
+    font-size: 14px;
+}
+
+    .search-input::placeholder {
+        color: rgb(151, 186, 225);
+    }
+
+    .search-input:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+.header-search form {
+    position: relative;
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+/* User Section */
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+    .user-profile i {
+        font-size: 24px;
+    }
+
+.language-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.flag-icon {
+    width: 20px;
+    height: 14px;
+    border-radius: 2px;
+}
+
+/* ===== BOTTOM NAVIGATION ===== */
+.header-nav {
+    background: #1a2332;
+    padding: 15px 0;
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-left,
+.nav-right {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+    position: relative;
+}
+
+    .nav-link:hover {
+        color: #f5d410;
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #f5d410;
+        transition: width 0.3s;
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .header-wrapper {
+        flex-wrap: wrap;
+    }
+
+    .header-search {
+        order: 4;
+        flex-basis: 100%;
+        max-width: 100%;
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cta-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-cta {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+
+    .nav-wrapper {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-left,
+    .nav-right {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Add to header.css */
+.site-header {
+    transition: transform 0.3s ease;
+}
+
+    .site-header.scrolled {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+        .site-header.scrolled .header-main {
+            padding: 10px 0;
+        }
+
+        .site-header.scrolled .brand-logo img {
+            height: 40px;
+        }
