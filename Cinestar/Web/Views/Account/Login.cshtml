@@ -1,0 +1,121 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Đăng nhập / Đăng ký";
+}
+<main>
+    <div class="container-fluid">
+        <div class="tab-login">
+            <div class="form-toggle">
+                <button id="login-btn" class="toggle-btn">Login</button>
+                <button id="register-btn" class="toggle-btn">Register</button>
+            </div>
+            <form id="login-form" class="form active">
+                <div class="form-list">
+                    <div class="form-it">
+                        <label for="login-account" class="form-label">
+                            Tài khoản, Email hoặc số điện thoại
+                            <span class="error">*</span>
+                        </label>
+                        <input class="input" type="text" required placeholder="" name="account" id="login-account">
+                    </div>
+                    <div class="form-it">
+                        <label for="login-password" class="form-label">
+                            Mật khẩu
+                            <span class="error">*</span>
+                        </label>
+                        <div class="password-wrapper">
+                            <input class="input" type="password" required placeholder="" name="password"
+                                   id="login-password">
+                            <span class="toggle-password" data-target="login-password">&#128065;</span>
+                        </div>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" name="remember" id="remember">
+                        <label for="remember">Lưu mật khẩu đăng nhập</label>
+                    </div>
+                    <div class="form-it">
+                        <a href="" class="link-forget-password">Quên mật khẩu?</a>
+                    </div>
+                    <div class="form-it">
+                        <button class="btn-submit" type="submit">
+                            Đăng nhập
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <form id="register-form" class="form">
+                <div class="form-list">
+                    <div class="form-it">
+                        <label for="register-fullname" class="form-label">
+                            Họ và tên <span class="error">*</span>
+                        </label>
+                        <input class="input" type="text" required placeholder="Họ và tên" name="fullname"
+                               id="register-fullname">
+                    </div>
+                    <div class="form-it">
+                        <label for="register-birthday" class="form-label">
+                            Ngày sinh <span class="error">*</span>
+                        </label>
+                        <input class="input" type="date" required placeholder="dd/mm/yyyy" name="birthday"
+                               id="register-birthday">
+                    </div>
+                    <div class="form-it">
+                        <label for="register-phone" class="form-label">
+                            Số điện thoại <span class="error">*</span>
+                        </label>
+                        <input class="input" type="tel" required placeholder="Số điện thoại" name="phone"
+                               id="register-phone">
+                    </div>
+                    <div class="form-it">
+                        <label for="register-username" class="form-label">
+                            Tên đăng nhập <span class="error">*</span>
+                        </label>
+                        <input class="input" type="text" required placeholder="Tên đăng nhập" name="username"
+                               id="register-username">
+                    </div>
+                    <div class="form-it">
+                        <label for="register-email" class="form-label">
+                            Email <span class="error">*</span>
+                        </label>
+                        <input class="input" type="email" required placeholder="Điền email" name="email"
+                               id="register-email">
+                    </div>
+                    <div class="form-it">
+                        <label for="register-password" class="form-label">
+                            Mật khẩu <span class="error">*</span>
+                        </label>
+                        <div class="password-wrapper">
+                            <input class="input" type="password" required placeholder="Mật khẩu" name="password"
+                                   id="register-password">
+                            <span class="toggle-password" data-target="register-password">&#128065;</span>
+                        </div>
+                    </div>
+                    <div class="form-it">
+                        <label for="register-confirm-password" class="form-label">
+                            Xác thực mật khẩu <span class="error">*</span>
+                        </label>
+                        <div class="password-wrapper">
+                            <input class="input" type="password" required placeholder="Xác thực mật khẩu"
+                                   name="confirm-password" id="register-confirm-password">
+                            <span class="toggle-password" data-target="register-confirm-password">&#128065;</span>
+                        </div>
+                    </div>
+                    <div class="form-it">
+                        <label class="form-label">
+                            <input type="checkbox" name="policy" id="register-policy">
+                            Khách hàng đã đồng ý các điều khoản, điều kiện của thành viên Cinestar
+                        </label>
+                    </div>
+                    <div class="form-it">
+                        <button class="btn-submit" type="submit">
+                            Đăng ký
+                        </button>
+                    </div>
+                    <div class="form-it" style="text-align:center;">
+                        <span>Bạn đã có tài khoản? <a href="#" id="switch-login">Đăng nhập</a></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
