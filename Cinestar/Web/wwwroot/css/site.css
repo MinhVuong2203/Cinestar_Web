@@ -29,3 +29,232 @@ body {
     align-items: center; /* căn giữa dọc */
     min-height: 100vh;
 }
+
+/* ===== BASE BUTTON STYLE ===== */
+.btn-cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    border-radius: 50px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.3s, color 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+    /* Icon và text */
+    .btn-cta i,
+    .btn-cta span {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Lớp gradient chuyển màu từ trái sang phải */
+    .btn-cta::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        transition: width 0.6s ease;
+        z-index: 0;
+    }
+
+    /* Hiệu ứng hover chung */
+    .btn-cta:hover::before {
+        width: 100%;
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        /* Màu chữ mặc định khi hover là trắng, có thể override bằng btn-text-hover-* */
+    }
+
+    .btn-cta:active {
+        transform: translateY(0);
+    }
+
+/* ===== MÀU NỀN BAN ĐẦU (Initial Background Colors) ===== */
+.btn-yellow {
+    background: #ffd700; /* Vàng */
+}
+
+.btn-orange {
+    background: #ff9500; /* Cam */
+}
+
+.btn-red {
+    background: #ff3b30; /* Đỏ */
+}
+
+.btn-green {
+    background: #34c759; /* Xanh lá */
+}
+
+.btn-blue {
+    background: #007aff; /* Xanh dương */
+    color: #fff; /* Chữ trắng cho nền xanh đậm */
+}
+
+.btn-purple {
+    background: #af52de; /* Tím */
+    color: #fff;
+}
+
+.btn-pink {
+    background: #ff2d55; /* Hồng */
+    color: #fff;
+}
+
+.btn-gray {
+    background: #8e8e93; /* Xám */
+    color: #fff;
+}
+
+/* ===== MÀU HOVER (Hover Colors) ===== */
+.btn-hover-purple::before {
+    background: linear-gradient(to right, rgb(101, 52, 154), #3861C7);
+}
+
+.btn-hover-orange::before {
+    background: linear-gradient(to right, #FF6E00, #FFC107);
+}
+
+
+
+/* ===== MÀU CHỮ BAN ĐẦU (Text Colors) ===== */
+.btn-text-dark {
+    color: #333 !important;
+}
+
+.btn-text-light {
+    color: #fff !important;
+}
+
+.btn-text-yellow {
+    color: #ffd700 !important;
+}
+
+.btn-text-orange {
+    color: #ff9500 !important;
+}
+
+.btn-text-red {
+    color: #ff3b30 !important;
+}
+
+.btn-text-green {
+    color: #34c759 !important;
+}
+
+.btn-text-blue {
+    color: #007aff !important;
+}
+
+/* ===== MÀU CHỮ KHI HOVER (Text Hover Colors) ===== */
+.btn-cta.btn-text-hover-dark:hover {
+    color: #333 !important;
+}
+
+.btn-cta.btn-text-hover-light:hover {
+    color: #fff !important;
+}
+
+.btn-cta.btn-text-hover-yellow:hover {
+    color: #ffd700 !important;
+}
+
+.btn-cta.btn-text-hover-orange:hover {
+    color: #ff9500 !important;
+}
+
+.btn-cta.btn-text-hover-red:hover {
+    color: #ff3b30 !important;
+}
+
+.btn-cta.btn-text-hover-green:hover {
+    color: #34c759 !important;
+}
+
+.btn-cta.btn-text-hover-blue:hover {
+    color: #007aff !important;
+}
+
+/* ===== KÍCH THƯỚC (Sizes) ===== */
+/* Extra Small */
+.btn-xs {
+    padding: 8px 16px;
+    font-size: 12px;
+    gap: 6px;
+}
+
+    .btn-xs i {
+        font-size: 14px;
+    }
+
+/* Small */
+.btn-sm {
+    padding: 10px 20px;
+    font-size: 14px;
+    gap: 8px;
+}
+
+    .btn-sm i {
+        font-size: 16px;
+    }
+
+/* Medium (Default - đã có trong .btn-cta) */
+.btn-md {
+    padding: 15px 30px;
+    font-size: 16px;
+    gap: 10px;
+}
+
+/* Large */
+.btn-lg {
+    padding: 18px 40px;
+    font-size: 18px;
+    gap: 12px;
+}
+
+    .btn-lg i {
+        font-size: 22px;
+    }
+
+/* Extra Large */
+.btn-xl {
+    padding: 22px 50px;
+    font-size: 20px;
+    gap: 14px;
+}
+
+    .btn-xl i {
+        font-size: 26px;
+    }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .btn-cta {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+
+    .btn-xl {
+        padding: 18px 36px;
+        font-size: 18px;
+    }
+}
+/* ===================== */

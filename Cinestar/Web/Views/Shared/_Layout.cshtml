@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/header.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+          integrity="sha512-dP1g1uWcZbb0lHIsnQvPQZyEKCkF4bH6Ot7WmUENqKXAc0bz5Fz2fSh0oTqB8bV5YCOHYRyebzHuYkN9Q3r6Pg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="app">
@@ -17,6 +20,6 @@
         @await Html.PartialAsync("_Footer")
     </div>
 
-    <script src="~/js/site.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>
