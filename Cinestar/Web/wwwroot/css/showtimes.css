@@ -1,0 +1,109 @@
+﻿.movie-poster {
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width: 100%;
+    height: auto;
+}
+
+.movie-info {
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.movie-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 0.95rem;
+}
+
+    .info-item i {
+        width: 25px;
+        color: #ffd700;
+    }
+
+
+.cinema-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.cinema-address {
+    font-size: 0.85rem;
+    color: #b0b8cc;
+    margin-bottom: 15px;
+}
+
+.ticket-type {
+    display: inline-block;
+    padding: 5px 12px;
+    background: rgba(255,215,0,0.2);
+    border: 1px solid #ffd700;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ffd700;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.time-slot {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 5px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-decoration: none !important;
+    color: inherit;
+}
+
+    .time-slot:hover {
+        background: rgba(255,215,0,0.2);
+        border-color: #ffd700;
+        color: #ffd700;
+        transform: translateY(-2px);
+    }
+
+.time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+
+.section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    margin: 25px 0;
+}
+
+.container-custom {
+    max-width: 1400px;
+}
+
+@media (max-width: 768px) {
+    .movie-title {
+        font-size: 1.5rem;
+    }
+
+    .time-slot {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+}

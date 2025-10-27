@@ -1,8 +1,10 @@
 wwwroot\css\footer.css
 wwwroot\css\header.css
 wwwroot\css\login.css
+wwwroot\css\showtimes.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\image\cuc-vang-cua-ngoai-poster.webp
 wwwroot\image\dathongbao.webp
 wwwroot\image\header-logo.webp
 wwwroot\image\VN.jpeg

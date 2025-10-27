@@ -1,8 +1,9 @@
-﻿<header class="site-header">
+﻿
+<header class="site-header">
     <div class="container">
 
     <div class="header-main">
-        <div class="container-fluid">
+       
             <div class="header-wrapper">
                 <!-- Logo -->
                 <a asp-controller="Home" asp-action="Index" class="brand-logo">
@@ -11,11 +12,11 @@
 
                 <!-- CTA Buttons -->
                 <div class="cta-buttons">
-                    <a asp-controller="Booking" asp-action="Index" class="btn-cta btn-yellow btn-hover-purple btn-text-light btn-text-hover-light">
+                    <a asp-controller="Booking" asp-action="Index" class="btn-xs btn-cta btn-yellow btn-hover-purple btn-text-light btn-text-hover-light">
                             <i class="fa-solid fa-ticket" style="color: #ffffff;"></i>
                         <span>ĐẶT VÉ NGAY</span>
                     </a>
-                    <a asp-controller="Booking" asp-action="Combo" class="btn-cta btn-purple btn-hover-orange btn-text-light">
+                    <a asp-controller="Booking" asp-action="Combo" class="btn-xs btn-cta btn-purple btn-hover-orange btn-text-light">
                             <i class="fa-solid fa-glass-water"></i>
                         <span>ĐẶT BẮP NƯỚC</span>
                     </a>
@@ -55,12 +56,12 @@
                         <i class="icon-chevron-down"></i>
                     </div>
             </div>
-        </div>
+       
     </div>
 
     <!-- Bottom Navigation -->
     <nav class="header-nav">
-        <div class="container-fluid">
+        
             <div class="nav-wrapper">
                 <!-- Left Navigation -->
                 <div class="nav-left">
@@ -68,7 +69,7 @@
                             <i class="fa-solid fa-location-dot"></i>
                         <span>Chọn rạp</span>
                     </a>
-                    <a asp-controller="Showtime" asp-action="Index" class="nav-link">
+                    <a asp-controller="Showtimes" asp-action="Index" class="nav-link">
                             <i class="fa-solid fa-location-dot"></i>
                         <span>Lịch chiếu</span>
                     </a>
@@ -82,7 +83,7 @@
                     <a asp-controller="About" asp-action="Index" class="nav-link">Giới thiệu</a>
                 </div>
             </div>
-        </div>
+      
     </nav>
 
     </div>
