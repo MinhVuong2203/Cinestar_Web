@@ -1,0 +1,1 @@
+Scaffold-DbContext "Server=edumallserver.database.windows.net;Database=Cinestar;User ID=edumall;Password=Minh21032005@;TrustServerCertificate=True;Encrypt=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Data -Context CineStarContext -UseDatabaseNames -NoOnConfiguring -DataAnnotations -Force
