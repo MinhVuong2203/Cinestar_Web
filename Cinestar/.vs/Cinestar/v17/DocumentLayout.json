@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|d:\\dai hoc\\laptrinhweb\\btl\\cinestar_web\\cinestar\\web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|d:\\dai hoc\\laptrinhweb\\btl\\cinestar_web\\cinestar\\web\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|d:\\dai hoc\\laptrinhweb\\btl\\cinestar_web\\cinestar\\web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|d:\\dai hoc\\laptrinhweb\\btl\\cinestar_web\\cinestar\\web\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -35,10 +47,6 @@
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\wwwroot\\css\\header.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|d:\\dai hoc\\laptrinhweb\\btl\\cinestar_web\\cinestar\\web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|d:\\dai hoc\\laptrinhweb\\btl\\cinestar_web\\cinestar\\web\\data\\cinestarcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A708C02F-1913-45AF-9DC9-49882B2C78DE}|Web\\Web.csproj|solutionrelative:web\\data\\cinestarcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -54,7 +62,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Bookmark",
@@ -78,33 +86,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Web\\Controllers\\HomeController.cs",
-              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Web\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T11:51:27.237Z",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\appsettings.json",
+              "RelativeDocumentMoniker": "Web\\appsettings.json",
+              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\appsettings.json",
+              "RelativeToolTip": "Web\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-28T14:04:57.678Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Web\\Views\\Home\\Index.cshtml",
-              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "Web\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-28T11:49:50.932Z",
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "Web\\appsettings.Development.json",
+              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\appsettings.Development.json",
+              "RelativeToolTip": "Web\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-28T14:01:38.291Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Showtimes\\Index.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Showtimes\\Index.cshtml",
@@ -112,12 +120,11 @@
               "RelativeToolTip": "Web\\Views\\Showtimes\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-28T09:59:43.46Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T09:59:43.46Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "header.css",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\wwwroot\\css\\header.css",
               "RelativeDocumentMoniker": "Web\\wwwroot\\css\\header.css",
@@ -125,12 +132,11 @@
               "RelativeToolTip": "Web\\wwwroot\\css\\header.css",
               "ViewState": "AgIAAKIAAAAAAAAAAAAgwJYAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-28T10:03:51.581Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T10:03:51.581Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "_Header.cshtml",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Shared\\_Header.cshtml",
               "RelativeDocumentMoniker": "Web\\Views\\Shared\\_Header.cshtml",
@@ -138,12 +144,11 @@
               "RelativeToolTip": "Web\\Views\\Shared\\_Header.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-28T09:59:53.032Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T09:59:53.032Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "CinemaBranchService.cs",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Service\\CinemaBranchService.cs",
               "RelativeDocumentMoniker": "Web\\Service\\CinemaBranchService.cs",
@@ -151,12 +156,11 @@
               "RelativeToolTip": "Web\\Service\\CinemaBranchService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:43:34.085Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T09:43:34.085Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "ICinemaBranchService.cs",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Service\\ICinemaBranchService.cs",
               "RelativeDocumentMoniker": "Web\\Service\\ICinemaBranchService.cs",
@@ -164,12 +168,36 @@
               "RelativeToolTip": "Web\\Service\\ICinemaBranchService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:43:16.951Z",
+              "WhenOpened": "2025-10-28T09:43:16.951Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Program.cs",
+              "RelativeDocumentMoniker": "Web\\Program.cs",
+              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Program.cs",
+              "RelativeToolTip": "Web\\Program.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAqwAgAAACEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T09:38:50.885Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Web\\Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Web\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-28T11:49:50.932Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "ShowtimesController.cs",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Controllers\\ShowtimesController.cs",
               "RelativeDocumentMoniker": "Web\\Controllers\\ShowtimesController.cs",
@@ -177,12 +205,24 @@
               "RelativeToolTip": "Web\\Controllers\\ShowtimesController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwA0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:42:46.838Z",
+              "WhenOpened": "2025-10-28T09:42:46.838Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Web\\Controllers\\HomeController.cs",
+              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Web\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAcAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T11:51:27.237Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "CineStarContext.cs",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Data\\CineStarContext.cs",
               "RelativeDocumentMoniker": "Web\\Data\\CineStarContext.cs",
@@ -190,12 +230,11 @@
               "RelativeToolTip": "Web\\Data\\CineStarContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:41:50.431Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T09:41:50.431Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "CinemaBranch.cs",
               "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Models\\CinemaBranch.cs",
               "RelativeDocumentMoniker": "Web\\Models\\CinemaBranch.cs",
@@ -203,21 +242,7 @@
               "RelativeToolTip": "Web\\Models\\CinemaBranch.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:41:26.091Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Program.cs",
-              "RelativeDocumentMoniker": "Web\\Program.cs",
-              "ToolTip": "D:\\DAI HOC\\LapTrinhWeb\\BTL\\Cinestar_Web\\Cinestar\\Web\\Program.cs",
-              "RelativeToolTip": "Web\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:38:50.885Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T09:41:26.091Z"
             }
           ]
         },
