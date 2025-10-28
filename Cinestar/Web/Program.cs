@@ -1,7 +1,14 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Web.Data;
+using Web.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<CineStarContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+// Đăng ký Service
+builder.Services.AddScoped<ICinemaBranchService, CinemaBranchService>();
 
 var app = builder.Build();
 

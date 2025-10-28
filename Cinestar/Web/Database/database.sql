@@ -1,6 +1,8 @@
 ﻿CREATE DATABASE Cinestar;
 USE Cinestar;
 
+-- MÔN WEB
+
 /* ========== 1. EMPLOYEE GROUP ========== */
 
 CREATE TABLE CinemaBranch (
@@ -18,7 +20,6 @@ CREATE TABLE CinemaBranch (
     IsDeleted BIT DEFAULT 0 NOT NULL
 );
 GO
-
 CREATE TRIGGER trg_CinemaBranch_Insert
 ON CinemaBranch
 INSTEAD OF INSERT
@@ -31,6 +32,22 @@ BEGIN
     FROM inserted;
 END;
 GO
+-- === Danh sách chi nhánh Cinestar (có MapUrl) ===
+INSERT INTO CinemaBranch (BranchName, Address, City, District, Phone, Email, OpenHours, MapUrl, ImageUrl, Description)
+VALUES
+-- TP.HCM
+(N'Cinestar Quốc Thanh (TP.HCM)', N'271 Nguyễn Trãi, Phường Nguyễn Cư Trinh, Quận 1', N'TP.HCM', N'Quận 1',NULL, NULL, N'08:00 - 23:00', N'https://www.google.com/maps/place/Cinestar+Qu%E1%BB%91c+Thanh/@10.7621425,106.6884932,17z/',NULL, N'Rạp chiếu phim hiện đại nằm tại trung tâm Quận 1, TP.HCM'),
+(N'Cinestar Hai Bà Trưng (TP.HCM)', N'135 Hai Bà Trưng, Phường Bến Nghé, Quận 1', N'TP.HCM', N'Quận 1',NULL, NULL, N'08:00 - 23:00', N'https://www.google.com/maps/place/Cinestar+Hai+B%C3%A0+Tr%C6%B0ng/@10.7779282,106.6987733,17z/',NULL, N'Rạp chiếu phim hiện đại phục vụ khu vực trung tâm thành phố'),
+(N'Cinestar Sinh Viên (TP.HCM)', N'19 Cao Thắng, Phường 2, Quận 3', N'TP.HCM', N'Quận 3',NULL, NULL, N'08:00 - 23:00', N'https://www.google.com/maps/place/Cinestar+Sinh+Vi%C3%AAn/@10.7736403,106.6820189,17z/',NULL, N'Rạp hướng đến đối tượng học sinh, sinh viên với giá vé ưu đãi'),
+(N'Cinestar Satra Quận 6 (TP.HCM)', N'Tầng 4, TTTM Satra, 79 Kinh Dương Vương, P.12, Quận 6', N'TP.HCM', N'Quận 6', NULL, NULL, N'08:00 - 23:00',  N'https://www.google.com/maps/place/Cinestar+Satra+Qu%E1%BA%ADn+6/@10.7459881,106.6274459,17z/', NULL,  N'Rạp chiếu phim hiện đại phục vụ khu vực Tây TP.HCM'),
+-- Miền Trung
+(N'Cinestar Huế (TP. Huế)', N'25 Hai Bà Trưng, TP. Huế', N'Thừa Thiên Huế', N'TP. Huế', NULL, NULL, N'08:00 - 23:00', N'https://www.google.com/maps/place/Cinestar+Hu%E1%BA%BF/@16.4654929,107.5959275,17z/', NULL,  N'Rạp Cinestar tại trung tâm thành phố Huế'),
+-- Tây Nguyên
+(N'Cinestar Đà Lạt (Lâm Đồng)',  N'Quảng trường Lâm Viên, TP. Đà Lạt', N'Lâm Đồng', N'TP. Đà Lạt', NULL, NULL, N'08:00 - 23:00',  N'https://www.google.com/maps/place/Cinestar+Dalat/@11.9410438,108.4447163,17z/', NULL,  N'Rạp Cinestar với không gian lãng mạn tại Đà Lạt'),
+(N'Cinestar Lâm Đồng (Đức Trọng)',  N'QL 20, Thị trấn Liên Nghĩa, Huyện Đức Trọng', N'Lâm Đồng', N'Đức Trọng', NULL, NULL, N'08:00 - 23:00',  N'https://www.google.com/maps/place/Cinestar+%C4%90%E1%BB%A9c+Tr%E1%BB%8Dng/@11.741356,108.373574,17z/', NULL,  N'Rạp chiếu phim phục vụ khu vực Đức Trọng - Lâm Đồng'),
+-- Miền Tây
+(N'Cinestar Mỹ Tho (Tiền Giang)',  N'01 Ấp Bắc, Phường 5, TP. Mỹ Tho', N'Tiền Giang', N'TP. Mỹ Tho', NULL, NULL, N'08:00 - 23:00',  N'https://www.google.com/maps/place/Cinestar+M%E1%BB%B9+Tho/@10.3554113,106.3587659,17z/', NULL,  N'Rạp Cinestar tại trung tâm thành phố Mỹ Tho'),
+(N'Cinestar Kiên Giang (An Giang)',  N'Nguyễn Trung Trực, TP. Rạch Giá', N'Kiên Giang', N'Rạch Giá', NULL, NULL, N'08:00 - 23:00',  N'https://www.google.com/maps/place/Cinestar+Ki%C3%AAn+Giang/@10.0161215,105.0760212,17z/', NULL,  N'Rạp Cinestar phục vụ khu vực đồng bằng sông Cửu Long');
 
 CREATE TABLE Employee (
     EmployeeID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),

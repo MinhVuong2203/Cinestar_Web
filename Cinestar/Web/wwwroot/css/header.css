@@ -105,7 +105,6 @@
 
 /* ===== BOTTOM NAVIGATION ===== */
 .header-nav {
-/*    background: #0F172A;*/
     padding: 15px 0;
 }
 
@@ -114,6 +113,7 @@
     justify-content: space-between;
     align-items: center;
     color: #fff;
+    position: relative;
 }
 
 .nav-left,
@@ -131,32 +131,60 @@
     font-size: 14px;
     font-weight: 500;
     transition: color 0.3s;
-    position: relative;
 }
 
-    .nav-link:hover {
-        color: #000;
+    /* Hover áp dụng cho cả nav-link và tất cả phần tử con */
+    .nav-link:hover,
+    .nav-link:hover i,
+    .nav-link:hover span {
+        color: #f5d410 !important;
     }
 
-    .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: #f5d410;
-        transition: width 0.3s;
-    }
 
-    .nav-link:hover::after {
-        width: 100%;
-    }
-
-/* Add to header.css */
-.site-header {
-    transition: transform 0.3s ease;
+.list-branch {
+    background-color: rgb(151, 186, 225);
+    padding: 10px;
+    position: absolute;
+    top: 41px;
+    left: 0px;
+    width: 100%;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: none; /* Ẩn mặc định */
 }
+
+.list-branch::before{
+    content: '';
+    width: 100%;
+    height: 20px;
+    background-color: transparent;
+    position: absolute;
+    top: -20px;
+    left: 0px;
+}
+/* Hiển thị list-branch khi hover vào nav-link cha */
+.nav-left > .nav-link:hover .list-branch {
+    display: block;
+}
+
+.branch-item {
+    font-size: 18px;
+    padding: 10px 0px;
+}
+
+    .branch-item a {
+        text-decoration: none;
+        color: white;
+        transition: color 0.3s;
+    }
+
+        .branch-item a:hover {
+            cursor: pointer;
+            color: yellow;
+        }
+            /* Add to header.css */
+            .site-header {
+                transition: transform 0.3s ease;
+            }
 
     .site-header.scrolled {
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);

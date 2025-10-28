@@ -1,21 +1,23 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using Web.Models;
+using Web.Service;
 
 namespace Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        public ICinemaBranchService _cinemaBranchService { get; set; }
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ICinemaBranchService cinemaBranchService)
         {
-            _logger = logger;
+            _cinemaBranchService = cinemaBranchService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            List<CinemaBranch> list = _cinemaBranchService.GetBranches();
+            return View(list);
         }
 
         public IActionResult Privacy()

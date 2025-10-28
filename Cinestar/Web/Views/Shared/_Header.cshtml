@@ -1,8 +1,10 @@
-﻿
+﻿@model List<Web.Models.CinemaBranch>
+
+
 <header class="site-header">
     <div class="container">
 
-    <div class="header-main">
+        <div class="header-main">
        
             <div class="header-wrapper">
                 <!-- Logo -->
@@ -60,32 +62,72 @@
     </div>
 
     <!-- Bottom Navigation -->
-    <nav class="header-nav">
+        <nav class="header-nav">
         
-            <div class="nav-wrapper">
-                <!-- Left Navigation -->
-                <div class="nav-left">
-                    <a asp-controller="Cinema" asp-action="Select" class="nav-link">
+                <div class="nav-wrapper">
+                    <!-- Left Navigation -->
+                    <div class="nav-left">
+                        <div class="nav-link">
                             <i class="fa-solid fa-location-dot"></i>
-                        <span>Chọn rạp</span>
-                    </a>
-                    <a asp-controller="Showtimes" asp-action="Index" class="nav-link">
-                            <i class="fa-solid fa-location-dot"></i>
-                        <span>Lịch chiếu</span>
-                    </a>
-                </div>
+                            <span>Chọn rạp</span>
+                            <div class="list-branch">
+                                <div class="row">
+                                    @{
+                                        @if (Model != null)
+                                        {
+                                            @foreach (var item in Model)
+                                            {
+                                                <div class="col-md-6 col-lg-4 branch-item">
+                                                    <a href="/@item.BranchID" class="">@item.BranchName</a>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                   
 
-                <!-- Right Navigation -->
-                <div class="nav-right">
-                    <a asp-controller="Promotion" asp-action="Index" class="nav-link">Khuyến mãi</a>
-                    <a asp-controller="Event" asp-action="Index" class="nav-link">Tổ chức sự kiện</a>
-                    <a asp-controller="Service" asp-action="Index" class="nav-link">Dịch vụ giải trí khác</a>
-                    <a asp-controller="About" asp-action="Index" class="nav-link">Giới thiệu</a>
+                                    @* <div class="col-md-6 col-lg-4 branch-item">
+                                        <a href="#" class=""> Cinestar Quốc Thanh (TP.HCM)</a>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-4 branch-item">
+                                        <a href="#" class=""> Cinestar Quốc Thanh (TP.HCM)</a>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-4 branch-item">
+                                        <a href="#" class=""> Cinestar Quốc Thanh (TP.HCM)</a>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-4 branch-item">
+                                        <a href="#" class=""> Cinestar Quốc Thanh (TP.HCM)</a>
+                                    </div> *@
+
+
+
+
+                                </div>
+                        </div>
+                        </div>
+                        <a asp-controller="Showtimes" asp-action="Index" class="nav-link">
+                                <i class="fa-solid fa-location-dot"></i>
+                            <span>Lịch chiếu</span>
+                        </a>
+                    </div>
+
+                    <!-- Right Navigation -->
+                    <div class="nav-right">
+                        <a asp-controller="Promotion" asp-action="Index" class="nav-link">Khuyến mãi</a>
+                        <a asp-controller="Event" asp-action="Index" class="nav-link">Tổ chức sự kiện</a>
+                        <a asp-controller="Service" asp-action="Index" class="nav-link">Dịch vụ giải trí khác</a>
+                        <a asp-controller="About" asp-action="Index" class="nav-link">Giới thiệu</a>
+                    </div>
                 </div>
-            </div>
       
-    </nav>
+        </nav>
+
 
     </div>
+    
+       
+    
     <!-- Main Header -->
 </header>
