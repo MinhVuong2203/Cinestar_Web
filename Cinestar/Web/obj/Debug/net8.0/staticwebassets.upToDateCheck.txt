@@ -1,4 +1,3 @@
-wwwroot\css\Customer\homeCustomer.css
 wwwroot\css\footer.css
 wwwroot\css\header.css
 wwwroot\css\login.css
@@ -27,7 +26,6 @@ wwwroot\image\movie\tay-anh-giu-mot-vi-sao-poster.webp
 wwwroot\image\movie\tee-yod-sneak.webp
 wwwroot\image\movie\tro-choi-ao-giac-poster.webp
 wwwroot\image\VN.jpeg
-wwwroot\js\Customer\homeCustomer.js
 wwwroot\js\login.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
@@ -5772,3 +5770,5 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\css\Customer\homeCustomer.css
+wwwroot\js\Customer\homeCustomer.js
