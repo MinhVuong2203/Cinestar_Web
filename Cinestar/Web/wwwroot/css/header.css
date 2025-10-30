@@ -142,14 +142,16 @@
 
 
 .list-branch {
-    background-color: rgb(151, 186, 225);
+    background-color: #0F172A;
     padding: 10px;
     position: absolute;
     top: 41px;
     left: 0px;
     width: 100%;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    /*    border-top: 1px solid rgba(255,255,255,0.1);*/
     display: none; /* Ẩn mặc định */
+    border-radius: 6px;
+    box-shadow: 0px 0px 10px 6px rgba(255, 255,0, 0.3);
 }
 
 .list-branch::before{

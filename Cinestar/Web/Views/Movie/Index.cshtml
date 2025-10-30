@@ -1,0 +1,483 @@
+﻿@section styles {
+    <link href="~/css/movie.css" rel="stylesheet" />
+}
+<div class="container">
+        <h1>Chọn ghế - Rạp 03</h1>
+        <div style="position: relative;">
+            <img src="~/image/img-screen.png" class="screen"></img>
+            <div class="screen-label">Màn hình</div>
+
+        </div>
+
+        <div class="seating-area">
+            <table id="seatingTable">
+                <!-- Hàng A -->
+                <tr>
+                    <td class="row-label">A</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">A01</td>
+                    <td class="seat regular">A02</td>
+                    <td class="seat regular">A03</td>
+                    <td class="seat regular">A04</td>
+                    <td class="seat regular">A05</td>
+                    <td class="seat regular">A06</td>
+                    <td class="seat regular">A07</td>
+                    <td class="seat regular">A08</td>
+                    <td class="seat regular">A09</td>
+                    <td class="seat regular">A10</td>
+                    <td class="seat regular">A11</td>
+                    <td class="seat regular">A12</td>
+                    <td class="seat regular">A13</td>
+                    <td class="seat regular">A14</td>
+                    <td class="seat regular">A15</td>
+                </tr>
+                <!-- Hàng B -->
+                <tr>
+                    <td class="row-label">B</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">B01</td>
+                    <td class="seat regular">B02</td>
+                    <td class="seat regular">B03</td>
+                    <td class="seat regular">B04</td>
+                    <td class="seat regular">B05</td>
+                    <td class="seat regular">B06</td>
+                    <td class="seat regular">B07</td>
+                    <td class="seat regular">B08</td>
+                    <td class="seat regular">B09</td>
+                    <td class="seat regular">B10</td>
+                    <td class="seat regular">B11</td>
+                    <td class="seat regular">B12</td>
+                    <td class="seat regular">B13</td>
+                    <td class="seat regular">B14</td>
+                    <td class="seat regular">B15</td>
+                </tr>
+                <!-- Hàng C -->
+                <tr>
+                    <td class="row-label">C</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">C01</td>
+                    <td class="seat regular">C02</td>
+                    <td class="seat regular">C03</td>
+                    <td class="seat regular">C04</td>
+                    <td class="seat regular">C05</td>
+                    <td class="seat regular">C06</td>
+                    <td class="seat regular">C07</td>
+                    <td class="seat regular">C08</td>
+                    <td class="seat regular">C09</td>
+                    <td class="seat regular">C10</td>
+                    <td class="seat regular">C11</td>
+                    <td class="seat regular">C12</td>
+                    <td class="seat regular">C13</td>
+                    <td class="seat regular">C14</td>
+                    <td class="seat regular">C15</td>
+                </tr>
+                <!-- Hàng D -->
+                <tr>
+                    <td class="row-label">D</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">D01</td>
+                    <td class="seat regular">D02</td>
+                    <td class="seat regular">D03</td>
+                    <td class="seat regular">D04</td>
+                    <td class="seat regular">D05</td>
+                    <td class="seat regular">D06</td>
+                    <td class="seat regular">D07</td>
+                    <td class="seat regular">D08</td>
+                    <td class="seat regular">D09</td>
+                    <td class="seat regular">D10</td>
+                    <td class="seat regular">D11</td>
+                    <td class="seat regular">D12</td>
+                    <td class="seat regular">D13</td>
+                    <td class="seat regular">D14</td>
+                    <td class="seat regular">D15</td>
+                </tr>
+                <!-- Hàng E -->
+                <tr>
+                    <td class="row-label">E</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">E01</td>
+                    <td class="seat regular">E02</td>
+                    <td class="seat regular">E03</td>
+                    <td class="seat regular">E04</td>
+                    <td class="seat regular">E05</td>
+                    <td class="seat regular">E06</td>
+                    <td class="seat regular">E07</td>
+                    <td class="seat regular">E08</td>
+                    <td class="seat regular">E09</td>
+                    <td class="seat regular">E10</td>
+                    <td class="seat regular">E11</td>
+                    <td class="seat regular">E12</td>
+                    <td class="seat regular">E13</td>
+                    <td class="seat regular">E14</td>
+                    <td class="seat regular">E15</td>
+                </tr>
+                <!-- Hàng F -->
+                <tr>
+                    <td class="row-label">F</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">F01</td>
+                    <td class="seat regular">F02</td>
+                    <td class="seat regular">F03</td>
+                    <td class="seat booked">F04</td>
+                    <td class="seat booked">F05</td>
+                    <td class="seat booked">F06</td>
+                    <td class="seat booked">F07</td>
+                    <td class="seat booked">F08</td>
+                    <td class="seat regular">F09</td>
+                    <td class="seat regular">F10</td>
+                    <td class="seat regular">F11</td>
+                    <td class="seat regular">F12</td>
+                    <td class="seat regular">F13</td>
+                    <td class="seat regular">F14</td>
+                    <td class="seat regular">F15</td>
+                </tr>
+                <!-- Hàng G -->
+                <tr>
+                    <td class="row-label">G</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">G01</td>
+                    <td class="seat regular">G02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">G03</td>
+                    <td class="seat regular">G04</td>
+                    <td class="seat regular">G05</td>
+                    <td class="seat regular">G06</td>
+                    <td class="seat regular">G07</td>
+                    <td class="seat regular">G08</td>
+                    <td class="seat regular">G09</td>
+                    <td class="seat regular">G10</td>
+                    <td class="seat regular">G11</td>
+                    <td class="seat regular">G12</td>
+                    <td class="seat regular">G13</td>
+                    <td class="seat regular">G14</td>
+                    <td class="seat regular">G15</td>
+                    <td class="seat regular">G16</td>
+                    <td class="seat regular">G17</td>
+                </tr>
+                <!-- Hàng H -->
+                <tr>
+                    <td class="row-label">H</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">H01</td>
+                    <td class="seat regular">H02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">H03</td>
+                    <td class="seat regular">H04</td>
+                    <td class="seat regular">H05</td>
+                    <td class="seat regular">H06</td>
+                    <td class="seat booked">H07</td>
+                    <td class="seat booked">H08</td>
+                    <td class="seat booked">H09</td>
+                    <td class="seat booked">H10</td>
+                    <td class="seat regular">H11</td>
+                    <td class="seat regular">H12</td>
+                    <td class="seat regular">H13</td>
+                    <td class="seat regular">H14</td>
+                    <td class="seat regular">H15</td>
+                    <td class="seat regular">H16</td>
+                    <td class="seat regular">H17</td>
+                </tr>
+                <!-- Hàng J -->
+                <tr>
+                    <td class="row-label">J</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">J01</td>
+                    <td class="seat regular">J02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">J03</td>
+                    <td class="seat regular">J04</td>
+                    <td class="seat regular">J05</td>
+                    <td class="seat regular">J06</td>
+                    <td class="seat regular">J07</td>
+                    <td class="seat booked">J08</td>
+                    <td class="seat booked">J09</td>
+                    <td class="seat regular">J10</td>
+                    <td class="seat regular">J11</td>
+                    <td class="seat regular">J12</td>
+                    <td class="seat regular">J13</td>
+                    <td class="seat regular">J14</td>
+                    <td class="seat regular">J15</td>
+                    <td class="seat regular">J16</td>
+                    <td class="seat regular">J17</td>
+                </tr>
+                <!-- Hàng K -->
+                <tr>
+                    <td class="row-label">K</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">K01</td>
+                    <td class="seat regular">K02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">K03</td>
+                    <td class="seat regular">K04</td>
+                    <td class="seat regular">K05</td>
+                    <td class="seat regular">K06</td>
+                    <td class="seat booked">K07</td>
+                    <td class="seat booked">K08</td>
+                    <td class="seat booked">K09</td>
+                    <td class="seat regular">K10</td>
+                    <td class="seat regular">K11</td>
+                    <td class="seat regular">K12</td>
+                    <td class="seat regular">K13</td>
+                    <td class="seat regular">K14</td>
+                    <td class="seat regular">K15</td>
+                    <td class="seat regular">K16</td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng L -->
+                <tr>
+                    <td class="row-label">L</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">L01</td>
+                    <td class="seat regular">L02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">L03</td>
+                    <td class="seat regular">L04</td>
+                    <td class="seat regular">L05</td>
+                    <td class="seat regular">L06</td>
+                    <td class="seat booked">L07</td>
+                    <td class="seat regular">L08</td>
+                    <td class="seat regular">L09</td>
+                    <td class="seat booked">L10</td>
+                    <td class="seat booked">L11</td>
+                    <td class="seat regular">L12</td>
+                    <td class="seat regular">L13</td>
+                    <td class="seat regular">L14</td>
+                    <td class="seat regular">L15</td>
+                    <td class="seat regular">L16</td>
+                    <td class="seat regular">L17</td>
+                </tr>
+                <!-- Hàng M -->
+                <tr>
+                    <td class="row-label">M</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">M01</td>
+                    <td class="seat regular">M02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">M03</td>
+                    <td class="seat regular">M04</td>
+                    <td class="seat regular">M05</td>
+                    <td class="seat regular">M06</td>
+                    <td class="seat regular">M07</td>
+                    <td class="seat regular">M08</td>
+                    <td class="seat booked">M09</td>
+                    <td class="seat booked">M10</td>
+                    <td class="seat regular">M11</td>
+                    <td class="seat regular">M12</td>
+                    <td class="seat regular">M13</td>
+                    <td class="seat regular">M14</td>
+                    <td class="seat regular">M15</td>
+                    <td class="seat regular">M16</td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng N -->
+                <tr>
+                    <td class="row-label">N</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">N01</td>
+                    <td class="seat regular">N02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">N03</td>
+                    <td class="seat regular">N04</td>
+                    <td class="seat regular">N05</td>
+                    <td class="seat regular">N06</td>
+                    <td class="seat regular">N07</td>
+                    <td class="seat booked">N08</td>
+                    <td class="seat booked">N09</td>
+                    <td class="seat regular">N10</td>
+                    <td class="seat regular">N11</td>
+                    <td class="seat regular">N12</td>
+                    <td class="seat regular">N13</td>
+                    <td class="seat regular">N14</td>
+                    <td class="seat regular">N15</td>
+                    <td class="seat regular">N16</td>
+                    <td class="seat regular">N17</td>
+                </tr>
+                <!-- Hàng O -->
+                <tr>
+                    <td class="row-label">O</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">O01</td>
+                    <td class="seat regular">O02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">O03</td>
+                    <td class="seat regular">O04</td>
+                    <td class="seat regular">O05</td>
+                    <td class="seat regular">O06</td>
+                    <td class="seat regular">O07</td>
+                    <td class="seat booked">O08</td>
+                    <td class="seat booked">O09</td>
+                    <td class="seat regular">O10</td>
+                    <td class="seat regular">O11</td>
+                    <td class="seat regular">O12</td>
+                    <td class="seat regular">O13</td>
+                    <td class="seat regular">O14</td>
+                    <td class="seat regular">O15</td>
+                    <td class="seat regular">O16</td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng P -->
+                <tr>
+                    <td class="row-label">P</td>
+                    <td class="empty"></td>
+                    <td class="seat couple">P01</td>
+                    <td class="seat couple">P02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">P03</td>
+                    <td class="seat couple">P04</td>
+                    <td class="seat couple">P05</td>
+                    <td class="seat couple">P06</td>
+                    <td class="seat couple">P07</td>
+                    <td class="seat couple">P08</td>
+                    <td class="seat couple">P09</td>
+                    <td class="seat couple">P10</td>
+                    <td class="seat couple">P11</td>
+                    <td class="seat couple">P12</td>
+                    <td class="seat couple">P13</td>
+                    <td class="seat couple">P14</td>
+                    <td class="seat couple">P15</td>
+                    <td class="seat couple">P16</td>
+                    <td class="seat couple">P17</td>
+                </tr>
+                <!-- Hàng Q -->
+                <tr>
+                    <td class="row-label">Q</td>
+                    <td class="empty"></td>
+                    <td class="seat couple">Q01</td>
+                    <td class="seat couple">Q02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">Q03</td>
+                    <td class="seat couple">Q04</td>
+                    <td class="seat couple">Q05</td>
+                    <td class="seat couple">Q06</td>
+                    <td class="seat couple">Q07</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">Q10</td>
+                    <td class="seat couple">Q11</td>
+                    <td class="seat couple">Q12</td>
+                    <td class="seat couple">Q13</td>
+                    <td class="seat couple">Q14</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng R -->
+                <tr>
+                    <td class="row-label">R</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R01</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R03</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R04</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                   
+                </tr>
+            </table>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box regular"></div>
+                <span>Ghế Thường</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box couple"></div>
+                <span>Ghế Đôi (2 Người)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box selected"></div>
+                <span>Ghế chọn</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box booked"></div>
+                <span>Ghế đã đặt</span>
+            </div>
+        </div>
+    </div>
+
+<script>
+        const seats = document.querySelectorAll('td.seat:not(.booked)');
+
+        seats.forEach(seat => {
+            seat.addEventListener('click', function() {
+                if (this.classList.contains('selected')) {
+                    if (this.classList.contains('couple')) {
+                        this.classList.remove('selected');
+                        this.classList.add('couple');
+                    } else {
+                        this.classList.remove('selected');
+                        this.classList.add('regular');
+                    }
+                } else {
+                    this.classList.add('selected');
+                    this.classList.remove('regular', 'couple');
+                }
+            });
+        });
+</script>

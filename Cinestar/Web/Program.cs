@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Web.Data;
+using Web.Filters;
 using Web.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,11 @@ builder.Services.AddDbContext<CineStarContext>(options => options.UseSqlServer(b
 // Đăng ký Service
 builder.Services.AddScoped<ICinemaBranchService, CinemaBranchService>();
 builder.Services.AddScoped<ILogin, Login>();
+
+builder.Services.AddControllersWithViews(option =>
+{
+    option.Filters.Add<LoadCinemaBranchesAttribute>();
+});
 
 var app = builder.Build();
 

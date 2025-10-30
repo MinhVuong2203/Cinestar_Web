@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Web.Filters;
 using Web.Models;
 using Web.Service;
 
@@ -13,6 +14,7 @@ namespace Web.Controllers
             _cinemaBranchService = cinemaBranchService;
         }
 
+        [LoadCinemaBranches]
         public IActionResult Index()
         {
             

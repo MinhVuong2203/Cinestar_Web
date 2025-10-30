@@ -1,0 +1,574 @@
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    padding: 0 165px;
+} */
+
+/* Carousel Styles */
+.carousel {
+    max-width: 100%;
+    margin: 20px auto;
+}
+
+.carousel-inner {
+    border-radius: 5px;
+    overflow: hidden;
+    max-height: 545px;
+
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Carousel Controls */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 60px;
+}
+
+
+.carousel-control-next-icon {
+
+    margin-right: -120px;
+}
+
+.carousel-control-prev-icon {
+    margin-left: -120px;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-indicators .active {
+    background-color: #fff;
+}
+
+/* Booking Section */
+.booking-section {
+    max-width: 100%;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px 30px;
+    border-radius: 5px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    margin-top: 50px;
+}
+
+.booking-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #333;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.combo-box {
+    min-width: 180px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #ffeb3b;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    width: 195px;
+    height: 42px;
+}
+
+.combo-box.combo-disabled {
+    background: #e8eaf6;
+    color: #7c4dff;
+}
+
+.combo-box:disabled {
+    cursor: not-allowed;
+}
+
+.combo-box:not(:disabled):hover {
+    border-color: #fdd835;
+    box-shadow: 0 2px 8px rgba(253, 216, 53, 0.4);
+}
+
+.combo-box:focus {
+    outline: none;
+    border-color: #f9a825;
+    box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.2);
+}
+
+/*.btn-purple {
+    background: linear-gradient(135deg, #7c4dff 0%, #651fff 100%);
+    color: white;
+    border: none;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    width: 100px;
+    height: 45px;
+}
+
+.btn-purple:disabled {
+    cursor: not-allowed;
+}
+*/
+/* ========== SECTION 2 - MOVIE CAROUSEL ========== */
+.section-2 {
+    padding: 60px 0;
+
+}
+
+.container-movie {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.movie-section-title {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 50px;
+    letter-spacing: 2px;
+}
+
+/* Movie Carousel Wrapper */
+.movie-carousel-wrapper {
+    position: relative;
+    max-width: 1365px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+/* Carousel Viewport - ẩn phần overflow */
+.carousel-viewport {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    flex-shrink: 0;
+
+}
+
+/* Carousel Track - container chứa tất cả slides */
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 100%;
+}
+
+/* Mỗi Slide - chiếm 100% width của viewport */
+.carousel-slide {
+    min-width: 100%;
+    flex-shrink: 0;
+}
+
+/* Row trong slide không wrap */
+.carousel-slide .row {
+    flex-wrap: nowrap !important;
+    margin: 0;
+}
+
+/* Movie Card Column */
+.movie-card-col {
+/*    flex: 0 0 22%;*/
+    /* Đảm bảo mỗi card chiếm 25% chiều rộng */
+    max-width: 23%;
+    box-sizing: border-box;
+    /* Đảm bảo padding không làm tràn */
+    padding: 0;
+}
+
+.movie-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(255, 235, 59, 0.3);
+
+    .movie-title {
+        color: #ffeb3b;
+    }
+
+    .badge-container {
+        display: none;
+    }
+}
+
+.movie-poster::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.movie-card:hover .movie-poster::after {
+    opacity: 1;
+}
+
+.movie-info-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    text-align: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.movie-card:hover .movie-info-overlay {
+    opacity: 1;
+}
+
+.movie-info-overlay .overlay-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #ffeb3b;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.movie-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+
+.movie-info-item svg {
+    width: 20px;
+    height: 20px;
+    fill: #ffeb3b;
+}
+
+.overlay-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+    padding: 0 10px;
+}
+
+.overlay-btn-trailer {
+    flex: 1;
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.overlay-btn-trailer:hover {
+    background: #fff;
+    color: #2d3561;
+}
+
+.overlay-btn-book {
+    flex: 1;
+    background: #ffeb3b;
+    border: none;
+    color: #333;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+}
+
+.overlay-btn-book:hover {
+    background: #fdd835;
+    transform: scale(1.05);
+}
+
+.movie-poster {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .movie-poster img {
+    transform: scale(1.05);
+}
+
+.badge-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.movie-type-badge {
+    background: #2196F3;
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.age-badge {
+    background: #ff1744;
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.movie-title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 15px;
+    text-align: center;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.movie-actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 15px 15px;
+    margin-top: auto;
+}
+
+.btn-trailer {
+    flex: 1;
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.btn-trailer:hover {
+    background: #fff;
+    color: #2d3561;
+}
+
+.play-icon {
+    font-size: 0.7rem;
+}
+
+.btn-book {
+    flex: 1;
+    background: #ffeb3b;
+    border: none;
+    color: #333;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-book:hover {
+    background: #fdd835;
+    transform: scale(1.05);
+    color: #333;
+}
+
+/* Navigation Buttons */
+.movie-carousel-wrapper .carousel-control-prev,
+.movie-carousel-wrapper .carousel-control-next {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 1;
+    z-index: 10;
+    border: none;
+    cursor: pointer;
+}
+
+.movie-carousel-wrapper .carousel-control-prev:disabled,
+.movie-carousel-wrapper .carousel-control-next:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.movie-carousel-wrapper .carousel-control-next-icon {
+    margin-right: -120px;
+}
+
+.movie-carousel-wrapper .carousel-control-prev-icon {
+    margin-left: -120px;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: #ffeb3b;
+    width: 30px;
+    border-radius: 6px;
+}
+
+.btn-view-more {
+    display: block;
+    margin: 40px auto 0;
+    padding: 15px 50px;
+    background: transparent;
+    border: 2px solid #ffeb3b;
+    color: #ffeb3b;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-view-more:hover {
+    background: #ffeb3b;
+    color: #2d3561;
+}
+
+.section-3 {
+    padding: 60px 0;
+}
+
+.movie-date {
+
+    color: #D3D3D3;
+    /* Light gray text for visibility */
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 10px;
+    /* Vertical and horizontal padding */
+    border-top: 2px solid #000000;
+    /* Black top border */
+    margin: 0;
+    /* Remove default margin to fit snugly */
+    padding-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 0 20px;
+    }
+
+    .booking-section {
+        padding: 15px;
+    }
+
+    .booking-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .combo-box {
+        min-width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .btn-purple {
+        width: 100%;
+    }
+
+    .carousel {
+        margin: 10px;
+    }
+
+    .movie-card-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}

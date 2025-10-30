@@ -16,12 +16,271 @@
 
 </head>
 <body>
+        
       <div class="app">
-        @await Html.PartialAsync("_Header")
+       
+        <header class="site-header">
+            <div class="container">
+
+                <div class="header-main">
+
+                    <div class="header-wrapper">
+                        <!-- Logo -->
+                        <a asp-controller="Home" asp-action="Index" class="brand-logo">
+                            <img src="~/image/header-logo.webp" alt="Cinestar" />
+                        </a>
+
+                        <!-- CTA Buttons -->
+                        <div class="cta-buttons">
+                            <a asp-controller="Movie" asp-action="Index" class="btn-xs btn-cta btn-yellow btn-hover-purple btn-text-light btn-text-hover-light">
+                                <i class="fa-solid fa-ticket" style="color: #ffffff;"></i>
+                                <span>ĐẶT VÉ NGAY</span>
+                            </a>
+                            <a asp-controller="Booking" asp-action="Combo" class="btn-xs btn-cta btn-purple btn-hover-orange btn-text-light">
+                                <i class="fa-solid fa-glass-water"></i>
+                                <span>ĐẶT BẮP NƯỚC</span>
+                            </a>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="header-search">
+                            <form asp-controller="Movie" asp-action="Search" method="get">
+                                <input type="text" name="keyword" placeholder="Tìm phim, rạp" class="search-input" />
+                                <button type="submit" class="search-btn">
+                                    <i class="fa-brands fa-searchengin" style="color: darkgray"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- User Section -->
+                        <div class="header-user">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a asp-controller="Account" asp-action="Profile" class="user-profile">
+                                    <i class="fa-solid fa-user"></i>
+                                    <span>@User.Identity.Name</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="user-profile">
+                                    <i class="fa-solid fa-user"></i>
+                                    <span>NGUYÊN...</span>
+                                </a>
+                            }
+
+                        </div>
+                        <div class="language-selector">
+                            <img class="flag-icon" src="~/image/VN.jpeg" alt="VN" class="flag-icon" />
+                            <span>VN</span>
+                            <i class="icon-chevron-down"></i>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Navigation -->
+                <nav class="header-nav">
+
+                    <div class="nav-wrapper">
+                        <!-- Left Navigation -->
+                        <div class="nav-left">
+                            <div class="nav-link">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>Chọn rạp</span>
+                                <div class="list-branch">
+                                    <div class="row">
+                                        
+                                        @{
+                                            @if (ViewBag.CinemaBranches != null)
+                                            {
+                                                @foreach (var item in ViewBag.CinemaBranches)
+                                                {
+                                                    <div class="col-md-6 col-lg-4 branch-item">
+                                                        <a href="/@item.BranchID" class="">@item.BranchName</a>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <a asp-controller="Showtimes" asp-action="Index" class="nav-link">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>Lịch chiếu</span>
+                            </a>
+                        </div>
+
+                        <!-- Right Navigation -->
+                        <div class="nav-right">
+                            <a asp-controller="Promotion" asp-action="Index" class="nav-link">Khuyến mãi</a>
+                            <a asp-controller="Event" asp-action="Index" class="nav-link">Tổ chức sự kiện</a>
+                            <a asp-controller="Service" asp-action="Index" class="nav-link">Dịch vụ giải trí khác</a>
+                            <a asp-controller="About" asp-action="Index" class="nav-link">Giới thiệu</a>
+                        </div>
+                    </div>
+
+                </nav>
+
+
+            </div>
+
+        </header>
         <main role="main">
             @RenderBody()
         </main>
-        @await Html.PartialAsync("_Footer")
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-main">
+
+                    <div class="row">
+                        <!-- Brand Section: col-lg-4 col-12 -->
+                        <div class="footer-brand col-lg-4 col-12">
+                            <img src="~/image/header-logo.webp" alt="Cinestar" class="footer-logo" />
+                            <p class="brand-slogan">BE HAPPY, BE A STAR</p>
+
+                            <!-- CTA Buttons -->
+                            <div class="cta-buttons">
+                                <a asp-controller="Movie" asp-action="Index" class="btn-cta btn-yellow btn-hover-purple btn-text-dark btn-text-hover-light">
+                                    <i class="fa-thin fa-ticket"></i>
+                                    <span>ĐẶT VÉ NGAY</span>
+                                </a>
+                                <a asp-controller="Booking" asp-action="Combo" class="btn-cta btn-purple btn-hover-orange btn-text-light">
+                                    <i class="icon-popcorn"></i>
+                                    <span>ĐẶT BẮP NƯỚC</span>
+                                </a>
+                            </div>
+
+                            <!-- Social Links -->
+                            <div class="social-links">
+                                <a href="https://facebook.com/cinestar" target="_blank" class="social-icon">
+                                    <i class="fa-brands fa-facebook"></i>
+                                </a>
+                                <a href="https://youtube.com/cinestar" target="_blank" class="social-icon">
+                                    <i class="fa-brands fa-youtube"></i>
+                                </a>
+                                <a href="#" target="_blank" class="social-icon">
+                                    <i class="bi bi-tiktok"></i>
+                                </a>
+                            </div>
+
+                            <!-- Language -->
+                            <div class="footer-language">
+                                <span>Ngôn ngữ:</span>
+                                <button class="lang-btn active">
+                                    <img class="circle" src="~/image/VN.jpeg" alt="VN" /> VN
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Account Column: col-lg-2 col-md-3 col-6 -->
+                        <div class="footer-column col-lg-2 col-md-3 col-6">
+                            <h3 class="footer-title">TÀI KHOẢN</h3>
+                            <ul class="footer-links">
+                                <li><a asp-controller="Account" asp-action="Login">Đăng nhập</a></li>
+                                <li><a asp-controller="Account" asp-action="Register">Đăng ký</a></li>
+                                <li><a asp-controller="Member" asp-action="Index">Membership</a></li>
+                            </ul>
+
+                            <h3 class="footer-title mt-4">XEM PHIM</h3>
+                            <ul class="footer-links">
+                                <li><a asp-controller="Movie" asp-action="NowShowing">Phim đang chiếu</a></li>
+                                <li><a asp-controller="Movie" asp-action="ComingSoon">Phim sắp chiếu</a></li>
+                                <li><a asp-controller="Movie" asp-action="Special">Suất chiếu đặc biệt</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Event Rental Column: col-lg-2 col-md-3 col-6 -->
+                        <div class="footer-column col-lg-2 col-md-3 col-6">
+                            <h3 class="footer-title">THUÊ SỰ KIỆN</h3>
+                            <ul class="footer-links">
+                                <li><a asp-controller="Rental" asp-action="Theater">Thuê rạp</a></li>
+                                <li><a asp-controller="Rental" asp-action="Types">Các loại hình cho thuê khác</a></li>
+                            </ul>
+
+                            <h3 class="footer-title mt-4">CINESTAR</h3>
+                            <ul class="footer-links">
+                                <li><a asp-controller="About" asp-action="Index">Giới thiệu</a></li>
+                                <li><a asp-controller="About" asp-action="Contact">Liên hệ</a></li>
+                                <li><a asp-controller="Career" asp-action="Index">Tuyển dụng</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Services Column: col-lg-2 col-md-3 col-6 -->
+                        <div class="footer-column col-lg-2 col-md-3 col-6">
+                            <h3 class="footer-title">DỊCH VỤ KHÁC</h3>
+                            <ul class="footer-links">
+                                <li><a asp-controller="Service" asp-action="Restaurant">Nhà hàng</a></li>
+                                <li><a asp-controller="Service" asp-action="Kidzone">Kidzone</a></li>
+                                <li><a asp-controller="Service" asp-action="Bowling">Bowling</a></li>
+                                <li><a asp-controller="Service" asp-action="Billiards">Billiards</a></li>
+                                <li><a asp-controller="Service" asp-action="Gym">Gym</a></li>
+                                <li><a asp-controller="Service" asp-action="Opera">Nhà hát Opera</a></li>
+                                <li><a asp-controller="Service" asp-action="Coffee">Coffee</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Cinema System Column: col-lg-2 col-md-3 col-6 -->
+                        <div class="footer-column col-lg-2 col-md-3 col-6">
+                            <h3 class="footer-title">HỆ THỐNG RẠP</h3>
+                            <ul class="footer-links">
+                                <a asp-controller="Cinema" asp-action="Detail" asp-route-slug="quan-thanh">
+                                    Tất cả hệ thống rạp
+                                </a>
+                                @{
+                                    @if (ViewBag.CinemaBranches != null)
+                                    {
+                                        @foreach (var item in ViewBag.CinemaBranches)
+                                        {
+                                            <li>
+                                                <a href="/@item.BranchID">
+                                                    @item.BranchName
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+
+                    <div class="footer-bottom-content">
+                        <!-- Copyright -->
+                        <div class="copyright">
+                            <p>&copy; @DateTime.Now.Year Cinestar. All rights reserved.</p>
+                        </div>
+
+                        <!-- Legal Links -->
+                        <div class="legal-links">
+                            <a asp-controller="Legal" asp-action="Privacy">Chính sách bảo mật</a>
+                            <a asp-controller="Legal" asp-action="Terms">Tin điện ảnh</a>
+                            <a asp-controller="Legal" asp-action="QA">Hỏi và đáp</a>
+                        </div>
+
+                    </div>
+                    <!-- Certification Badge -->
+                    <div class="certification">
+                        <img src="~/image/dathongbao.webp" alt="Đã thông báo Bộ Công Thương" />
+                    </div>
+
+                    <!-- Company Info -->
+                    <div class="company-info">
+                        <p>CÔNG TY CỔ PHẦN GIẢI TRÍ PHÁT HÀNH PHIM - RẠP CHIẾU PHIM NGÔI SAO</p>
+                        <p>ĐỊA CHỈ: 135 HAI BÀ TRƯNG, PHƯỜNG BẾN NGHÉ, QUẬN 1, TP.HCM</p>
+                        <p>GIẤY CNĐKKD SỐ: 0315752734, ĐĂNG KÝ LẦN ĐẦU NGÀY 18/04/2014, ĐĂNG KÝ THAY ĐỔI LẦN THỨ 2 NGÀY 15/09/2014, CẤP BỞI SỞ KHĐT TPHCM</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
 
         </div>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,0 +1,16 @@
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\banner-web-hoisinh.jpg
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\cai-ma-poster.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\chaching.jpg
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\chu-thuat-hoi-chien.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\Copy_of_470x700.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\cuc-vang-cua-ngoai-banner.jpg
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\cuc-vang-cua-ngoai-poster.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\hanh-trinh-ruc-ro-ta-da-yeu.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\nam-cua-anh-ngay-cua-em-poster.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\nha-ma-xo.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\pha-dam-sinh-nhat-me-poster.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\phimhot10.jpg
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\phong-van-sat-nhan.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\tay-anh-giu-mot-vi-sao-poster.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\tee-yod-sneak.webp
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\wwwroot\image\img\tro-choi-ao-giac-poster.webp
