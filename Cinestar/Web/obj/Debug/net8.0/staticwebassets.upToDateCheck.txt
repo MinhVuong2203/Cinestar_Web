@@ -1,4 +1,3 @@
-wwwroot\css\Customer\homeCustomer.css
 wwwroot\css\footer.css
 wwwroot\css\header.css
 wwwroot\css\login.css
@@ -5772,3 +5771,4 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\css\Customer\homeCustomer.css

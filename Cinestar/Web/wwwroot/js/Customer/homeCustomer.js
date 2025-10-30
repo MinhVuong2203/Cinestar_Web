@@ -206,3 +206,36 @@ updateButtons3();
 window.addEventListener('resize', () => {
     goToSlide3(currentSlide3);
 });
+
+/* JS của HMINH*/
+
+document.addEventListener('DOMContentLoaded', function () {
+    const wrapper = document.querySelector('.cards-wrapper');
+    const nextBtn = document.getElementById('nextSlide');
+    const prevBtn = document.getElementById('prevSlide');
+
+    // Lấy tất cả các thẻ
+    const cards = document.querySelectorAll('.cards-wrapper > div');
+    const cardWidth = cards[0].offsetWidth; // Lấy chiều rộng của 1 thẻ
+
+    let currentIndex = 0;
+    // Tính toán số lần trượt tối đa (hiển thị 3 thẻ 1 lúc)
+    const maxIndex = cards.length - Math.floor(wrapper.parentElement.offsetWidth / cardWidth);
+
+    function updateCarousel() {
+        // Dịch chuyển wrapper sang trái
+        wrapper.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    }
+
+    nextBtn.addEventListener('click', () => {
+        // Tăng index, nếu vượt quá max thì quay về 0 (vòng lặp)
+        currentIndex = (currentIndex + 1) > maxIndex ? 0 : currentIndex + 1;
+        updateCarousel();
+    });
+
+    prevBtn.addEventListener('click', () => {
+        // Giảm index, nếu nhỏ hơn 0 thì quay về max (vòng lặp)
+        currentIndex = (currentIndex - 1) < 0 ? maxIndex : currentIndex - 1;
+        updateCarousel();
+    });
+});
