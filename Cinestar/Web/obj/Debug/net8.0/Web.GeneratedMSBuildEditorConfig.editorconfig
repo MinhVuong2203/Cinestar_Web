@@ -17,61 +17,61 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Web
 build_property.RootNamespace = Web
-build_property.ProjectDir = D:\code\nam3\web\Cinestar_Web\Cinestar\Web\
+build_property.ProjectDir = D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\code\nam3\web\Cinestar_Web\Cinestar\Web
+build_property.MSBuildProjectDirectory = D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Account/Login.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Home/Index.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Home/Privacy.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Movie/Index.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Movie/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW92aWVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Shared/Error.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Shared/_Footer.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Shared/_Footer.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Gb290ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Shared/_Header.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Shared/_Header.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9IZWFkZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Showtimes/Index.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Showtimes/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvd3RpbWVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/_ViewImports.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/_ViewStart.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/code/nam3/web/Cinestar_Web/Cinestar/Web/Views/Shared/_Layout.cshtml]
+[D:/DAI HOC/LapTrinhWeb/BTL/Cinestar_Web/Cinestar/Web/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-lzldzk1rll
