@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Web.Models.CinemaBranch>
+
+@{
+    ViewData["Title"] = "Quản lý Chi nhánh";
+}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h2><i class="fas fa-building"></i> Quản lý Chi nhánh</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Thêm chi nhánh mới
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list"></i> Danh sách Chi nhánh
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover" id="branchTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên chi nhánh</th>
+                        <th>Thành phố</th>
+                        <th>Quận/Huyện</th>
+                        <th>Địa chỉ</th>
+                        <th>Điện thoại</th>
+                        <th>Giờ mở cửa</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        int i = 1;
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>@(i++)</strong></td>
+                                <td>@item.BranchName</td>
+                                <td>@item.City</td>
+                                <td>@item.District</td>
+                                <td>@item.Address</td>
+                                <td>@(item.Phone ?? "N/A")</td>
+                                <td>@item.OpenHours</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-action="Details" asp-route-id="@item.BranchID"
+                                           class="btn btn-sm btn-info" title="Chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.BranchID"
+                                           class="btn btn-sm btn-warning" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.BranchID"
+                                              method="post" style="display:inline;"
+                                              onsubmit="return confirmDelete('Bạn có chắc muốn xóa chi nhánh này?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                
+                        
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize DataTable for better UX
+        $(document).ready(function() {
+            $('#branchTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
+                },
+                pageLength: 10,
+                order: [[2, 'asc']], // Sort by City
+                columnDefs: [
+                    { orderable: false, targets: 7 } // Disable sorting on Action column
+                ]
+            });
+        });
+    </script>
+}
