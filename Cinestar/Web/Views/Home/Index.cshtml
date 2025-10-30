@@ -5,7 +5,1113 @@
     <link href="~/css/Customer/homeCustomer.css" rel="stylesheet" />
 }
 <div class="container">
+    <section class="section-1">
+        <!-- Carousel -->
+        <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="~/image/movie/banner-web-hoisinh.jpg" class="d-block w-100" alt="Slide 1">
+                </div>
 
+                <div class="carousel-item">
+                    <img src="~/image/movie/chaching.jpg" class="d-block w-100" alt="Slide 2">
+                </div>
+
+                <div class="carousel-item">
+                    <img src="~/image/movie/phimhot10.jpg" class="d-block w-100" alt="Slide 3">
+                </div>
+                <div class="carousel-item">
+                    <img src="~/image/movie/cuc-vang-cua-ngoai-banner.jpg" class="d-block w-100" alt="Slide 4">
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+
+        @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> *@
+
+        <!-- Booking Section -->
+        <div class="booking-section">
+            <div class="container-fluid">
+                <div class="row align-items-center g-3">
+                    <div class="col-auto">
+                        <h3 class="booking-title">ĐẶT VÉ NHANH</h3>
+                    </div>
+
+                    <div class="col-auto">
+                        <select class="form-select combo-box combo-disabled" id="cinema" disabled>
+                            <option value="" selected disabled hidden>1. Chọn Rạp</option>
+                            <option value="kg">Cinestar Kiên Giang</option>
+                            <option value="qt">Cinestar Quốc Thanh</option>
+                            <option value="hbt">Cinestar Hai Bà Trưng</option>
+                            <option value="q6">Cinestar Saira Quận 6</option>
+                            <option value="dl">Cinestar Đà Lạt</option>
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <select class="form-select combo-box combo-disabled" id="movie" disabled>
+                            <option value="" selected disabled hidden>2. Chọn Phim</option>
+                            <option value="1">Cục Vàng Của Ngày Mai</option>
+                            <option value="2">Venom: Kèo Cuối</option>
+                            <option value="3">Thần Dược</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <select class="form-select combo-box combo-disabled" id="date" disabled>
+                            <option value="" selected disabled hidden>3. Chọn Ngày</option>
+                            <option value="1">Thứ Hai, 27/10</option>
+                            <option value="2">Thứ Ba, 28/10</option>
+                            <option value="3">Thứ Tư, 29/10</option>
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <select class="form-select combo-box combo-disabled" id="time" disabled>
+                            <option value="" selected disabled hidden>4. Chọn Suất</option>
+                            <option value="1">14:00 - 2D Standard</option>
+                            <option value="2">16:30 - 2D Standard</option>
+                            <option value="3">19:00 - 2D Standard</option>
+                            <option value="4">21:30 - 2D Standard</option>
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <button class="btn-xs btn-cta btn-purple" id="bookBtn" disabled>ĐẶT NGAY</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section-2">
+        <div class="container-movie">
+            <h2 class="movie-section-title">PHIM ĐANG CHIẾU</h2>
+            <div class="movie-carousel-wrapper">
+                <button class="carousel-control-prev" type="button" id="prevBtn">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+
+                <div class="carousel-viewport">
+                    <div class="carousel-track" id="movieCarousel">
+                        <!-- Slide 1 -->
+                        <div class="carousel-slide">
+                            <div class="row g-4 justify-content-between">
+                                <!-- Movie Card 1 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/cuc-vang-cua-ngoai-poster.webp" alt="Cục Vàng Của Ngoại">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Gia đình, Tâm Lý</span>
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>119'</span>
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Việt Nam</span>
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>VN</span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 2 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/nha-ma-xo.webp" alt="Nhà Ma Xó">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">NHÀ MA XÓ (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Kinh Dị, Hài" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "105'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">NHÀ MA XÓ (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 3 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/tee-yod-sneak.webp" alt="Tee Yod">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">TEE YOD: QUỶ ĂN TẠNG PHẦN 3 (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Kinh Dị" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "120'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Thái Lan" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "Thái" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">TEE YOD: QUỶ ĂN TẠNG PHẦN 3 (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 4 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/nam-cua-anh-ngay-cua-em-poster.webp" alt="Năm Của Anh">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">NĂM CỦA ANH, NGÀY CỦA EM (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Hài" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "110'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">NĂM CỦA ANH, NGÀY CỦA EM (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2 -->
+                        <div class="carousel-slide">
+                            <div class="row g-4 justify-content-between">
+                                <!-- Movie Card 5 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/phong-van-sat-nhan.webp" alt="Phỏng Vấn Sát Nhân">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T18</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">PHỎNG VẤN SÁT NHÂN (T18)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tội Phạm, Kinh Dị" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "130'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Mỹ" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "EN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">PHỎNG VẤN SÁT NHÂN (T18)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 6 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/hanh-trinh-ruc-ro-ta-da-yeu.webp" alt="Hành Trình Rực Rỡ">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">HÀNH TRÌNH RỰC RỠ TA ĐÃ YÊU (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Phiêu Lưu" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "115'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">HÀNH TRÌNH RỰC RỠ TA ĐÃ YÊU (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 7 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/cai-ma-poster.webp" alt="Cái Má">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">CÁI MÁ (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Hài, Tâm Lý" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "100'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">CẢI MÃ (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 8 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/tro-choi-ao-giac-poster.webp" alt="Trò Chơi Ảo Giác">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">TRÒ CHƠI ẢO GIÁC: ARES (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Khoa Học Viễn Tưởng, Hành Động" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "125'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Mỹ" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "EN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">TRÒ CHƠI ẢO GIÁC: ARES (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3 -->
+                        <div class="carousel-slide">
+                            <div class="row g-4 justify-content-between">
+                                <!-- Movie Card 9 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/chu-thuat-hoi-chien.webp" alt="Chú Thuật Hồi Chiến">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">CHÚ THUẬT HỒI CHIẾN: HOẠI NGỌC (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Hoạt Hình, Hành Động" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "105'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Nhật Bản" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "JP" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">CHÚ THUẬT HỒI CHIẾN: HOẠI NGỌC (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 10 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/pha-dam-sinh-nhat-me-poster.webp" alt="Phá Đám Sinh Nhật">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">PHÁ ĐÁM SINH NHẬT MẸ (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Hài, Gia Đình" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "95'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">PHÁ ĐÁM SINH NHẬT MẸ (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 11 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/tay-anh-giu-mot-vi-sao-poster.webp" alt="Tay Anh Giữ Một Vì Sao">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">K</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">TAY ANH GIỮ MỘT VÌ SAO (K)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Gia Đình" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "90'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">TAY ANH GIỮ MỘT VÌ SAO (K)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 12 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/Copy_of_470x700.webp" alt="Những Lá Thư Của Yeon">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">P</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">NHỮNG LÁ THƯ CỦA YEON (P)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Tâm Lý" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "110'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Hàn Quốc" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "KR" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 class="movie-title">NHỮNG LÁ THƯ CỦA YEON (P)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">ĐẶT VÉ</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-control-next" type="button" id="nextBtn">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="carousel-dots" id="carouselDots"></div>
+
+            <button class="btn-view-more">XEM THÊM</button>
+        </div>
+    </section>
+    <section class="section-3">
+        <div class="container-movie">
+            <h2 class="movie-section-title">PHIM SẮP CHIẾU</h2>
+            <div class="movie-carousel-wrapper">
+                <button class="carousel-control-prev" type="button" id="prevBtn3">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+
+                <div class="carousel-viewport">
+                    <div class="carousel-track" id="movieCarousel3">
+                        <!-- Slide 1 -->
+                        <div class="carousel-slide">
+                            <div class="row g-4 justify-content-between">
+                                <!-- Movie Card 1 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/cuc-vang-cua-ngoai-poster.webp" alt="Cục Vàng Của Ngoại">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Gia đình, Tâm Lý</span>
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>119'</span>
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Việt Nam</span>
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>VN</span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 2 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/nha-ma-xo.webp" alt="Nhà Ma Xó">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">NHÀ MA XÓ (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Kinh Dị, Hài" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "105'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">NHÀ MA XÓ (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 3 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/tee-yod-sneak.webp" alt="Tee Yod">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">TEE YOD: QUỶ ĂN TẠNG PHẦN 3 (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Kinh Dị" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "120'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Thái Lan" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "Thái" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 28/10/2025</h4>
+                                        <h3 class="movie-title">TEE YOD: QUỶ ĂN TẠNG PHẦN 3 (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 4 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/nam-cua-anh-ngay-cua-em-poster.webp" alt="Năm Của Anh">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">NĂM CỦA ANH, NGÀY CỦA EM (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Hài" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "110'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">NĂM CỦA ANH, NGÀY CỦA EM (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2 -->
+                        <div class="carousel-slide">
+                            <div class="row g-4 justify-content-between">
+                                <!-- Movie Card 5 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/phong-van-sat-nhan.webp" alt="Phỏng Vấn Sát Nhân">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T18</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">PHỎNG VẤN SÁT NHÂN (T18)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tội Phạm, Kinh Dị" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "130'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Mỹ" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "EN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">PHỎNG VẤN SÁT NHÂN (T18)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 6 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/hanh-trinh-ruc-ro-ta-da-yeu.webp" alt="Hành Trình Rực Rỡ">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">HÀNH TRÌNH RỰC RỠ TA ĐÃ YÊU (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Phiêu Lưu" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "115'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">HÀNH TRÌNH RỰC RỠ TA ĐÃ YÊU (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 7 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/cai-ma-poster.webp" alt="Cái Má">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">CÁI MÁ (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Hài, Tâm Lý" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "100'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">CẢI MÃ (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 8 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/tro-choi-ao-giac-poster.webp" alt="Trò Chơi Ảo Giác">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">TRÒ CHƠI ẢO GIÁC: ARES (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Khoa Học Viễn Tưởng, Hành Động" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "125'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Mỹ" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "EN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">TRÒ CHƠI ẢO GIÁC: ARES (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3 -->
+                        <div class="carousel-slide">
+                            <div class="row g-4 justify-content-between">
+                                <!-- Movie Card 9 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/chu-thuat-hoi-chien.webp" alt="Chú Thuật Hồi Chiến">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T13</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">CHÚ THUẬT HỒI CHIẾN: HOẠI NGỌC (T13)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Hoạt Hình, Hành Động" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "105'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Nhật Bản" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "JP" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">CHÚ THUẬT HỒI CHIẾN: HOẠI NGỌC (T13)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 10 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/pha-dam-sinh-nhat-me-poster.webp" alt="Phá Đám Sinh Nhật">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">T16</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">PHÁ ĐÁM SINH NHẬT MẸ (T16)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Hài, Gia Đình" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "95'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">PHÁ ĐÁM SINH NHẬT MẸ (T16)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 11 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/tay-anh-giu-mot-vi-sao-poster.webp" alt="Tay Anh Giữ Một Vì Sao">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">K</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">TAY ANH GIỮ MỘT VÌ SAO (K)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Gia Đình" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "90'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Việt Nam" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "VN" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">TAY ANH GIỮ MỘT VÌ SAO (K)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Movie Card 12 -->
+                                <div class="col-lg-3 col-md-6 col-sm-6 movie-card-col">
+                                    <div class="movie-card">
+                                        <div class="movie-poster">
+                                            <img src="~/image/movie/Copy_of_470x700.webp" alt="Những Lá Thư Của Yeon">
+                                            <div class="badge-container">
+                                                <div class="movie-type-badge">2D</div>
+                                                <div class="age-badge">P</div>
+                                            </div>
+                                            <div class="movie-info-overlay">
+                                                <h3 class="overlay-title">NHỮNG LÁ THƯ CỦA YEON (P)</h3>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
+                                                    <span>Genre Placeholder</span> <!-- Replace with actual genre, e.g., "Tình Cảm, Tâm Lý" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>
+                                                    <span>Duration Placeholder</span> <!-- Replace with actual duration, e.g., "110'" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>
+                                                    <span>Country Placeholder</span> <!-- Replace with actual country, e.g., "Hàn Quốc" -->
+                                                </div>
+                                                <div class="movie-info-item">
+                                                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" /></svg>
+                                                    <span>Language Placeholder</span> <!-- Replace with actual language, e.g., "KR" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="movie-date">Khởi Chiếu 31/10/2025</h4>
+                                        <h3 class="movie-title">NHỮNG LÁ THƯ CỦA YEON (P)</h3>
+                                        <div class="movie-actions">
+                                            <a href="#" class="btn-trailer">
+                                                <span class="play-icon">▶</span> Xem Trailer
+                                            </a>
+                                            <a href="#" class="btn-book">TÌM HIỂU THÊM</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-control-next" type="button" id="nextBtn3">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="carousel-dots" id="carouselDots3"></div>
+
+            <button class="btn-view-more">XEM THÊM</button>
+        </div>
+    </section>
 
 </div>
 
