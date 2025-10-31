@@ -1,4 +1,5 @@
 wwwroot\css\Admin\site.css
+wwwroot\css\bookTicket.css
 wwwroot\css\Customer\homeCustomer.css
 wwwroot\css\footer.css
 wwwroot\css\header.css
@@ -30,6 +31,7 @@ wwwroot\image\movie\tee-yod-sneak.webp
 wwwroot\image\movie\tro-choi-ao-giac-poster.webp
 wwwroot\image\VN.jpeg
 wwwroot\js\Admin\site.js
+wwwroot\js\bookTicket.js
 wwwroot\js\Customer\homeCustomer.js
 wwwroot\js\login.js
 wwwroot\js\site.js

@@ -1,7 +1,107 @@
 ﻿@section styles {
     <link href="~/css/movie.css" rel="stylesheet" />
+    <link href="~/css/bookTicket.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome-free-7.1.0-web/css/all.min.css" rel="stylesheet" />
 }
 <div class="container">
+    @* đặt vé *@
+    <div class="shtime-wr">
+        <div class="shtime-heading">
+            <h2 class="heading">LỊCH CHIẾU</h2>
+            <div class="selected-time">
+                <div class="box-time">
+                    <p class="date">
+                        30/10
+                    </p>
+                    <p class="day">
+                        Thứ Năm
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="shtime-body">
+            <h2 class="heading">DANH SÁCH RẠP</h2>
+            <div class="select-location">
+                <div class="location-selected">
+                    <i class="fas fa-location-dot" style="color: #ffffff;"></i>
+                    <span class="location-name">TIỀN GIANG</span>
+                    <span class="dropdown-arrow">&#9662;</span>
+                </div>
+                <div class="location-dropdown">
+                    <div class="location-option">Hồ Chí Minh</div>
+                    <div class="location-option">Đà Lạt</div>
+                    <div class="location-option">Bình Dương</div>
+                    <div class="location-option">Huế</div>
+                    <div class="location-option active">Tiền Giang</div>
+                    <div class="location-option">Kiên Giang</div>
+                    <div class="location-option">Lâm Đồng</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="shtime-fr">
+            <ul class="cinestar-list">
+                <li class="cinestar-item open">
+                    <div class="cinestar-heading">
+                        <h4 class="title">Cinestar Mỹ Tho (Tiền Giang)</h4>
+                        <span class="chevron">
+                            <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
+                        </span>
+                    </div>
+                    <div class="cinestar-body">
+                        <p class="address">Số 52 Đinh Bộ Lĩnh, Phường Mỹ Tho, Tỉnh Đồng Tháp</p>
+                        <ul class="list-infor">
+                            <li class="item-infor">
+                                <div class="tt">Standard</div>
+                                <ul class="list-time">
+                                    <li class="item-time">11:00</li>
+                                    <li class="item-time active">12:00</li>
+                                    <li class="item-time">13:20</li>
+                                    <li class="item-time">14:20</li>
+                                    <li class="item-time">15:40</li>
+                                    <li class="item-time">16:40</li>
+                                    <li class="item-time">18:00</li>
+                                    <li class="item-time">19:20</li>
+                                    <li class="item-time">21:20</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="ticket-wr">
+            <h2 class="heading">CHỌN LOẠI VÉ</h2>
+            <div class="ticket-container">
+                <div class="content">
+                    <div class="content-top">
+                        <p class="name">NGƯỜI LỚN</p>
+                        <div class="desc">
+                            <p>NẰM</p>
+                        </div>
+                        <div class="price">
+                            <p>99,000 VNĐ</p>
+                        </div>
+                    </div>
+
+                    <div class="content-bottom">
+                        <div class="count">
+                            <div class="count-btn">
+                                <button class="decrease">-</button>
+                                <span class="quantity">0</span>
+                                <button class="increase">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="~/js/bookTicket.js"></script>
+    </div>
+    @* end *@
+
         <h1>Chọn ghế - Rạp 03</h1>
         <div style="position: relative;">
             <img src="~/image/img-screen.png" class="screen"></img>
