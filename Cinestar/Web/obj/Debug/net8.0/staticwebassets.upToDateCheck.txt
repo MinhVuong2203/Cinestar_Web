@@ -6,6 +6,7 @@ wwwroot\css\login.css
 wwwroot\css\movie.css
 wwwroot\css\showtimes.css
 wwwroot\css\site.css
+wwwroot\data\vietnam_provinces.json
 wwwroot\favicon.ico
 wwwroot\image\cuc-vang-cua-ngoai-poster.webp
 wwwroot\image\dathongbao.webp

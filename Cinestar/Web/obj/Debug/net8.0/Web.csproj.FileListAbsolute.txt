@@ -686,3 +686,4 @@ D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\refint\Web
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.pdb
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.genruntimeconfig.cache
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\ref\Web.dll
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Scrutor.dll

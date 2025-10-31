@@ -55,6 +55,9 @@ public partial class CineStarContext : DbContext
             entity.HasKey(e => e.BranchID).HasName("PK__CinemaBr__A1682FA5D69D1A8A");
 
             entity.ToTable("CinemaBranch", tb => tb.HasTrigger("trg_CinemaBranch_Insert"));
+
+            entity.Property(e => e.CloseHour).HasDefaultValue(new TimeOnly(23, 0, 0));
+            entity.Property(e => e.OpenHour).HasDefaultValue(new TimeOnly(8, 0, 0));
         });
 
         modelBuilder.Entity<Customer>(entity =>

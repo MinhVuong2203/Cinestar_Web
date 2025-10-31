@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using Web.Attributes;
 
 namespace Web.Models;
 
@@ -15,15 +16,19 @@ public partial class CinemaBranch
     public string BranchID { get; set; } = null!;
 
     [StringLength(200)]
+    [Required(ErrorMessage = "Tên chi nhánh không được để trống")]
     public string BranchName { get; set; } = null!;
 
     [StringLength(255)]
+    [Required(ErrorMessage = "Địa chỉ không được để trống")]
     public string? Address { get; set; }
 
     [StringLength(100)]
+    [RequiredSelect(ErrorMessage = "Vui lòng chọn Tỉnh / Thành phố")]
     public string? City { get; set; }
 
     [StringLength(100)]
+    [RequiredSelect(ErrorMessage = "Vui lòng chọn Quận / Huyện")]
     public string? District { get; set; }
 
     [StringLength(20)]
@@ -32,9 +37,6 @@ public partial class CinemaBranch
 
     [StringLength(100)]
     public string? Email { get; set; }
-
-    [StringLength(100)]
-    public string? OpenHours { get; set; }
 
     [StringLength(255)]
     public string? MapUrl { get; set; }
@@ -45,6 +47,12 @@ public partial class CinemaBranch
     public string? Description { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    [Required(ErrorMessage = "Vui lòng chọn giờ mở cửa")]
+    public TimeOnly OpenHour { get; set; }
+
+    [Required(ErrorMessage = "Vui lòng chọn giờ đóng cửa")]
+    public TimeOnly CloseHour { get; set; }
 
     [InverseProperty("Branch")]
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();

@@ -1,0 +1,195 @@
+﻿@model Web.Models.CinemaBranch
+
+@{
+    ViewData["Title"] = "Thêm Chi nhánh";
+}
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <h2><i class="fas fa-plus"></i> Thêm Chi nhánh mới</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index">Quản lý Chi nhánh</a>
+                </li>
+                <li class="breadcrumb-item active">Thêm mới</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-building"></i> Thông tin Chi nhánh
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="BranchName" class="form-label">Tên chi nhánh</label>
+                            <input asp-for="BranchName" class="form-control" placeholder="Ví dụ: Cinestar Quốc Thanh" />
+                            <span asp-validation-for="BranchName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                            <input asp-for="Phone" class="form-control" placeholder="Ví dụ: 0901234567" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label">Thành phố</label>
+                            <select id="CitySelect" name="City" class="form-select">
+                                <option value="">-- Chọn Thành phố --</option>
+                            </select>
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="District" class="form-label">Huyện</label>
+                            <select id="DistrictSelect" name="District" class="form-select" disabled>
+                                <option value="">-- Chọn Quận/Huyện --</option>
+                            </select>
+                            <span asp-validation-for="District" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">Địa chỉ</label>
+                        <input asp-for="Address" class="form-control" placeholder="Ví dụ: 271 Nguyễn Trãi, Phường Nguyễn Cư Trinh" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" type="email" placeholder="branch@cinestar.com.vn" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="OpenHour" class="form-label">Giờ mở cửa</label>
+                            <input asp-for="OpenHour" type="time" class="form-control" />
+                            <span asp-validation-for="OpenHour" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="CloseHour" class="form-label">Giờ đóng cửa</label>
+                            <input asp-for="CloseHour" type="time" class="form-control" />
+                            <span asp-validation-for="CloseHour" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="MapUrl" class="form-label"></label>
+                        <input asp-for="MapUrl" class="form-control" placeholder="URL Google Maps" />
+                        <span asp-validation-for="MapUrl" class="text-danger"></span>
+                        <small class="form-text text-muted">
+                            Dán link Google Maps của chi nhánh
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label"></label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="URL hình ảnh" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"
+                                  placeholder="Mô tả về chi nhánh..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Hướng dẫn
+            </div>
+            <div class="card-body">
+                <h6><i class="fas fa-check-circle text-success"></i> Trường bắt buộc:</h6>
+                <ul>
+                    <li>Tên chi nhánh</li>
+                    <li>Thành phố</li>
+                    <li>Quận/Huyện</li>
+                    <li>Địa chỉ</li>
+                </ul>
+
+                <hr>
+
+                <h6><i class="fas fa-lightbulb text-warning"></i> Lưu ý:</h6>
+                <ul>
+                    <li>Mã chi nhánh sẽ tự động tạo</li>
+                    <li>Map URL: Lấy từ Google Maps</li>
+                    <li>Giờ mở cửa theo format: HH:mm - HH:mm</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $.validator.addMethod("requiredselect", function (value, element) {
+            return value && value !== "" && value !== "0" && !value.startsWith("--");
+        });
+        $.validator.unobtrusive.adapters.addBool("requiredselect");
+    </script>
+    <script>
+        $(document).ready(function () {
+            const citySelect = $('#CitySelect');
+            const districtSelect = $('#DistrictSelect');
+
+            // Tải dữ liệu JSON (provinces & districts)
+            $.getJSON('/data/vietnam_provinces.json', function (data) {
+                // Điền danh sách tỉnh/thành
+                data.forEach(function(province){
+                    citySelect.append(
+                        `<option value="${province.tentinhmoi}" data-index="${province.matinhBNV}">
+                            ${province.tentinhmoi}
+                         </option>`
+                    );
+                });
+
+                // Khi chọn tỉnh
+                citySelect.on('change', function () {
+                    const selectedCity = $(this).val();
+                    const province = data.find(p => p.tentinhmoi === selectedCity);
+                    districtSelect.empty(); // Xóa quận/huyện cũ
+                    districtSelect.append('<option value="">-- Chọn Quận/Huyện --</option>');
+
+                     if (province && province.phuongxa && province.phuongxa.length > 0) {
+                        province.phuongxa.forEach(function (ward) {
+                            districtSelect.append(
+                                `<option value="${ward.tenphuongxa}">${ward.tenphuongxa}</option>`
+                            );
+                        });
+                        districtSelect.prop('disabled', false);
+                    } else {
+                        districtSelect.prop('disabled', true);
+                    }
+                });
+            });
+        });
+    </script>
+}

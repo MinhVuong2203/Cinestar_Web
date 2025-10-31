@@ -13,22 +13,24 @@ CREATE TABLE CinemaBranch (
     District NVARCHAR(100),
     Phone VARCHAR(20),
     Email NVARCHAR(100),
-    OpenHours NVARCHAR(100),
+    OpenHour TIME NOT NULL DEFAULT '08:00',
+    CloseHour TIME NOT NULL DEFAULT '23:00',
     MapUrl NVARCHAR(255),
     ImageUrl NVARCHAR(255),
     Description NVARCHAR(MAX),
     IsDeleted BIT DEFAULT 0 NOT NULL
 );
+
 GO
 CREATE TRIGGER trg_CinemaBranch_Insert
 ON CinemaBranch
 INSTEAD OF INSERT
 AS
 BEGIN
-    INSERT INTO CinemaBranch (BranchID, BranchName, Address, City, District, Phone, Email, OpenHours, MapUrl, ImageUrl, Description, IsDeleted)
+    INSERT INTO CinemaBranch (BranchID, BranchName, Address, City, District, Phone, Email, OpenHour, CloseHour, MapUrl, ImageUrl, Description, IsDeleted)
     SELECT
         'BRH-' + UPPER(SUBSTRING(CONVERT(VARCHAR(40), NEWID()),1,5)),  -- BRH-XXXXX
-        BranchName, Address, City, District, Phone, Email, OpenHours, MapUrl, ImageUrl, Description, IsDeleted
+        BranchName, Address, City, District, Phone, Email, OpenHour, CloseHour, MapUrl, ImageUrl, Description, IsDeleted
     FROM inserted;
 END;
 GO

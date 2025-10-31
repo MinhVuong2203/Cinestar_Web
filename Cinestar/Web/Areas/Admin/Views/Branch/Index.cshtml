@@ -31,6 +31,7 @@
                         <th>Địa chỉ</th>
                         <th>Điện thoại</th>
                         <th>Giờ mở cửa</th>
+                        <th>Giờ đóng cửa</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
@@ -47,7 +48,8 @@
                                 <td>@item.District</td>
                                 <td>@item.Address</td>
                                 <td>@(item.Phone ?? "N/A")</td>
-                                <td>@item.OpenHours</td>
+                                <td>@item.OpenHour</td>
+                                <td>@item.CloseHour</td>
                                 <td>
                                     <div class="action-buttons">
                                         <a asp-action="Details" asp-route-id="@item.BranchID"
@@ -58,7 +60,7 @@
                                            class="btn btn-sm btn-warning" title="Sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form asp-action="Delete" asp-route-id="@item.BranchID"
+                                        <form asp-action="Delete" asp-route-BranchId="@item.BranchID"
                                               method="post" style="display:inline;"
                                               onsubmit="return confirmDelete('Bạn có chắc muốn xóa chi nhánh này?');">
                                             @Html.AntiForgeryToken()
@@ -69,9 +71,7 @@
                                     </div>
                                 </td>
                             </tr>
-                        }
-                
-                        
+                        }     
                     }
                 </tbody>
             </table>
@@ -87,7 +87,7 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
                 },
-                pageLength: 10,
+                pageLength: 2,
                 order: [[2, 'asc']], // Sort by City
                 columnDefs: [
                     { orderable: false, targets: 7 } // Disable sorting on Action column

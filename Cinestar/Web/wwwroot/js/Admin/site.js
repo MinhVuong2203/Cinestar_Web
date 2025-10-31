@@ -64,7 +64,7 @@ function initDataTable(tableId, options = {}) {
         language: {
             url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
         },
-        pageLength: 10,
+        pageLength: 2,
         responsive: true,
         ...options
     };

@@ -37,6 +37,19 @@ builder.Services.AddDbContext<CineStarContext>(options => options.UseSqlServer(b
 builder.Services.AddScoped<ICinemaBranchService, CinemaBranchService>();
 builder.Services.AddScoped<ILogin, Login>();
 
+
+
+// Đăng ký tất cả service trong namespace Web.Areas.Admin.Services
+var adminAssembly = typeof(Web.Areas.Admin.Controllers.HomeController).Assembly;
+
+builder.Services.Scan(scan => scan
+    .FromAssemblies(adminAssembly)
+        .AddClasses(classes => classes.InNamespaces("Web.Areas.Admin.Service"))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
+
+
+
 builder.Services.AddControllersWithViews(option =>
 {
     option.Filters.Add<LoadCinemaBranchesAttribute>();
