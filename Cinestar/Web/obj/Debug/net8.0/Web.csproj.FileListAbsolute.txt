@@ -561,6 +561,7 @@ D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Microsoft.
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Mono.TextTemplating.dll
+D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Scrutor.dll
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\System.ClientModel.dll
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\System.CodeDom.dll
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\System.Composition.AttributedModel.dll
@@ -686,4 +687,3 @@ D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\refint\Web
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.pdb
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.genruntimeconfig.cache
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\ref\Web.dll
-D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Scrutor.dll
