@@ -92,9 +92,9 @@
         <div class="shtime-body">
             <h2 class="heading">DANH SÁCH RẠP</h2>
             <div class="select-location">
-                <div class="location-selected">
+                <div class="location-selected" id="selected-branch">
                     <i class="fas fa-location-dot" style="color: #ffffff;"></i>
-                    <span class="location-name">TIỀN GIANG</span>
+                    <span class="location-name" id="selected-branch">TIỀN GIANG</span>
                     <span class="dropdown-arrow">&#9662;</span>
                 </div>
                 <div class="location-dropdown">
@@ -165,6 +165,33 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="sticky-bar" id="stickyBar">
+            <div class="movie-info">
+                <h3 class="movie-title1">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                <p class="cinema-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="cinemaName"> Cinestar Mỹ Tho (Tiền Giang)</span> | <span id="selectedSeatsDisplay">Chưa chọn ghế</span>
+                </p>
+            </div>
+            <div class="time-price">
+                <div class="time-section">
+                    <span class="time-label">
+                        <i class="fas fa-clock"></i>
+                        Thời gian giữ vé:
+                    </span>
+                    <div class="time-box" id="countdownTimer">05:00</div>
+                </div>
+                <div class="price-section">
+                    <span class="price-label">Tạm tính</span>
+                    <span class="price-amount" id="totalPrice">0 VNĐ</span>
+                </div>
+                <button class="book-btn1" id="bookBtn" disabled>
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>ĐẶT VÉ</span>
+                </button>
             </div>
         </div>
         <script src="~/js/bookTicket.js"></script>
@@ -651,24 +678,196 @@
                 }
             });
         }
+
+    // === STICKY BAR FUNCTIONALITY ===
+    const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
+    const seatCount = document.getElementById('seatCount');
+    const totalPrice = document.getElementById('totalPrice');
+    const bookButton = document.getElementById('bookBtn');
+    const countdownTimer = document.getElementById('countdownTimer');
+    const stickyBar = document.getElementById('stickyBar');
+
+    // Show sticky bar after page loads with class
+    setTimeout(function() {
+        if (stickyBar) {
+            stickyBar.classList.add('show');
+        }
+    }, 500);
+
+    // Countdown timer (5 minutes)
+    let timeLeft = 300;
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        if (countdownTimer) {
+            countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color when time is low (1 minute)
+            if (timeLeft <= 60) {
+                countdownTimer.classList.add('warning');
+            } else {
+                countdownTimer.classList.remove('warning');
+            }
+        }
+
+        if (timeLeft <= 0) {
+            alert('Thời gian giữ vé đã hết!');
+            // Reset selections
+            document.querySelectorAll('.seat.selected').forEach(seat => {
+                seat.classList.remove('selected');
+                const originalClass = seat.textContent.includes('P') || seat.textContent.includes('Q') || seat.textContent.includes('R') ? 'couple' : 'regular';
+                seat.classList.add(originalClass);
+            });
+            updateStickyBar();
+            timeLeft = 300; // Reset timer
+            if (countdownTimer) {
+                countdownTimer.classList.remove('warning');
+            }
+        }
+        timeLeft--;
+    }
+
+    // Start timer
+    setInterval(updateTimer, 1000);
+
+    // Update sticky
+    function updateStickyBar() {
+        const selectedSeats = document.querySelectorAll('.seat.selected');
+        const seatNames = Array.from(selectedSeats).map(seat => seat.textContent).sort();
+        const cinemaBranch = document.getElementById('selected-branch').textContent;
+
+   //      if (cinemaBranch) {
+   //          Update cinema branch display
+			// const cinemaInfo = document.querySelector('.cinema-info');
+			// if (cinemaInfo) cinemaInfo.textContent = "Cinema " + cinemaBranch;
+
+   //      }
+
+        // Update seat count
+        if (seatCount) seatCount.textContent = selectedSeats.length;
+
+        if (selectedSeats.length > 0) {
+            // Update selected seats display
+            if (selectedSeatsDisplay) selectedSeatsDisplay.textContent = seatNames.join(', ');
+
+            // Calculate total price
+            const total = selectedSeats.length * 99000; // 99,000 VND per seat
+            if (totalPrice) totalPrice.textContent = total.toLocaleString('vi-VN') + ' VNĐ';
+
+            // Enable book button
+            if (bookButton) {
+                bookButton.disabled = false;
+            }
+        } else {
+            // No seats selected
+            if (selectedSeatsDisplay) selectedSeatsDisplay.textContent = 'Chưa chọn ghế';
+            if (totalPrice) totalPrice.textContent = '0 VNĐ';
+
+            // Disable book button
+            if (bookButton) {
+                bookButton.disabled = true;
+            }
+        }
+    }
+
+    // Seat selection logic with animation
+    const seats = document.querySelectorAll('td.seat:not(.booked)');
+    seats.forEach(seat => {
+        seat.addEventListener('click', function () {
+            // Add click effect
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                // Restore original class
+                const originalClass = this.textContent.includes('P') || this.textContent.includes('Q') || this.textContent.includes('R') ? 'couple' : 'regular';
+                this.classList.add(originalClass);
+            } else {
+                this.classList.add('selected');
+                this.classList.remove('regular', 'couple');
+            }
+            updateStickyBar();
+        });
+
+        // Add hover effects
+        seat.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('booked')) {
+                this.style.transform = 'scale(1.05)';
+            }
+        });
+
+        seat.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.transform = 'scale(1)';
+            }
+        });
     });
 
-        const seats = document.querySelectorAll('td.seat:not(.booked)');
+    // Book button functionality
+    if (bookButton) {
+        bookButton.addEventListener('click', function () {
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            if (selectedSeats.length > 0) {
+                const seatNames = Array.from(selectedSeats).map(seat => seat.textContent);
+                const total = selectedSeats.length * 99000;
 
-        seats.forEach(seat => {
-            seat.addEventListener('click', function() {
-                if (this.classList.contains('selected')) {
-                    if (this.classList.contains('couple')) {
-                        this.classList.remove('selected');
-                        this.classList.add('couple');
-                    } else {
-                        this.classList.remove('selected');
-                        this.classList.add('regular');
-                    }
-                } else {
-                    this.classList.add('selected');
-                    this.classList.remove('regular', 'couple');
+                const confirmMessage = `Xác nhận đặt vé:\n\n` +
+                    `🎬 Phim: CỤC VÀNG CỦA NGOẠI (T13)\n` +
+                    `🏢 Rạp: Cinestar Mỹ Tho (Tiền Giang)\n` +
+                    `📅 Suất chiếu: 30/10 - Thứ Năm - 12:00\n` +
+                    `🪑 Ghế: ${seatNames.join(', ')}\n` +
+                    `💰 Tổng tiền: ${total.toLocaleString('vi-VN')} VNĐ\n\n` +
+                    `Bạn có muốn tiếp tục đặt vé?`;
+
+                if (confirm(confirmMessage)) {
+                    // Show loading effect
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang xử lý...</span>';
+                    this.disabled = true;
+
+                    setTimeout(() => {
+                        alert('🎉 Đặt vé thành công!\nChuyển đến trang thanh toán...');
+                        // window.location.href = '/Payment';
+
+                        // Reset for demo
+                        this.innerHTML = '<i class="fas fa-ticket-alt"></i><span>ĐẶT VÉ</span>';
+                        this.disabled = false;
+
+                        // Reset selections
+                        document.querySelectorAll('.seat.selected').forEach(seat => {
+                            seat.classList.remove('selected');
+                            const originalClass = seat.textContent.includes('P') || seat.textContent.includes('Q') || seat.textContent.includes('R') ? 'couple' : 'regular';
+                            seat.classList.add(originalClass);
+                        });
+                        updateStickyBar();
+                    }, 2000);
                 }
-            });
+            }
         });
+    }
+
+    // Initial update
+    updateStickyBar();
+    });
+
+        // const seats = document.querySelectorAll('td.seat:not(.booked)');
+
+        // seats.forEach(seat => {
+        //     seat.addEventListener('click', function() {
+        //         if (this.classList.contains('selected')) {
+        //             if (this.classList.contains('couple')) {
+        //                 this.classList.remove('selected');
+        //                 this.classList.add('couple');
+        //             } else {
+        //                 this.classList.remove('selected');
+        //                 this.classList.add('regular');
+        //             }
+        //         } else {
+        //             this.classList.add('selected');
+        //             this.classList.remove('regular', 'couple');
+        //         }
+        //     });
+        // });
 </script>

@@ -31,7 +31,6 @@ wwwroot\image\movie\tee-yod-sneak.webp
 wwwroot\image\movie\tro-choi-ao-giac-poster.webp
 wwwroot\image\VN.jpeg
 wwwroot\js\Admin\site.js
-wwwroot\js\bookTicket.js
 wwwroot\js\Customer\homeCustomer.js
 wwwroot\js\login.js
 wwwroot\js\site.js
@@ -5777,3 +5776,4 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\js\bookTicket.js

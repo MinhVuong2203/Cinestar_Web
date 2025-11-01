@@ -27,6 +27,38 @@
         });
     });
 
+    // Chọn rạp và cập nhật sticky bar
+    options.forEach(option => {
+        option.addEventListener('click', function () {
+            locationName.textContent = this.textContent;
+            options.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            dropdown.classList.remove('show');
+            dropdownArrow.style.transform = 'rotate(0deg)';
+
+            // Cập nhật sticky bar khi thay đổi location
+            updateCinemaInStickyBar(this.textContent);
+        });
+    });
+
+    // Function để cập nhật cinema name trong sticky bar
+    function updateCinemaInStickyBar(location) {
+        const cinemaName = document.getElementById('cinemaName');
+        if (cinemaName) {
+            const cinemaMapping = {
+                'Hồ Chí Minh': 'Cinestar Quốc Thanh (TPHCM)',
+                'Đà Lạt': 'Cinestar Đà Lạt (Lâm Đồng)',
+                'Bình Dương': 'Cinestar Bình Dương',
+                'Huế': 'Cinestar Huế',
+                'Tiền Giang': 'Cinestar Mỹ Tho (Tiền Giang)',
+                'Kiên Giang': 'Cinestar Kiên Giang',
+                'Lâm Đồng': 'Cinestar Lâm Đồng'
+            };
+
+            cinemaName.textContent = cinemaMapping[location] || 'Cinestar Mỹ Tho (Tiền Giang)';
+        }
+    }
+
     // Đóng dropdown khi click ra ngoài
     document.addEventListener('click', function (e) {
         if (!selected.contains(e.target) && !dropdown.contains(e.target)) {
