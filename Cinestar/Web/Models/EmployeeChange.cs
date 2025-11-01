@@ -12,7 +12,7 @@ public partial class EmployeeChange
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string ChangeID { get; set; } = null!;
+    public string ChangeID { get; set; } = string.Empty!;
 
     public Guid EmployeeID { get; set; }
 

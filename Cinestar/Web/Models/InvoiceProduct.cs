@@ -13,7 +13,7 @@ public partial class InvoiceProduct
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string InvoiceProductID { get; set; } = null!;
+    public string InvoiceProductID { get; set; } = string.Empty!;
 
     public Guid InvoiceID { get; set; }
 

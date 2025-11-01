@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Web.Attributes;
+//using Web.Attributes;
 
 namespace Web.Models;
 
@@ -13,7 +13,7 @@ public partial class CinemaBranch
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string BranchID { get; set; } = null!;
+    public string BranchID { get; set; } = string.Empty!;
 
     [StringLength(200)]
     [Required(ErrorMessage = "Tên chi nhánh không được để trống")]
@@ -24,11 +24,11 @@ public partial class CinemaBranch
     public string? Address { get; set; }
 
     [StringLength(100)]
-    [RequiredSelect(ErrorMessage = "Vui lòng chọn Tỉnh / Thành phố")]
+    [Required(ErrorMessage = "Vui lòng chọn Tỉnh / Thành phố")]
     public string? City { get; set; }
 
     [StringLength(100)]
-    [RequiredSelect(ErrorMessage = "Vui lòng chọn Quận / Huyện")]
+    [Required(ErrorMessage = "Vui lòng chọn Quận / Huyện")]
     public string? District { get; set; }
 
     [StringLength(20)]
@@ -36,6 +36,7 @@ public partial class CinemaBranch
     public string? Phone { get; set; }
 
     [StringLength(100)]
+    [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
     public string? Email { get; set; }
 
     [StringLength(255)]

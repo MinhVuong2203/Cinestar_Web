@@ -12,7 +12,7 @@ public partial class ShowTime
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string ShowTimeID { get; set; } = null!;
+    public string ShowTimeID { get; set; } = string.Empty!;
 
     [Column(TypeName = "datetime")]
     public DateTime StartTime { get; set; }

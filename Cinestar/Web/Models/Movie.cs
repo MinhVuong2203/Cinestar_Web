@@ -12,7 +12,7 @@ public partial class Movie
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string MovieID { get; set; } = null!;
+    public string MovieID { get; set; } = string.Empty!;
 
     [StringLength(200)]
     public string Title { get; set; } = null!;
