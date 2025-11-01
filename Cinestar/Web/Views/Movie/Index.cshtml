@@ -4,6 +4,75 @@
     <link href="~/lib/fontawesome-free-7.1.0-web/css/all.min.css" rel="stylesheet" />
 }
 <div class="container">
+    @* thông tin phim*@
+    <div class="movie-detail-container">
+        <div class="movie-content">
+            <!-- Poster Section -->
+            <div class="movie-poster">
+                <div class="type-badge">2D</div>
+                <div class="age-rating">T13</div>
+                <img src="~/image/cuc-vang-cua-ngoai-poster.webp" alt="Cục Vàng Của Ngoại">
+            </div>
+
+            <!-- Info Section -->
+            <div class="movie-info">
+                <h1 class="movie-title">CỤC VÀNG CỦA NGOẠI (T13)</h1>
+
+                <div class="movie-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-home"></i>
+                        <span>Gia đình, Tâm Lý</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="far fa-clock"></i>
+                        <span>119'</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-flag"></i>
+                        <span>Việt Nam</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-closed-captioning"></i>
+                        <span>VN</span>
+                    </div>
+                    <div class="meta-item age-restriction">
+                        <i class="fas fa-user-friends"></i>
+                        <span>T13: Phim dành cho khán giả từ đủ 13 tuổi trở lên (13+)</span>
+                    </div>
+                </div>
+
+                <div class="movie-section">
+                    <h2 class="section-title">MÔ TẢ</h2>
+                    <div class="description-grid">
+                        <div class="desc-item">
+                            <strong>Đạo diễn:</strong> Khương Ngọc
+                        </div>
+                        <div class="desc-item">
+                            <strong>Diễn viên:</strong> Việt Hương, Hồng Đào, Lê Khánh, Bằng Di, Lâm Thanh Mỹ, Hữu Châu, Tuấn Khải, Thu Đan, Panda
+                        </div>
+                        <div class="desc-item">
+                            <strong>Khởi chiếu:</strong> Thứ Sáu, 17/10/2025
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-section">
+                    <h2 class="section-title">NỘI DUNG PHIM</h2>
+                    <div class="movie-synopsis">
+                        <p class="synopsis-text">
+                            Lấy cảm hứng từ những ký ức tuổi thơ ngoài ngọa, "Cục Vàng Của Ngoại" mang đến câu chuyện ấm áp về tình bà cháu trong một xóm nhỏ chân chùa nghĩa tình. Bà Hậu - người phụ nữ cả đời tần tảo, nay trở thành chỗ dựa duy nhất của cháu ngoại khi con gái bỏ đi. Dẫu cuộc sống còn nhiều nhọc nhằn, tình thương bà dành cho cháu vẫn luôn tròn ven. Với bà, cháu là "cục vàng" - niềm vui, niềm an ủi và cũng là lẽ sống của đời mình. Bộ phim như những dấn khán giả trở lại những khoảnh khắc<span class="ellipsis">...</span>
+                            <span class="synopsis-more hidden">quen thuộc nơi xóm nhỏ: nụ cười hồn nhiên của cháu, vòng tay chở che của bà và sự đùm bọc từ hàng xóm láng giềng. Tất cả cùng hòa thành một bức tranh đời thường ấm áp, gợi nhắc về tuổi thơ bình yên và tình người mộc mạc, chân thành</span> <span class="read-more">Xem thêm</span>
+                        </p>
+                    </div>
+                </div>
+
+                <a href="#" class="btn-cta btn-yellow btn-hover-purple btn-text-dark btn-text-hover-light btn-lg">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Xem Trailer</span>
+                </a>
+            </div>
+        </div>
+    </div>
     @* đặt vé *@
     <div class="shtime-wr">
         <div class="shtime-heading">
@@ -562,6 +631,28 @@
     </div>
 
 <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const readMoreBtn = document.querySelector('.read-more');
+        const synopsisMore = document.querySelector('.synopsis-more');
+        const ellipsis = document.querySelector('.ellipsis');
+
+        if (readMoreBtn && synopsisMore && ellipsis) {
+            readMoreBtn.addEventListener('click', function() {
+                if (synopsisMore.classList.contains('hidden')) {
+                    // Hiện nội dung đầy đủ, ẩn dấu ba chấm
+                    synopsisMore.classList.remove('hidden');
+                    ellipsis.classList.add('hidden');
+                    readMoreBtn.textContent = 'Thu gọn';
+                } else {
+                    // Ẩn nội dung, hiện lại dấu ba chấm
+                    synopsisMore.classList.add('hidden');
+                    ellipsis.classList.remove('hidden');
+                    readMoreBtn.textContent = 'Xem thêm';
+                }
+            });
+        }
+    });
+
         const seats = document.querySelectorAll('td.seat:not(.booked)');
 
         seats.forEach(seat => {
