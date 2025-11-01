@@ -12,6 +12,13 @@ namespace Web.Areas.Admin.Service
             this._context = context;
         }
 
+        public async Task<CinemaBranch> GetCinemaBranch(string Id)
+        {
+            var branch = await _context.CinemaBranches
+                .FirstOrDefaultAsync(b => b.BranchID == Id && !b.IsDeleted);
+            return branch;
+        }
+
         // read
         public async Task<List<CinemaBranch>> GetCinemaBranches()
         {
@@ -30,6 +37,19 @@ namespace Web.Areas.Admin.Service
             await _context.SaveChangesAsync();
         }
 
+        public async Task EditBranch(CinemaBranch branch)
+        {
+            try
+            {
+                _context.Update(branch);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         // delete
         public async Task DeteleBranch(string branchId)
         {
@@ -41,6 +61,7 @@ namespace Web.Areas.Admin.Service
             }
            
         }
+
 
     }
 }

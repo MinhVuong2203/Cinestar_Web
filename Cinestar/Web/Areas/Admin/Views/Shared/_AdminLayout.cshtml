@@ -38,9 +38,13 @@
                     </a>
                 </li>
                 <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Movie" ? "active" : "")">
-                    <a asp-area="Admin" asp-controller="Movie" asp-action="Index">
+                    <a href="#movieSubmenu" data-bs-toggle="collapse" aria-expanded="false">
                         <i class="fas fa-video"></i> Quản lý Phim
                     </a>
+                    <ul class="collapse list-unstyled" id="movieSubmenu">
+                        <li><a asp-area="Admin" asp-controller="Movie" asp-action="Index">Phim 1</a></li>
+                        <li><a asp-area="Admin" asp-controller="Movie" asp-action="">Phim 2</a></li>
+                    </ul>
                 </li>
                 <li>
                     <a href="#roomSubmenu" data-bs-toggle="collapse" aria-expanded="false">

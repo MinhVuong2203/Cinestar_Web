@@ -31,16 +31,87 @@ namespace Web.Areas.Admin.Controllers
         // POST: /Admin/Branch/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CinemaBranch branch)
+        public async Task<IActionResult> Create(CinemaBranch branch, IFormFile ImageFile)
         {
-    
+            if (branch.OpenHour != null && branch.CloseHour != null)
+            {
+                TimeSpan duration = branch.CloseHour.ToTimeSpan() - branch.OpenHour.ToTimeSpan();
+
+                if (duration.TotalHours <= 0)
+                {
+                    ModelState.AddModelError(nameof(branch.CloseHour), "Giờ đóng cửa phải lớn hơn giờ mở cửa");
+                }
+                else if (duration.TotalHours < 1)
+                {
+                    ModelState.AddModelError(nameof(branch.CloseHour), "Rạp phải mở cửa ít nhất 1 tiếng");
+                }
+            }
+            // ✅ Nếu có lỗi, render lại View (giữ nguyên dữ liệu nhập)
+            if (!ModelState.IsValid)
+            {
+                return View(branch);
+            }
+            ModelState.Clear();
+            // --- Xử lý upload file ---
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var fileName = Path.GetFileName(ImageFile.FileName);
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/image/branches");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+                var filePath = Path.Combine(folderPath, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ImageFile.CopyToAsync(stream);
+                }
+                branch.ImageUrl = fileName;
+            }
+            await _branchService.CreateCinemaBranch(branch);
+            TempData["Success"] = "Thêm chi nhánh thành công!";
+            return RedirectToAction(nameof(Index)); 
+        }
+
+
+        // GET: /Admin/Branch/Edit/5
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var branch = await _branchService.GetCinemaBranch(id);
+
+            if (branch == null)
+            {
+                return NotFound();
+            }
+            return View(branch);
+        }
+
+        // POST: /Admin/Branch/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, CinemaBranch branch)
+        {
+            if (id != branch.BranchID)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                await _branchService.CreateCinemaBranch(branch);
-                TempData["Success"] = "Thêm chi nhánh thành công!";
+                try
+                {
+                    await _branchService.EditBranch(branch);
+                    TempData["Success"] = "Cập nhật chi nhánh thành công!";
+                }
+                catch (DbUpdateConcurrencyException)
+                {   
+                    return NotFound();
+                }
                 return RedirectToAction(nameof(Index));
             }
-            TempData["Error"] = "Đã xảy ra lỗi!";
             return View(branch);
         }
 

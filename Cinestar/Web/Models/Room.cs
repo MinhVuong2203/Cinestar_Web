@@ -13,7 +13,7 @@ public partial class Room
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string RoomID { get; set; } = null!;
+    public string RoomID { get; set; } = string.Empty!;
 
     [StringLength(100)]
     public string RoomName { get; set; } = null!;

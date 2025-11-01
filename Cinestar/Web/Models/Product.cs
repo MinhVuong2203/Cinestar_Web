@@ -12,7 +12,7 @@ public partial class Product
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string ProductID { get; set; } = null!;
+    public string ProductID { get; set; } = string.Empty!;
 
     [StringLength(100)]
     public string ProductName { get; set; } = null!;

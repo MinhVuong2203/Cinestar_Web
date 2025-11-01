@@ -13,7 +13,7 @@ public partial class Seat
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string SeatID { get; set; } = null!;
+    public string SeatID { get; set; } = string.Empty!;
 
     [StringLength(50)]
     public string SeatName { get; set; } = null!;

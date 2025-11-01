@@ -14,7 +14,7 @@ namespace Web.Service
         public List<CinemaBranch> GetBranches()
         {
             try {
-                return _context.CinemaBranches.AsNoTracking().ToList();
+                return _context.CinemaBranches.Where(b => !b.IsDeleted).AsNoTracking().ToList();
             }
             catch { 
                 return new List<CinemaBranch>();

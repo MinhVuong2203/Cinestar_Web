@@ -12,7 +12,7 @@ public partial class WorkShift
     [Key]
     [StringLength(10)]
     [Unicode(false)]
-    public string ShiftID { get; set; } = null!;
+    public string ShiftID { get; set; } = string.Empty!;
 
     public Guid EmployeeID { get; set; }
 

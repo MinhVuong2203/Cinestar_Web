@@ -9,6 +9,7 @@ wwwroot\css\showtimes.css
 wwwroot\css\site.css
 wwwroot\data\vietnam_provinces.json
 wwwroot\favicon.ico
+wwwroot\image\branches\BDF rạp phim-Trang-1.jpg
 wwwroot\image\cuc-vang-cua-ngoai-poster.webp
 wwwroot\image\dathongbao.webp
 wwwroot\image\header-logo.webp

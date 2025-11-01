@@ -514,6 +514,7 @@ D:\code\nam3\web\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\refint\Web.dll
 D:\code\nam3\web\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.pdb
 D:\code\nam3\web\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.genruntimeconfig.cache
 D:\code\nam3\web\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\ref\Web.dll
+C:\Users\PC\OneDrive\Máy tính\WebBTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Scrutor.dll
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\appsettings.Development.json
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\appsettings.json
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Web.staticwebassets.runtime.json
@@ -687,4 +688,3 @@ D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\refint\Web
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.pdb
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\Web.genruntimeconfig.cache
 D:\DAI HOC\LapTrinhWeb\BTL\Cinestar_Web\Cinestar\Web\obj\Debug\net8.0\ref\Web.dll
-C:\Users\PC\OneDrive\Máy tính\WebBTL\Cinestar_Web\Cinestar\Web\bin\Debug\net8.0\Scrutor.dll
