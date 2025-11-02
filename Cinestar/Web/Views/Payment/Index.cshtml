@@ -1,8 +1,132 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@section Styles {
+    <link rel="stylesheet" href="~/css/payment/payment.css" />
 }
-<div>
-	<h1>Payment Index Page</h1>
+
+<div class="container">
+    <h1 class="page-title">TRANG THANH TOÁN</h1>
+
+    @* Hiển thị thông báo lỗi *@
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+            <strong>Lỗi:</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" onclick="this.parentElement.style.display='none'" style="float: right; background: none; border: none; font-size: 18px; cursor: pointer;">&times;</button>
+        </div>
+    }
+
+    @* Hiển thị thông báo thành công *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: #d4edda; border-color: #c3e6cb; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+            <strong>Thành công:</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" onclick="this.parentElement.style.display='none'" style="float: right; background: none; border: none; font-size: 18px; cursor: pointer;">&times;</button>
+        </div>
+    }
+
+    <div class="payment-steps">
+        <div class="step active">
+            <span class="step-number">1</span>
+            <span class="step-title">THÔNG TIN KHÁCH HÀNG</span>
+        </div>
+        <div class="step">
+            <span class="step-number">2</span>
+            <span class="step-title">THANH TOÁN</span>
+        </div>
+        <div class="step">
+            <span class="step-number">3</span>
+            <span class="step-title">THÔNG TIN VÉ PHIM</span>
+        </div>
+    </div>
+
+    <div class="payment-content">
+        <div class="payment-form">
+            <form asp-controller="Payment" asp-action="PaymentMethod" method="post">
+                <div class="form-group">
+                    <label for="fullname">Họ và tên <span class="required">*</span></label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Họ và tên" required>
+                    <span class="validation-message" id="fullname-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số điện thoại <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="Số điện thoại" required>
+                    <span class="validation-message" id="phone-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                    <span class="validation-message" id="email-error"></span>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="age-confirm" name="ageConfirm" value="true" required>
+                        <input type="hidden" name="ageConfirm" value="false">
+                        Đảm bảo mua vé đúng số tuổi quy định.
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="terms" name="terms" value="true" required>
+                        <input type="hidden" name="terms" value="false">
+                        Đồng ý với <a href="#" class="terms-link"> điều khoản của Cinestar</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="continue-btn">TIẾP TỤC</button>
+            </form>
+        </div>
+
+        <div class="ticket-info">
+            <div class="movie-header">
+                <h3>CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                <span class="time-remaining">THỜI GIAN GIỮ VÉ: <span class="countdown">03:50</span></span>
+            </div>
+
+            <p class="age-restriction">Phim dành cho khán giả từ đủ 13 tuổi trở lên (13+)</p>
+
+            <div class="cinema-info">
+                <h4>Cinestar Satra Quận 6 (TP.HCM)</h4>
+                <p>Tầng 6, TTTM Satra Võ Văn Kiệt, 1468 Võ Văn Kiệt, Phường 1, Quận 6, TP.HCM</p>
+            </div>
+
+            <div class="showtime-info">
+                <div class="showtime-label">Thời gian</div>
+                <div class="showtime-value">14:10 Thứ Hai 03/11/2025</div>
+            </div>
+
+            <div class="ticket-details">
+                <div class="detail-row">
+                    <span class="label">Phòng chiếu</span>
+                    <span class="value">03</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Số vé</span>
+                    <span class="value">1</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Loại vé</span>
+                    <span class="value">Người Lớn</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Loại ghế</span>
+                    <span class="value">Số ghế</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Ghế Thường</span>
+                    <span class="value">A04</span>
+                </div>
+            </div>
+
+            <div class="food-section">
+                <div class="food-label">Bắp nước</div>
+            </div>
+
+            <div class="total-amount">
+                <div class="total-label">SỐ TIỀN CẦN THANH TOÁN</div>
+                <div class="total-price">45,000VND</div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="~/js/payment/payment.js"></script>

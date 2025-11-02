@@ -1,0 +1,108 @@
+﻿@section Styles {
+    @* <link rel="stylesheet" href="~/css/payment/payment.css" /> *@
+    <link rel="stylesheet" href="~/css/payment/paymentMethod.css" />
+}
+
+<div class="container">
+    <h1 class="page-title">TRANG THANH TOÁN</h1>
+
+    <div class="payment-steps">
+        <div class="step completed">
+            <span class="step-number">1</span>
+            <span class="step-title">THÔNG TIN KHÁCH HÀNG</span>
+        </div>
+        <div class="step active">
+            <span class="step-number">2</span>
+            <span class="step-title">THANH TOÁN</span>
+        </div>
+        <div class="step">
+            <span class="step-number">3</span>
+            <span class="step-title">THÔNG TIN VÉ PHIM</span>
+        </div>
+    </div>
+
+    <div class="payment-content">
+        <div class="payment-methods">
+            <h2>Chọn phương thức thanh toán</h2>
+
+            <div class="method-option" onclick="selectPaymentMethod('momo')">
+                <div class="method-info">
+                    <div class="method-icon momo-icon">
+                        <span>M</span>
+                    </div>
+                    <div class="method-details">
+                        <h3>Thanh toán qua MoMo</h3>
+                        <p>Quét mã QR hoặc chuyển khoản qua ví MoMo</p>
+                    </div>
+                </div>
+                <div class="method-arrow">›</div>
+            </div>
+
+            <div class="discount-section">
+                <div class="discount-option">
+                    <span class="discount-icon">🏷️</span>
+                    <span class="discount-text">Chọn hoặc nhập mã giảm giá</span>
+                </div>
+                <p class="discount-note">Bạn đang có mã giảm giá</p>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="back-btn" onclick="goBack()">QUAY LẠI</button>
+                <button type="button" class="pay-btn" id="payBtn" onclick="proceedPayment()" disabled>THANH TOÁN</button>
+            </div>
+        </div>
+
+        <div class="ticket-info">
+            <div class="movie-header">
+                <h3 id="movieTitle">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                <span class="time-remaining">THỜI GIAN GIỮ VÉ: <span class="countdown" id="countdown">03:50</span></span>
+            </div>
+
+            <p class="age-restriction">Phim dành cho khán giả từ đủ 13 tuổi trở lên (13+)</p>
+
+            <div class="cinema-info">
+                <h4 id="cinemaName">Cinestar Satra Quận 6 (TP.HCM)</h4>
+                <p>Tầng 6, TTTM Satra Võ Văn Kiệt, 1468 Võ Văn Kiệt, Phường 1, Quận 6, TP.HCM</p>
+            </div>
+
+            <div class="showtime-info">
+                <div class="showtime-label">Thời gian</div>
+                <div class="showtime-value" id="showtime">14:10 Thứ Hai 03/11/2025</div>
+            </div>
+
+            <div class="ticket-details">
+                <div class="detail-row">
+                    <span class="label">Phòng chiếu</span>
+                    <span class="value" id="room">03</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Số vé</span>
+                    <span class="value" id="quantity">1</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Loại vé</span>
+                    <span class="value" id="ticketType">Người Lớn</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Số ghế</span>
+                    <span class="value" id="seat">A04</span>
+                </div>
+            </div>
+
+            <div class="food-section">
+                <div class="food-label">Bắp nước</div>
+            </div>
+
+            <div class="total-amount">
+                <div class="total-label">SỐ TIỀN CẦN THANH TOÁN</div>
+                <div class="total-price" id="totalAmount">45,000VND</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Truyền dữ liệu từ server xuống JavaScript *@
+<script>
+    window.serverCustomerInfo = @Html.Raw(TempData["CustomerInfo"] ?? "null");
+</script>
+<script src="~/js/payment/paymentMethod.js"></script>

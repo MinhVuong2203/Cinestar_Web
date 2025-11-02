@@ -1,0 +1,305 @@
+﻿
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-align: left;
+    color: white;
+}
+
+.payment-steps {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 40px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+/*    opacity: 0.6;*/
+    color: white;
+}
+
+    .step.active {
+        opacity: 1;
+        color: #ffd700;
+    }
+
+    .step.completed {
+        opacity: 1;
+        color: #28a745;
+    }
+
+.step-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.step-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.payment-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.payment-methods {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+    .payment-methods h2 {
+        margin-bottom: 25px;
+        font-size: 1.3rem;
+    }
+
+.method-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .method-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #ffd700;
+    }
+
+    .method-option.selected {
+        background: rgba(255, 215, 0, 0.1);
+        border-color: #ffd700;
+    }
+
+.method-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.method-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.momo-icon {
+    background: #d82d8b;
+    color: white;
+}
+
+.method-details h3 {
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.method-details p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.method-arrow {
+    font-size: 1.5rem;
+    color: #ffd700;
+}
+
+.discount-section {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(74, 111, 165, 0.3);
+    border-radius: 8px;
+    border: 1px dashed rgba(255, 215, 0, 0.5);
+}
+
+.discount-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.discount-note {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.back-btn, .pay-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.back-btn {
+    background: #6c757d;
+    color: white;
+}
+
+    .back-btn:hover {
+        background: #545b62;
+    }
+
+.pay-btn {
+    background: #ffd700;
+    color: #333;
+}
+
+    .pay-btn:hover:not(:disabled) {
+        background: #ffed4e;
+    }
+
+    .pay-btn:disabled {
+        background: #666;
+        color: #999;
+        cursor: not-allowed;
+    }
+
+.ticket-info {
+    background: #4a6fa5;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.movie-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .movie-header h3 {
+        font-size: 1.2rem;
+        color: #ffd700;
+    }
+
+.time-remaining {
+    font-size: 0.9rem;
+}
+
+.countdown {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.age-restriction {
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.cinema-info h4 {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.cinema-info p {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.showtime-info {
+    margin-bottom: 20px;
+}
+
+.showtime-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.showtime-value {
+    font-size: 1.1rem;
+}
+
+.ticket-details {
+    margin-bottom: 20px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+    .detail-row .label {
+        color: #ffd700;
+    }
+
+.food-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.food-label {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.total-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.total-label {
+    font-size: 0.9rem;
+}
+
+.total-price {
+    font-size: 1.5rem;
+    color: #ffd700;
+}
+
+@media (max-width: 768px) {
+    .payment-content {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-steps {
+        gap: 30px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}
