@@ -408,3 +408,189 @@ td.booked {
     .legend-box.booked {
         background: #6c757d;
     }
+
+/*food section*/
+/* ==========================================
+   BẮP NƯỚC (CÁC LOẠI XẾP THÀNH HÀNG)
+   ========================================== */
+
+.food-section {
+    background-color: #0a192f; /* Nền xanh đậm */
+    color: #fff;
+}
+
+    .food-section .section-title {
+        color: #fff;
+        font-size: 36px;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        padding-top: 130px;
+    }
+
+/* Thanh danh mục */
+.category-nav {
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    position: sticky;
+    top: 0;
+    background-color: #0a192f;
+    z-index: 100;
+}
+
+.category-link {
+    color: #a8b2d1; /* Màu xám nhạt */
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px;
+    margin: 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .category-link:hover {
+        color: #ffc107;
+    }
+
+    .category-link.active {
+        color: #ffc107;
+    }
+
+        .category-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px; /* Đặt viền ngay dưới thanh */
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #ffc107;
+        }
+
+/* Dòng sản phẩm */
+.product-category {
+    padding: 40px 0;
+}
+
+.category-title {
+    color: #ffc107;
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Thẻ sản phẩm */
+.product-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        border-color: #ffc107;
+    }
+
+.product-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #e6f1ff;
+}
+
+.product-info {
+    font-size: 14px;
+    color: #a8b2d1;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffc107;
+    margin-bottom: 15px;
+}
+
+/* Điều khiển số lượng */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+}
+
+.qty-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .qty-btn:hover {
+        background-color: #ffc107;
+        color: #333;
+    }
+
+.qty-value {
+    margin: 0 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Responsive cho Bắp Nước */
+@media (max-width: 768px) {
+    .food-section .section-title {
+        font-size: 28px;
+    }
+
+    .category-link {
+        font-size: 14px;
+        padding: 8px 15px;
+        margin: 0 5px;
+    }
+
+    .product-img {
+        height: 150px;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    .product-name {
+        font-size: 16px;
+    }
+
+    .product-price {
+        font-size: 18px;
+    }
+}
