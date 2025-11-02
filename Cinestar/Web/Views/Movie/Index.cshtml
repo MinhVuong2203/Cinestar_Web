@@ -1060,44 +1060,18 @@
 
     // Book button functionality
     if (bookButton) {
-        bookButton.addEventListener('click', function () {
-            const selectedSeats = document.querySelectorAll('.seat.selected');
-            if (selectedSeats.length > 0) {
-                const seatNames = Array.from(selectedSeats).map(seat => seat.textContent);
-                const total = selectedSeats.length * 99000;
+         bookButton.addEventListener('click', function (e) {
+             e.preventDefault();
 
-                const confirmMessage = `Xác nhận đặt vé:\n\n` +
-                    `🎬 Phim: CỤC VÀNG CỦA NGOẠI (T13)\n` +
-                    `🏢 Rạp: Cinestar Mỹ Tho (Tiền Giang)\n` +
-                    `📅 Suất chiếu: 30/10 - Thứ Năm - 12:00\n` +
-                    `🪑 Ghế: ${seatNames.join(', ')}\n` +
-                    `💰 Tổng tiền: ${total.toLocaleString('vi-VN')} VNĐ\n\n` +
-                    `Bạn có muốn tiếp tục đặt vé?`;
+             const selectedSeats = document.querySelectorAll('.seat.selected');
 
-                if (confirm(confirmMessage)) {
-                    // Show loading effect
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang xử lý...</span>';
-                    this.disabled = true;
+             if (selectedSeats.length === 0) {
+                 alert('Vui lòng chọn ghế trước khi đặt vé!');
+                 return;
+             }
 
-                    setTimeout(() => {
-                        alert('🎉 Đặt vé thành công!\nChuyển đến trang thanh toán...');
-                        // window.location.href = '/Payment';
-
-                        // Reset for demo
-                        this.innerHTML = '<i class="fas fa-ticket-alt"></i><span>ĐẶT VÉ</span>';
-                        this.disabled = false;
-
-                        // Reset selections
-                        document.querySelectorAll('.seat.selected').forEach(seat => {
-                            seat.classList.remove('selected');
-                            const originalClass = seat.textContent.includes('P') || seat.textContent.includes('Q') || seat.textContent.includes('R') ? 'couple' : 'regular';
-                            seat.classList.add(originalClass);
-                        });
-                        updateStickyBar();
-                    }, 2000);
-                }
-            }
-        });
+             window.location.href = '/Payment/Index';
+         });
     }
 
     // Initial update

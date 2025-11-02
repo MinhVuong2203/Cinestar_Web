@@ -16,17 +16,6 @@
         }
     });
 
-    // Chọn rạp
-    options.forEach(option => {
-        option.addEventListener('click', function () {
-            locationName.textContent = this.textContent;
-            options.forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
-            dropdown.classList.remove('show');
-            dropdownArrow.style.transform = 'rotate(0deg)';
-        });
-    });
-
     // Chọn rạp và cập nhật sticky bar
     options.forEach(option => {
         option.addEventListener('click', function () {
