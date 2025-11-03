@@ -1,0 +1,165 @@
+﻿@model IEnumerable<Web.Models.Movie>
+
+@{
+    ViewData["Title"] = "Quản Lý Phim";
+}
+
+<link rel="stylesheet" href="~/css/Admin/Movie.css" />
+
+<div class="movie-container">
+    <div class="movie-header">
+        <h1>
+            <i class="fas fa-film"></i> Quản Lý Phim
+        </h1>
+        <a asp-action="Create" class="btn btn-create">
+            <i class="fas fa-plus"></i> Thêm Phim Mới
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+        </div>
+    }
+
+    <div class="movie-search">
+        <input type="text" id="searchInput" placeholder="Tìm kiếm phim theo tên, thể loại..." />
+        <i class="fas fa-search"></i>
+    </div>
+
+    <div class="movie-grid">
+        @foreach (var movie in Model)
+        {
+            <div class="movie-card @(movie.IsDeleted ? "deleted" : "")" data-title="@movie.Title.ToLower()" data-genre="@movie.Genre?.ToLower()">
+                <div class="movie-image">
+                    @if (!string.IsNullOrEmpty(movie.ImageUrl))
+                    {
+                        <img src="@movie.ImageUrl" alt="@movie.Title" />
+                    }
+                    else
+                    {
+                        <div class="no-image">
+                            <i class="fas fa-film"></i>
+                        </div>
+                    }
+                    @if (movie.IsDeleted)
+                    {
+                        <div class="deleted-badge">
+                            <i class="fas fa-trash"></i> Đã xóa
+                        </div>
+                    }
+                </div>
+
+                <div class="movie-content">
+                    <h3 class="movie-title">@movie.Title</h3>
+
+                    <div class="movie-info">
+                        <span class="info-item">
+                            <i class="fas fa-clock"></i> @movie.DurationMinutes phút
+                        </span>
+                        @if (!string.IsNullOrEmpty(movie.Genre))
+                        {
+                            <span class="info-item">
+                                <i class="fas fa-masks-theater"></i> @movie.Genre
+                            </span>
+                        }
+                    </div>
+
+                    <div class="movie-meta">
+                        @if (!string.IsNullOrEmpty(movie.Language))
+                        {
+                            <span class="meta-badge">
+                                <i class="fas fa-language"></i> @movie.Language
+                            </span>
+                        }
+                        @if (!string.IsNullOrEmpty(movie.AgeLimit))
+                        {
+                            <span class="meta-badge age-limit">@movie.AgeLimit</span>
+                        }
+                    </div>
+
+                    <div class="movie-dates">
+                        @if (movie.StartTime.HasValue)
+                        {
+                            <div class="date-item">
+                                <span class="date-label">Khởi chiếu:</span>
+                                <span class="date-value">@movie.StartTime.Value.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        }
+                        @if (movie.EndTime.HasValue)
+                        {
+                            <div class="date-item">
+                                <span class="date-label">Kết thúc:</span>
+                                <span class="date-value">@movie.EndTime.Value.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="movie-actions">
+                        <a asp-action="Details" asp-route-id="@movie.MovieID" class="btn btn-details" title="Chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@movie.MovieID" class="btn btn-edit" title="Sửa">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        @if (!movie.IsDeleted)
+                        {
+                            <a asp-action="Delete" asp-route-id="@movie.MovieID" class="btn btn-delete" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <form asp-action="Restore" asp-route-id="@movie.MovieID" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-restore" title="Khôi phục">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="fas fa-film"></i>
+            <h3>Chưa có phim nào</h3>
+            <p>Bắt đầu bằng cách thêm phim mới</p>
+            <a asp-action="Create" class="btn btn-create">
+                <i class="fas fa-plus"></i> Thêm Phim
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.movie-card');
+
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                const genre = card.getAttribute('data-genre');
+
+                if (title.includes(searchTerm) || (genre && genre.includes(searchTerm))) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

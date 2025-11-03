@@ -1,0 +1,96 @@
+﻿@model Web.Models.Movie
+
+@{
+    ViewData["Title"] = "Xóa Phim";
+}
+
+
+    <link rel="stylesheet" href="~/css/Admin/Movie.css" />
+
+<div class="movie-container">
+    <div class="delete-container">
+        <div class="delete-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h1>Xác Nhận Xóa Phim</h1>
+        </div>
+
+        <div class="delete-warning">
+            <p>Bạn có chắc chắn muốn xóa phim này không?</p>
+        </div>
+
+        <div class="delete-card">
+            <div class="delete-image">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Title" />
+                }
+                else
+                {
+                    <div class="no-image">
+                        <i class="fas fa-film"></i>
+                    </div>
+                }
+            </div>
+
+            <div class="delete-info">
+                <h2>@Model.Title</h2>
+
+                <div class="info-list">
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-barcode"></i> Mã phim:
+                        </span>
+                        <span class="info-value">@Model.MovieID</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-masks-theater"></i> Thể loại:
+                        </span>
+                        <span class="info-value">@(Model.Genre ?? "N/A")</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-clock"></i> Thời lượng:
+                        </span>
+                        <span class="info-value">
+                            @(Model.DurationMinutes.HasValue ? $"{Model.DurationMinutes} phút" : "N/A")
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-calendar-alt"></i> Khởi chiếu:
+                        </span>
+                        <span class="info-value">
+                            @(Model.StartTime.HasValue? Model.StartTime.Value.ToString("dd/MM/yyyy") : "N/A")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-note">
+            <i class="fas fa-info-circle"></i>
+            <p>
+                <strong>Lưu ý:</strong> Phim sẽ được đánh dấu là đã xóa nhưng vẫn được lưu trong hệ thống.
+                Bạn có thể khôi phục lại phim này sau.
+            </p>
+        </div>
+
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="MovieID" />
+
+            <div class="delete-actions">
+                <button type="submit" class="btn btn-delete-confirm">
+                    <i class="fas fa-trash"></i> Xác Nhận Xóa
+                </button>
+                <a asp-action="Index" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

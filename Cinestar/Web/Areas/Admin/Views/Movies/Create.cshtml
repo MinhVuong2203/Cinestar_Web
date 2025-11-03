@@ -1,0 +1,202 @@
+﻿@model Web.Models.Movie
+
+@{
+    ViewData["Title"] = "Thêm Phim Mới";
+}
+
+
+    <link rel="stylesheet" href="~/css/Admin/Movie.css" />
+
+
+<div class="movie-container">
+    <div class="form-header">
+        <h1>
+            <i class="fas fa-plus-circle"></i> Thêm Phim Mới
+        </h1>
+        <a asp-action="Index" class="btn btn-back">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="form-container">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Title" class="form-label required">
+                    <i class="fas fa-film"></i> Tên Phim
+                </label>
+                <input asp-for="Title" class="form-control" placeholder="Nhập tên phim..." />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="DurationMinutes" class="form-label">
+                        <i class="fas fa-clock"></i> Thời Lượng (phút)
+                    </label>
+                    <input asp-for="DurationMinutes" class="form-control" type="number" placeholder="VD: 120" min="1" />
+                    <span asp-validation-for="DurationMinutes" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Genre" class="form-label">
+                        <i class="fas fa-masks-theater"></i> Thể Loại
+                    </label>
+                    <input asp-for="Genre" class="form-control" placeholder="VD: Hành động, Kinh dị, Phiêu lưu" />
+                    <span asp-validation-for="Genre" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Language" class="form-label">
+                        <i class="fas fa-language"></i> Ngôn Ngữ
+                    </label>
+                    <select asp-for="Language" class="form-control">
+                        <option value="">-- Chọn ngôn ngữ --</option>
+                        <option value="Tiếng Việt">Tiếng Việt</option>
+                        <option value="Tiếng Anh">Tiếng Anh</option>
+                        <option value="Tiếng Hàn">Tiếng Hàn</option>
+                        <option value="Tiếng Nhật">Tiếng Nhật</option>
+                        <option value="Tiếng Trung">Tiếng Trung</option>
+                        <option value="Tiếng Thái">Tiếng Thái</option>
+                    </select>
+                    <span asp-validation-for="Language" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Sub" class="form-label">
+                        <i class="fas fa-closed-captioning"></i> Phụ Đề
+                    </label>
+                    <select asp-for="Sub" class="form-control">
+                        <option value="">-- Chọn phụ đề --</option>
+                        <option value="Tiếng Việt">Tiếng Việt</option>
+                        <option value="Tiếng Anh">Tiếng Anh</option>
+                        <option value="Không có">Không có</option>
+                    </select>
+                    <span asp-validation-for="Sub" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="AgeLimit" class="form-label">
+                        <i class="fas fa-user-shield"></i> Giới Hạn Tuổi
+                    </label>
+                    <select asp-for="AgeLimit" class="form-control">
+                        <option value="">-- Chọn giới hạn tuổi --</option>
+                        <option value="P">P - Phổ biến (Mọi lứa tuổi)</option>
+                        <option value="K">K - Dành cho trẻ em dưới 13 tuổi</option>
+                        <option value="T13">T13 - Từ 13 tuổi trở lên</option>
+                        <option value="T16">T16 - Từ 16 tuổi trở lên</option>
+                        <option value="T18">T18 - Từ 18 tuổi trở lên</option>
+                        <option value="C">C - Cấm chiếu</option>
+                    </select>
+                    <span asp-validation-for="AgeLimit" class="text-danger"></span>
+                </div>
+
+                @* ✅ PHẦN ĐÃ SỬA - Checkbox cho nullable bool *@
+                <div class="form-group checkbox-group">
+                    <label class="form-label">
+                        <i class="fas fa-microphone"></i> Lồng Tiếng
+                    </label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox"
+                               id="dubCheckbox"
+                               name="Dub"
+                               value="true"
+                               @(Model?.Dub == true ? "checked" : "") />
+                        <input type="hidden" name="Dub" value="false" />
+                        <label for="dubCheckbox">Phim có lồng tiếng</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="StartTime" class="form-label">
+                        <i class="fas fa-calendar-plus"></i> Ngày Khởi Chiếu
+                    </label>
+                    <input asp-for="StartTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EndTime" class="form-label">
+                        <i class="fas fa-calendar-times"></i> Ngày Kết Thúc
+                    </label>
+                    <input asp-for="EndTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LinkTrailer" class="form-label">
+                    <i class="fas fa-play-circle"></i> Link Trailer
+                </label>
+                <input asp-for="LinkTrailer" class="form-control" placeholder="https://youtube.com/watch?v=..." />
+                <span asp-validation-for="LinkTrailer" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="form-label">
+                    <i class="fas fa-align-left"></i> Mô Tả Phim
+                </label>
+                <textarea asp-for="Description" class="form-control" rows="5" placeholder="Nhập mô tả chi tiết về phim, nội dung, diễn viên, đạo diễn..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-image"></i> Hình Ảnh Poster Phim
+                </label>
+                <div class="image-upload-wrapper">
+                    <input type="file" name="imageFile" id="imageFile" accept="image/*" class="file-input" />
+                    <label for="imageFile" class="file-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span id="fileName">Chọn hình ảnh</span>
+                    </label>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-save"></i> Lưu Phim
+                </button>
+                <a asp-action="Index" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Hủy Bỏ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById('imageFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            const fileName = document.getElementById('fileName');
+
+            if (file) {
+                // Update file name
+                fileName.textContent = file.name;
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" />`;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

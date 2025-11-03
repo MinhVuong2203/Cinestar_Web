@@ -1,0 +1,195 @@
+﻿@model Web.Models.Movie
+
+@{
+    ViewData["Title"] = "Chi Tiết Phim";
+}
+
+
+    <link rel="stylesheet" href="~/css/Admin/Movie.css" />
+
+
+<div class="movie-container">
+    <div class="form-header">
+        <h1>
+            <i class="fas fa-info-circle"></i> Chi Tiết Phim
+        </h1>
+        <div class="header-actions">
+            <a asp-action="Edit" asp-route-id="@Model.MovieID" class="btn btn-edit">
+                <i class="fas fa-edit"></i> Chỉnh sửa
+            </a>
+            <a asp-action="Index" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="details-container">
+        <div class="details-image">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Title" />
+            }
+            else
+            {
+                <div class="no-image">
+                    <i class="fas fa-film"></i>
+                    <p>Không có hình ảnh</p>
+                </div>
+            }
+        </div>
+
+        <div class="details-content">
+            <div class="details-title">
+                <h2>@Model.Title</h2>
+                @if (Model.IsDeleted)
+                {
+                    <span class="status-badge deleted">
+                        <i class="fas fa-trash"></i> Đã xóa
+                    </span>
+                }
+                else
+                {
+                    <span class="status-badge active">
+                        <i class="fas fa-check-circle"></i> Đang hoạt động
+                    </span>
+                }
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-barcode"></i> Mã phim:
+                    </span>
+                    <span class="detail-value">@Model.MovieID</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-clock"></i> Thời lượng:
+                    </span>
+                    <span class="detail-value">
+                        @(Model.DurationMinutes.HasValue ? $"{Model.DurationMinutes} phút" : "Chưa cập nhật")
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-masks-theater"></i> Thể loại:
+                    </span>
+                    <span class="detail-value">@(Model.Genre ?? "Chưa cập nhật")</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-language"></i> Ngôn ngữ:
+                    </span>
+                    <span class="detail-value">@(Model.Language ?? "Chưa cập nhật")</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-closed-captioning"></i> Phụ đề:
+                    </span>
+                    <span class="detail-value">@(Model.Sub ?? "Không có")</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-microphone"></i> Lồng tiếng:
+                    </span>
+                    <span class="detail-value">
+                        @(Model.Dub == true ? "Có" : "Không")
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-user-shield"></i> Giới hạn tuổi:
+                    </span>
+                    <span class="detail-value age-rating">
+                        @(Model.AgeLimit ?? "Chưa xác định")
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-calendar-alt"></i> Khởi chiếu:
+                    </span>
+                    <span class="detail-value">
+                        @(Model.StartTime.HasValue? Model.StartTime.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa xác định")
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        <i class="fas fa-calendar-times"></i> Kết thúc:
+                    </span>
+                    <span class="detail-value">
+                        @(Model.EndTime.HasValue? Model.EndTime.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa xác định")
+                    </span>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <div class="detail-section">
+                    <h3>
+                        <i class="fas fa-align-left"></i> Mô Tả
+                    </h3>
+                    <p class="description-text">@Model.Description</p>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.LinkTrailer))
+            {
+                <div class="detail-section">
+                    <h3>
+                        <i class="fas fa-play-circle"></i> Trailer
+                    </h3>
+                    <a href="@Model.LinkTrailer" target="_blank" class="trailer-link">
+                        <i class="fas fa-external-link-alt"></i> Xem trailer
+                    </a>
+                </div>
+            }
+
+            <div class="detail-stats">
+                <div class="stat-card">
+                    <i class="fas fa-film"></i>
+                    <div class="stat-content">
+                        <span class="stat-value">@Model.ShowTimes.Count</span>
+                        <span class="stat-label">Suất chiếu</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <i class="fas fa-box"></i>
+                    <div class="stat-content">
+                        <span class="stat-value">@Model.MovieProducts.Count</span>
+                        <span class="stat-label">Sản phẩm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <a asp-action="Edit" asp-route-id="@Model.MovieID" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Chỉnh Sửa
+                </a>
+                @if (!Model.IsDeleted)
+                {
+                    <a asp-action="Delete" asp-route-id="@Model.MovieID" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Xóa
+                    </a>
+                }
+                else
+                {
+                    <form asp-action="Restore" asp-route-id="@Model.MovieID" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-undo"></i> Khôi Phục
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
