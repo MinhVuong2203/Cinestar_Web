@@ -1,0 +1,201 @@
+﻿@model Web.Models.Employee
+
+@{
+    ViewData["Title"] = "Thêm Nhân viên";
+}
+@section Styles {
+    <link href="~/css/Admin/Employee.css" rel="stylesheet" />
+}
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <h2><i class="fas fa-user-plus"></i> Thêm Nhân viên mới tại chi nhánh</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index">Quản lý Nhân viên</a>
+                </li>
+                <li class="breadcrumb-item active">Thêm mới</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user"></i> Thông tin Nhân viên
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <div class="col-md-12">
+                        <select asp-for="BranchID" class="form-select">
+                            <option value="">-- Chi nhánh --</option>
+                            @if (ViewBag.Branches != null)
+                            {
+                                foreach (CinemaBranch branch in ViewBag.Branches)
+                                {
+                                    <option value="@branch.BranchID" selected="@(branch.BranchID == ViewBag.CurrentBranch)">@branch.BranchName</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="BranchID" class="text-danger"></span>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label">Họ và tên</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Role" class="form-label">Chức vụ</label>
+                            <select asp-for="Role" class="form-select">
+                                <option value="">-- Chọn chức vụ --</option>
+                                <option value="Quản lý">Quản lý</option>
+                                <option value="Thu ngân">Thu ngân</option>
+                                <option value="Nhân viên bán vé">Nhân viên bán vé</option>
+                                <option value="Nhân viên kỹ thuật">Nhân viên kỹ thuật</option>
+                                <option value="Bảo vệ">Bảo vệ</option>
+                                <option value="Tạp vụ">Tạp vụ</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                            <input asp-for="Phone" class="form-control" placeholder="0901234567" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" type="email" placeholder="example@gmail.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="BirthDate" class="form-label">Ngày sinh</label>
+                            <input asp-for="BirthDate" type="date" class="form-control" />
+                            <span asp-validation-for="BirthDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label">Giới tính</label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">Địa chỉ</label>
+                        <input asp-for="Address" class="form-control" placeholder="123 Nguyễn Trãi, Q.1, TP.HCM" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="CCCD" class="form-label"></label>
+                            <input asp-for="CCCD" class="form-control" placeholder="001234567890" />
+                            <span asp-validation-for="CCCD" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="HourWage" class="form-label">Lương theo giờ</label>
+                            <input asp-for="HourWage" type="number" class="form-control" placeholder="50.000đ/h" />
+                            <span asp-validation-for="HourWage" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Username" class="form-label">Tên đăng nhập</label>
+                            <input asp-for="Username" class="form-control" placeholder="username" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PasswordHash" class="form-label">Mật khẩu</label>
+                            <div class="input-group">
+                                <input asp-for="PasswordHash" type="password" class="form-control" id="PasswordInput" />
+                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label">Ảnh đại diện</label>
+                        <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" />
+                        <small class="form-text text-muted">
+                            Chấp nhận: JPG, PNG, GIF. 
+                        </small>
+
+                        <!-- Preview -->
+                        <div class="mt-2" id="ImagePreview" style="display:none;">
+                            <label class="form-label text-muted">Xem trước:</label>
+                            <div>
+                                <img id="PreviewImage"
+                                     src="#"
+                                     alt="Preview"
+                                     class="img-thumbnail"
+                                     style="max-width: 200px; max-height: 200px; object-fit: cover;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Hướng dẫn
+            </div>
+            <div class="card-body">
+                <h6><i class="fas fa-check-circle text-success"></i> Trường bắt buộc:</h6>
+                <ul>
+                    <li>Họ và tên</li>
+                    <li>Chức vụ</li>
+                </ul>
+
+                <hr>
+
+                <h6><i class="fas fa-lightbulb text-warning"></i> Lưu ý:</h6>
+                <ul>
+                    <li>Số điện thoại và Email phải là duy nhất</li>
+                    <li>CCCD không được trùng lặp</li>
+                    <li>Lương tính theo giờ (VNĐ)</li>
+                    <li>Mật khẩu sẽ được mã hóa</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/Admin/employee.js"></script>
+}

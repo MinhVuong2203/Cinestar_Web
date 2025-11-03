@@ -35,7 +35,7 @@ BEGIN
 END;
 GO
 -- === Danh sách chi nhánh Cinestar (có MapUrl) ===
-INSERT INTO CinemaBranch (BranchName, Address, City, District, Phone, Email, OpenHours, MapUrl, ImageUrl, Description)
+INSERT INTO CinemaBranch (BranchName, Address, City, District, Phone, Email, OpenHour, CloseHour, MapUrl, ImageUrl, Description)
 VALUES
 -- TP.HCM
 (N'Cinestar Quốc Thanh (TP.HCM)', N'271 Nguyễn Trãi, Phường Nguyễn Cư Trinh, Quận 1', N'TP.HCM', N'Quận 1',NULL, NULL, N'08:00 - 23:00', N'https://www.google.com/maps/place/Cinestar+Qu%E1%BB%91c+Thanh/@10.7621425,106.6884932,17z/',NULL, N'Rạp chiếu phim hiện đại nằm tại trung tâm Quận 1, TP.HCM'),
@@ -69,6 +69,25 @@ CREATE TABLE Employee (
     RegisterDate DATE DEFAULT GETDATE(),
     IsDeleted BIT DEFAULT 0 NOT NULL
 );
+
+-- Insert 8 nhân viên mẫu
+INSERT INTO Employee (BranchID, FullName, Phone, Email, Address, BirthDate, HourWage, CCCD, Gender, Role, Username, PasswordHash, ImageUrl, RegisterDate, IsDeleted)
+VALUES
+-- Quản lý
+('BRH-54E61', N'Nguyễn Văn An', '0901234567', 'nguyenvanan@cinestar.vn', N'123 Nguyễn Trãi, Q.1, TP.HCM', '1985-05-15', 80000, '001085012345', N'Nam', N'Quản lý', 'vanan', 'hashed_password_1', '/image/employees/manager1.jpg', '2020-01-10', 0),
+('BRH-76E9D', N'Trần Thị Bình', '0902345678', 'tranthibinh@cinestar.vn', N'456 Lê Lợi, Q.3, TP.HCM', '1990-08-20', 75000, '001090023456', N'Nữ', N'Quản lý', 'thibinh', 'hashed_password_2', '/image/employees/manager2.jpg', '2020-03-15', 0),
+-- Thu ngân
+('BRH-54E61', N'Lê Minh Châu', '0903456789', 'leminhchau@cinestar.vn', N'789 Võ Văn Tần, Q.3, TP.HCM', '1995-03-10', 50000, '001095034567', N'Nữ', N'Thu ngân', 'minhchau', 'hashed_password_3', '/image/employees/cashier1.jpg', '2021-06-20', 0),
+('BRH-54E61', N'Phạm Hoàng Dũng', '0904567890', 'phamhoangdung@cinestar.vn', N'321 Hai Bà Trưng, Q.1, TP.HCM', '1998-11-25', 50000, '001098045678', N'Nam', N'Thu ngân', 'hoangdung', 'hashed_password_4', '/image/employees/cashier2.jpg', '2021-08-10', 0),
+-- Nhân viên bán vé
+('BRH-76E9D', N'Võ Thị Lan', '0905678901', 'vothilan@cinestar.vn', N'654 Cách Mạng Tháng 8, Q.10, TP.HCM', '1999-07-05', 45000, '001099056789', N'Nữ', N'Nhân viên bán vé', 'thilan', 'hashed_password_5', '/image/employees/ticket1.jpg', '2022-01-15', 0),
+('BRH-76E9D', N'Hoàng Văn Hùng', '0906789012', 'hoangvanhung@cinestar.vn', N'987 Nguyễn Văn Cừ, Q.5, TP.HCM', '1997-12-30', 45000, '001097067890', N'Nam', N'Nhân viên bán vé', 'vanhung', 'hashed_password_6', '/image/employees/ticket2.jpg', '2022-03-20', 0),
+-- Nhân viên kỹ thuật
+('BRH-54E61', N'Đặng Thị Mai', '0907890123', 'dangthimai@cinestar.vn', N'147 Lý Thường Kiệt, Q.Tân Bình, TP.HCM', '1993-04-18', 60000, '001093078901', N'Nữ', N'Nhân viên kỹ thuật', 'thimai', 'hashed_password_7', '/image/employees/tech1.jpg', '2021-11-05', 0),
+-- Bảo vệ
+('BRH-76E9D', N'Trương Văn Sơn', '0908901234', 'truongvanson@cinestar.vn', N'258 Phan Đăng Lưu, Q.Phú Nhuận, TP.HCM', '1988-09-12', 40000, '001088089012', N'Nam', N'Bảo vệ', 'vanson', 'hashed_password_8', '/image/employees/security1.jpg', '2020-07-01', 0);
+-- Kiểm tra kết quả
+
 
 CREATE TABLE Customer (
     CustomerID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
@@ -510,26 +529,12 @@ DROP TABLE [dbo].[WorkShift]
 DROP TABLE [dbo].[Employee]
 DROP TABLE [dbo].[CinemaBranch]
  
- INSERT INTO Employee 
-(FullName, Phone, Email, Address, BirthDate, HourWage, CCCD, Gender, Role, Username, PasswordHash, ImageUrl, RegisterDate, IsDeleted)
-VALUES
--- Quản lý
-(N'Nguyễn Văn A', '0912345678', 'nguyenvana@company.com', N'123 Trần Hưng Đạo, Hà Nội', '1985-05-20', 30000, '012345678901', N'Nam', 'Admin', 'adminA', '123456', N'/images/adminA.jpg', GETDATE(), 0),
-
-(N'Trần Thị B', '0923456789', 'tranthib@company.com', N'45 Lê Lợi, TP.HCM', '1990-08-15', 28000, '012345678902', N'Nữ', 'Admin', 'adminB', '123456', N'/images/adminB.jpg', GETDATE(), 0),
-
--- Nhân viên
-(N'Lê Văn C', '0934567890', 'levanc@company.com', N'78 Hai Bà Trưng, Hà Nội', '1995-03-10', 20000, '012345678903', N'Nam', 'Employee', 'staffC', '123456', N'/images/staffC.jpg', GETDATE(), 0),
-
-(N'Phạm Thị D', '0945678901', 'phamthid@company.com', N'56 Nguyễn Huệ, TP.HCM', '1998-11-25', 20000, '012345678904', N'Nữ', 'Employee', 'staffD', '123456', N'/images/staffD.jpg', GETDATE(), 0),
-
-(N'Hoàng Văn E', '0956789012', 'hoange@company.com', N'12 Võ Thị Sáu, Đà Nẵng', '1997-07-07', 20000, '012345678905', N'Nam', 'Employee', 'staffE', '123456', N'/images/staffE.jpg', GETDATE(), 0),
-
-(N'Ngô Thị F', '0967890123', 'ngothif@company.com', N'90 Lý Thường Kiệt, Huế', '2000-01-12', 20000, '012345678906', N'Nữ', 'Employee', 'staffF', '123456', N'/images/staffF.jpg', GETDATE(), 0);
 
 
 
 
-
+-- Employee
+-- VanKien VanKien@123
+-- Vandong Vandong@123
 
 

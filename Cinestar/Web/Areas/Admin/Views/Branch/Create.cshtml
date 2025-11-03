@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Thêm Chi nhánh";
 }
+@section styles {
+    <link href="~/css/Admin/Branch.css" rel="stylesheet" />
+}
 
 <div class="row mb-3">
     <div class="col-md-12">
@@ -98,7 +101,7 @@
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
 
                         <div class="mt-2">
-                            <img id="PreviewImage" src="#" alt="Xem trước ảnh" style="display:none; max-width:200px; border-radius:8px;" />
+                            <img id="PreviewImage" src="#" alt="Xem trước ảnh" style="display:none; max-width:400px; border-radius:8px;" />
                         </div>
                     </div>
 
