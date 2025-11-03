@@ -1,0 +1,139 @@
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+}
+
+@section Styles {
+    <style>
+        .payment-result-container {
+            max-width: 600px;
+        margin: 50px auto;
+            padding: 30px;
+            background: #fff;
+  border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+        }
+
+    .success-icon {
+   font-size: 80px;
+       color: #28a745;
+     margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 28px;
+        color: #333;
+ margin-bottom: 15px;
+    font-weight: bold;
+      }
+
+        .success-message {
+            font-size: 16px;
+            color: #666;
+  margin-bottom: 30px;
+        }
+
+        .payment-details {
+         background: #f8f9fa;
+            padding: 20px;
+         border-radius: 8px;
+            margin: 20px 0;
+  text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+   padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .detail-row:last-child {
+ border-bottom: none;
+ }
+
+        .detail-label {
+        font-weight: 600;
+        color: #555;
+        }
+
+        .detail-value {
+        color: #333;
+ }
+
+        .btn-group {
+            margin-top: 30px;
+        }
+
+        .btn-primary, .btn-secondary {
+  padding: 12px 30px;
+         margin: 0 10px;
+    border-radius: 5px;
+      font-size: 16px;
+         text-decoration: none;
+  display: inline-block;
+        }
+
+    .btn-primary {
+     background: #007bff;
+    color: white;
+     border: none;
+        }
+
+        .btn-primary:hover {
+        background: #0056b3;
+}
+
+    .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+    </style>
+}
+
+<div class="payment-result-container">
+    <div class="success-icon">?</div>
+    <h1 class="success-title">Thanh toán thành công!</h1>
+    <p class="success-message">C?m ?n b?n ?ã thanh toán. ??n hàng c?a b?n ?ã ???c xác nh?n.</p>
+
+    @if (ViewBag.PaymentInfo != null)
+    {
+        <div class="payment-details">
+<div class="detail-row">
+      <span class="detail-label">Mã ??n hàng:</span>
+  <span class="detail-value">@ViewBag.PaymentInfo.OrderCode</span>
+   </div>
+  <div class="detail-row">
+    <span class="detail-label">S? ti?n:</span>
+    <span class="detail-value">@String.Format("{0:N0} VND", ViewBag.PaymentInfo.Amount)</span>
+            </div>
+   <div class="detail-row">
+       <span class="detail-label">Tr?ng thái:</span>
+      <span class="detail-value" style="color: #28a745; font-weight: bold;">@ViewBag.PaymentInfo.Status</span>
+            </div>
+   <div class="detail-row">
+            <span class="detail-label">Th?i gian:</span>
+    <span class="detail-value">@ViewBag.PaymentInfo.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</span>
+            </div>
+        </div>
+    }
+
+    <div class="btn-group">
+        <a href="@Url.Action("Index", "Home")" class="btn-primary">V? trang ch?</a>
+ <a href="#" onclick="window.print(); return false;" class="btn-secondary">In hóa ??n</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Clear localStorage after successful payment
+        localStorage.removeItem('customerInfo');
+        localStorage.removeItem('bookingInfo');
+        localStorage.removeItem('currentOrderCode');
+    </script>
+}

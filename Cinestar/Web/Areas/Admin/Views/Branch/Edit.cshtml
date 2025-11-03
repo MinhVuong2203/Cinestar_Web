@@ -3,16 +3,19 @@
 @{
     ViewData["Title"] = "Sửa Chi nhánh";
 }
+@section styles {
+    <link href="~/css/Admin/Branch.css" rel="stylesheet" />
+}
 
 <div class="row mb-3">
     <div class="col-md-12">
-        <h2><i class="fas fa-plus"></i> Thêm Chi nhánh mới</h2>
+        <h2><i class="fas fa-plus"></i> Cập nhật chi nhánh</h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a asp-action="Index">Quản lý Chi nhánh</a>
                 </li>
-                <li class="breadcrumb-item active">Thêm mới</li>
+                <li class="breadcrumb-item active">Sửa: @Model.BranchName</li>
             </ol>
         </nav>
     </div>
@@ -25,7 +28,11 @@
                 <i class="fas fa-building"></i> Thông tin Chi nhánh
             </div>
             <div class="card-body">
-                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <form asp-action="Edit" asp-route-id="@Model.BranchID" method="post" enctype="multipart/form-data">
+
+                    <input type="hidden" asp-for="BranchID" />
+                    <input type="hidden" asp-for="IsDeleted" />
+
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                     <div class="row mb-3">
@@ -94,11 +101,44 @@
 
                     <div class="mb-3">
                         <label asp-for="ImageUrl" class="form-label">Ảnh chi nhánh</label>
+                        <!-- ✅ HIỂN THỊ ẢNH HIỆN TẠI -->
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="mb-2">
+                                <label class="form-label text-muted">Ảnh hiện tại:</label>
+                                <div>
+                                    <img src="@Model.ImageUrl"
+                                         alt="@Model.BranchName"
+                                         class="img-thumbnail"
+                                         style="max-width: 300px; max-height: 200px; object-fit: cover;" />
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Upload ảnh mới -->
                         <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" />
+                        <small class="form-text text-muted">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <span>Chọn ảnh mới để thay đổi (để trống nếu giữ nguyên ảnh cũ)</span>
+                            }
+                            else
+                            {
+                                <span>Chưa có ảnh. Chọn ảnh để tải lên.</span>
+                            }
+                        </small>
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
 
-                        <div class="mt-2">
-                            <img id="PreviewImage" src="#" alt="Xem trước ảnh" style="display:none; max-width:200px; border-radius:8px;" />
+                        <!-- ✅ XEM TRƯỚC ẢNH MỚI -->
+                        <div class="mt-2" id="NewImagePreview" style="display:none;">
+                            <label class="form-label text-muted">Xem trước ảnh mới:</label>
+                            <div>
+                                <img id="PreviewImage"
+                                     src="#"
+                                     alt="Xem trước ảnh mới"
+                                     class="img-thumbnail"
+                                     style="max-width: 300px; max-height: 200px; object-fit: cover;" />
+                            </div>
                         </div>
                     </div>
 
@@ -154,60 +194,118 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
+
     <script>
         $(document).ready(function () {
             const citySelect = $('#CitySelect');
             const districtSelect = $('#DistrictSelect');
 
-            // Tải dữ liệu JSON (provinces & districts)
-            $.getJSON('/data/vietnam_provinces.json', function (data) {
-                // Điền danh sách tỉnh/thành
-                data.forEach(function(province){
-                    citySelect.append(
-                        `<option value="${province.tentinhmoi}" data-index="${province.matinhBNV}">
-                            ${province.tentinhmoi}
-                         </option>`
-                    );
+            // ✅ Lấy giá trị từ thuộc tính value của select (đã được Razor render sẵn)
+            const currentCity = citySelect.val() || '@Html.Raw(Model.City)';
+            const currentDistrict = '@Html.Raw(Model.District)';
+
+            console.log('Current City:', currentCity);
+            console.log('Current District:', currentDistrict);
+
+            $.getJSON('@Url.Content("~/data/vietnam_provinces.json")', function (data) {
+                // Nạp tất cả tỉnh
+                data.forEach(function (province) {
+                    const option = $('<option></option>')
+                        .val(province.tentinhmoi)
+                        .text(province.tentinhmoi)
+                        .attr('data-index', province.matinhBNV);
+                    citySelect.append(option);
                 });
 
-                // Khi chọn tỉnh
+                // ✅ Set giá trị City ngay sau khi load xong
+                if (currentCity) {
+                    citySelect.val(currentCity);
+
+                    // ✅ Load Districts cho City hiện tại
+                    loadDistricts(currentCity, data, currentDistrict);
+                }
+
+                // ✅ Xử lý sự kiện change City
                 citySelect.on('change', function () {
                     const selectedCity = $(this).val();
-                    const province = data.find(p => p.tentinhmoi === selectedCity);
-                    districtSelect.empty(); // Xóa quận/huyện cũ
-                    districtSelect.append('<option value="">-- Chọn Quận/Huyện --</option>');
-
-                     if (province && province.phuongxa && province.phuongxa.length > 0) {
-                        province.phuongxa.forEach(function (ward) {
-                            districtSelect.append(
-                                `<option value="${ward.tenphuongxa}">${ward.tenphuongxa}</option>`
-                            );
-                        });
-                        districtSelect.prop('disabled', false);
-                    } else {
-                        districtSelect.prop('disabled', true);
-                    }
+                    loadDistricts(selectedCity, data, null);
                 });
+            }).fail(function() {
+                console.error('Không thể load dữ liệu tỉnh/thành phố');
             });
+
+            // ✅ Hàm load Districts riêng biệt
+            function loadDistricts(cityName, data, districtToSelect) {
+                const province = data.find(p => p.tentinhmoi === cityName);
+
+                districtSelect.empty();
+                districtSelect.append('<option value="">-- Chọn Quận/Huyện --</option>');
+
+                if (province && province.phuongxa && province.phuongxa.length > 0) {
+                    province.phuongxa.forEach(function (ward) {
+                        districtSelect.append(
+                            `<option value="${ward.tenphuongxa}">${ward.tenphuongxa}</option>`
+                        );
+                    });
+                    districtSelect.prop('disabled', false);
+
+                    // ✅ Set giá trị District nếu có
+                    if (districtToSelect) {
+                        districtSelect.val(districtToSelect);
+                    }
+                } else {
+                    districtSelect.prop('disabled', true);
+                }
+            }
         });
     </script>
 
+
+
     <script>
-        document.getElementById('ImageFile').addEventListener('change', function (event) {
+        // Preview ảnh mới
+        const imageFile = document.getElementById('ImageFile');
+        const preview = document.getElementById('PreviewImage');
+        const previewContainer = document.getElementById('NewImagePreview');
+        const removeBtn = document.getElementById('RemoveNewImage');
+
+        imageFile.addEventListener('change', function (event) {
             const file = event.target.files[0];
-            const preview = document.getElementById('PreviewImage');
+
             if (file) {
+                // Kiểm tra dung lượng (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Kích thước ảnh vượt quá 5MB. Vui lòng chọn ảnh khác.');
+                    imageFile.value = '';
+                    return;
+                }
+
+                // Kiểm tra định dạng
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Chỉ chấp nhận file ảnh JPG, PNG, GIF.');
+                    imageFile.value = '';
+                    return;
+                }
+
+                // Hiển thị preview
                 const reader = new FileReader();
-                reader.onload = e => {
+                reader.onload = function(e) {
                     preview.src = e.target.result;
-                    preview.style.display = 'block';
+                    previewContainer.style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             } else {
                 preview.src = '#';
-                preview.style.display = 'none';
+                previewContainer.style.display = 'none';
             }
+        });
+
+        // Nút hủy ảnh mới
+        removeBtn.addEventListener('click', function() {
+            imageFile.value = '';
+            preview.src = '#';
+            previewContainer.style.display = 'none';
         });
     </script>
 }

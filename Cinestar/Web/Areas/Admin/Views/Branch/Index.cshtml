@@ -1,7 +1,9 @@
 ﻿@model IEnumerable<Web.Models.CinemaBranch>
-
 @{
     ViewData["Title"] = "Quản lý Chi nhánh";
+}
+@section styles{
+    <link href="~/css/Admin/Branch.css" rel="stylesheet" />
 }
 
 <div class="row mb-3">
@@ -13,7 +15,7 @@
             <i class="fas fa-plus"></i> Thêm chi nhánh mới
         </a>
     </div>
-</div>
+</div> 
 
 <div class="card">
     <div class="card-header">
@@ -52,10 +54,6 @@
                                 <td>@item.CloseHour</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a asp-action="Details" asp-route-id="@item.BranchID"
-                                           class="btn btn-sm btn-info" title="Chi tiết">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
                                         <a asp-action="Edit" asp-route-id="@item.BranchID"
                                            class="btn btn-sm btn-warning" title="Sửa">
                                             <i class="fas fa-edit"></i>

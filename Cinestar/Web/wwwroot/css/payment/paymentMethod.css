@@ -110,6 +110,11 @@
     color: white;
 }
 
+.payos-icon {
+    background: #4a90e2;
+    color: white;
+}
+
 .method-details h3 {
     margin-bottom: 5px;
     font-size: 1.1rem;

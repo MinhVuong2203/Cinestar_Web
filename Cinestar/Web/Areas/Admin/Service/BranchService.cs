@@ -18,7 +18,9 @@ namespace Web.Areas.Admin.Service
                 .FirstOrDefaultAsync(b => b.BranchID == Id && !b.IsDeleted);
             return branch;
         }
+        
 
+    
         // read
         public async Task<List<CinemaBranch>> GetCinemaBranches()
         {

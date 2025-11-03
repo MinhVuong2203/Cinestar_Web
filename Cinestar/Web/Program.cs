@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Web.Data;
 using Web.Filters;
 using Web.Service;
+using Web.Models.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddControllersWithViews().AddRazorOptions(options =>
     options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
 });
 
+// Configure PayOS Settings
+builder.Services.Configure<PayOsSettings>(builder.Configuration.GetSection("PayOS"));
 
 // Add Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -36,6 +39,7 @@ builder.Services.AddDbContext<CineStarContext>(options => options.UseSqlServer(b
 // Đăng ký Service
 builder.Services.AddScoped<ICinemaBranchService, CinemaBranchService>();
 builder.Services.AddScoped<ILogin, Login>();
+builder.Services.AddScoped<IPayOsService, PayOsService>();
 
 
 
