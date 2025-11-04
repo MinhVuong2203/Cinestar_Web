@@ -1,0 +1,30 @@
+﻿@model Web.Models.ShowTime
+@{
+    ViewData["Title"] = "Chi Tiết Suất Chiếu";
+}
+<link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
+<div class="showtime-container">
+    <div class="form-header">
+        <h1><i class="fas fa-info-circle"></i> Chi Tiết Suất Chiếu</h1>
+        <a asp-action="Index" class="btn btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+    </div>
+    <div class="details-grid">
+        <div class="detail-item">Mã: <b>@Model.ShowTimeID</b></div>
+        <div class="detail-item">Phim: <b>@Model.Movie?.Title</b></div>
+        <div class="detail-item">Phòng: <b>@Model.Room?.RoomID</b></div>
+        <div class="detail-item">Thời gian: <b>@Model.StartTime.ToString("dd/MM/yyyy HH:mm")</b></div>
+        <div class="detail-item">Giá: <b>@(Model.Price.HasValue ? $"{Model.Price:N0} đ" : "Chưa có")</b></div>
+        <div class="detail-item">
+            Trạng thái:
+            @if (Model.IsDeleted)
+            {
+                <span class="badge badge-danger"><i class="fas fa-trash"></i> Đã xóa</span>
+                <form asp-action="Restore" asp-route-id="@Model.ShowTimeID" method="post"><button type="submit" class="btn btn-success"><i class="fas fa-undo"></i> Khôi phục</button></form>
+            }
+            else
+            {
+                <span class="badge badge-success"><i class="fas fa-check"></i> Đang hoạt động</span>
+            }
+        </div>
+    </div>
+</div>

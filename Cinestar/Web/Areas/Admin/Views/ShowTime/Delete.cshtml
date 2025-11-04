@@ -1,0 +1,21 @@
+﻿@model Web.Models.ShowTime
+@{
+    ViewData["Title"] = "Xóa Suất Chiếu";
+}
+<link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
+
+<div class="showtime-container">
+    <div class="delete-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h1>Xác Nhận Xóa Suất Chiếu</h1>
+        <p>Bạn có chắc chắn muốn xóa suất chiếu <b>@Model.ShowTimeID</b> cho phim <b>@Model.Movie?.Title</b> không?</p>
+    </div>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ShowTimeID" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-delete"><i class="fas fa-trash"></i> Xóa</button>
+            <a asp-action="Index" class="btn btn-cancel"><i class="fas fa-times"></i> Hủy</a>
+        </div>
+    </form>
+</div>

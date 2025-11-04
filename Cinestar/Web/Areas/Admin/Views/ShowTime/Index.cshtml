@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Web.Models.ShowTime>
+@{
+    ViewData["Title"] = "Quản Lý Suất Chiếu";
+}
+<link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
+
+<div class="showtime-container">
+    <div class="header">
+        <h1><i class="fas fa-table"></i> Quản Lý Suất Chiếu</h1>
+        <a asp-action="Create" class="btn btn-create"><i class="fas fa-plus"></i> Thêm Suất Chiếu</a>
+    </div>
+    <table class="st-table">
+        <thead>
+            <tr>
+                <th>Mã</th>
+                <th>Phim</th>
+                <th>Phòng</th>
+                <th>Bắt đầu</th>
+                <th>Giá vé</th>
+                <th>Trạng thái</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var st in Model)
+            {
+                <tr class="@(st.IsDeleted ? "deleted" : "")">
+                    <td>@st.ShowTimeID</td>
+                    <td>@st.Movie?.Title</td>
+                    <td>@st.Room?.RoomID</td>
+                    <td>@st.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(st.Price.HasValue ? $"{st.Price:N0} đ" : "N/A")</td>
+                    <td>
+                        @if (st.IsDeleted)
+                        {
+                            <span class="badge badge-danger"><i class="fas fa-trash"></i> Đã xóa</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-success"><i class="fas fa-check"></i> Active</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@st.ShowTimeID" class="btn btn-details"><i class="fas fa-eye"></i></a>
+                        <a asp-action="Edit" asp-route-id="@st.ShowTimeID" class="btn btn-edit"><i class="fas fa-edit"></i></a>
+                        @if (!st.IsDeleted)
+                        {
+                            <a asp-action="Delete" asp-route-id="@st.ShowTimeID" class="btn btn-delete"><i class="fas fa-trash"></i></a>
+                        }
+                        else
+                        {
+                            <form asp-action="Restore" asp-route-id="@st.ShowTimeID" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-restore"><i class="fas fa-undo"></i></button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="fas fa-calendar"></i>
+            <h3>Chưa có suất chiếu nào!</h3>
+            <a asp-action="Create" class="btn btn-create"><i class="fas fa-plus"></i> Thêm suất chiếu</a>
+        </div>
+    }
+</div>
