@@ -98,13 +98,16 @@
                     <span class="dropdown-arrow">&#9662;</span>
                 </div>
                 <div class="location-dropdown">
-                    <div class="location-option">Hồ Chí Minh</div>
-                    <div class="location-option">Đà Lạt</div>
-                    <div class="location-option">Bình Dương</div>
-                    <div class="location-option">Huế</div>
-                    <div class="location-option active">Tiền Giang</div>
-                    <div class="location-option">Kiên Giang</div>
-                    <div class="location-option">Lâm Đồng</div>
+                    @{
+                        if (ViewData["lstCity"] != null)
+                        {
+                            var cities = ViewData["lstCity"] as List<string>;
+                            foreach (var city in cities)
+                            {
+                                <div class="location-option">@city</div>
+                            }
+                        }
+                    }
                 </div>
             </div>
         </div>

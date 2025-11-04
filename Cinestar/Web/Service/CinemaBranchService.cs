@@ -21,5 +21,22 @@ namespace Web.Service
             }
         }
 
+        public List<string> GetListCityBranches()
+        {
+            try
+            {
+                return _context.CinemaBranches
+                    .Where(b => !b.IsDeleted)
+                    .Select(b => b.City)
+                    .Distinct()
+                    .OrderBy(city => city)
+                    .AsNoTracking()
+                    .ToList();
+            }
+            catch
+            {
+                return new List<string>();
+            }
+        }
     }
 }
