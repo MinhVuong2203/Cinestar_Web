@@ -152,7 +152,7 @@ namespace Web.Areas.Admin.Controllers
 
                         employee.ImageUrl = $"/image/employee/{fileName}";
                     }
-                    employee.PasswordHash = BCrypt.Net.BCrypt.HashPassword(employee.PasswordHash);
+                    employee.PasswordHash = (string.IsNullOrEmpty(employee.PasswordHash)) ? null : BCrypt.Net.BCrypt.HashPassword(employee.PasswordHash);
                     var result = await _employeeService.CreateEmployee(employee);
                     if (result)
                     {
@@ -279,6 +279,20 @@ namespace Web.Areas.Admin.Controllers
 
             return View(employee);
         }
+
+        // POST: /Admin/Employee/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            if (ModelState.IsValid)
+            {
+                await _employeeService.DeteleEmployee(id);
+                TempData["Success"] = "Thôi việc nhân viên thành công!";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }

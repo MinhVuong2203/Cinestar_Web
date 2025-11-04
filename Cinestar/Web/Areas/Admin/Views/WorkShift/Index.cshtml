@@ -1,0 +1,172 @@
+﻿@model Web.Areas.Admin.Controllers.ShiftMatrixVM
+@{
+    ViewData["Title"] = "Phân ca làm việc";
+}
+
+@section Styles {
+    <link href="~/css/Admin/WorkShift.css" rel="stylesheet" />
+}
+
+<h2><i class="fas fa-calendar-alt"></i> Phân ca làm việc</h2>
+
+<form method="get" asp-action="Index">
+    <div class="row g-3 align-items-end mb-4">
+        <div class="col-md-3">
+            <label class="form-label">Chi nhánh</label>
+            <select name="branchId" class="form-select" required>
+                <option value="">-- Chọn chi nhánh --</option>
+                @foreach (var b in ViewBag.Branches)
+                {
+                    <option value="@b.BranchID" selected="@(b.BranchID==ViewBag.CurrentBranch)">
+                        @b.BranchName
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Từ ngày</label>
+            <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Đến ngày</label>
+            <input type="date" name="toDate" class="form-control" value="@ViewBag.ToDate" />
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i> Xem lịch
+            </button>
+        </div>
+    </div>
+</form>
+
+@if (Model == null || !Model.Employees.Any())
+{
+    <div class="alert alert-info">Vui lòng chọn chi nhánh và thời gian để xem lịch phân ca.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th rowspan="2">Nhân viên</th>
+                    @foreach (var d in Model.Dates)
+                    {
+                        <th colspan="3">@d.ToString("dd/MM")</th>
+                    }
+                </tr>
+                <tr>
+                    @foreach (var d in Model.Dates)
+                    {
+                        <th>Sáng</th>
+                        <th>Chiều</th>
+                        <th>Tối</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in Model.Employees)
+                {
+                    string roleClass = emp.Role?.ToLower().Trim() switch
+                    {
+                        "bảo vệ" => "role-bao-ve",
+                        "tạp vụ" => "role-tap-vu", 
+                        "nhân viên bán vé" => "role-ban-ve",
+                        "nhân viên kỹ thuật" => "role-ky-thuat",
+                        "quản lý" => "role-quan-ly",
+                        _ => ""
+                    };
+
+                    <tr class="@roleClass">
+                        <td class="text-start fw-semibold nameColunm">@emp.FullName<br/><small class="text-muted">@emp.Role</small></td>
+                        @foreach (var date in Model.Dates)
+                        {
+                            foreach (var slot in new[] { "S", "C", "T" })
+                            {
+                                var timeStart = slot == "S" ? new TimeSpan(8, 0, 0) : slot == "C" ? new TimeSpan(12, 0, 0) : new TimeSpan(16, 0, 0);
+                                var shift = Model.Shifts.FirstOrDefault(s =>
+                                s.EmployeeID == emp.EmployeeID &&
+                                s.StartTime.Date == date.Date &&
+                                s.StartTime.TimeOfDay == timeStart);
+                                bool lockEmptyCell = date.Date <= DateTime.Today;
+                                if (shift != null)
+                                {
+                                    <td class="text-white shift-cell " data-status="@shift.Status" data-id="@shift.ShiftID">
+                                        @{
+                                            string statusClass = shift.Status?.ToLower().Trim() switch
+                                            {
+                                                "đang làm" => "status-danglam",
+                                                "hoàn thành" => "status-hoanthanh",
+                                                "vắng" => "status-vang",
+                                                "nghỉ phép" => "status-nghiphep",
+                                                "sắp làm" => "status-saplam"
+                                            };
+                                        }                                       
+                                        <button class="@statusClass">
+                                            <small style="font-size: 11px;">@shift.StartTime.ToString("HH:mm") - @shift.EndTime.ToString("HH:mm")</small>
+                                            <small>@shift.Status</small>
+                                        </button>
+                                    
+
+                                        <div class="status-actions">
+                                            <div style="display: flex; gap: 6px">
+                                                @if (shift.Status == "Sắp làm")
+                                                {
+                                                    <button class="btn btn-danger remove-btn btn-status" data-id="@shift.ShiftID">Xóa</button>
+                                                }
+                                                else if (shift.Status == "Hoàn thành")
+                                                {
+                                                    <button class="btn btn-status-absent" data-status="Vắng" data-id="@shift.ShiftID">Vắng</button>
+                                                    <button class="btn btn-status-leave" data-status="Nghỉ phép" data-id="@shift.ShiftID">Nghỉ phép</button>
+                                                }
+                                                else if (shift.Status == "Đang làm")
+                                                {
+                                                    <button class="btn btn-status-complete" data-status="Hoàn thành" data-id="@shift.ShiftID">Hoàn thành</button>
+                                                    <button class="btn btn-status-absent" data-status="Vắng" data-id="@shift.ShiftID">Vắng</button>
+                                                    <button class="btn btn-status-leave" data-status="Nghỉ phép" data-id="@shift.ShiftID">Nghỉ phép</button>
+                                                }
+                                                else if (shift.Status == "Vắng")
+                                                {
+                                                    <button class="btn btn-status-complete" data-status="Hoàn thành" data-id="@shift.ShiftID">Hoàn thành</button>
+                                                    <button class="btn btn-status-leave" data-status="Nghỉ phép" data-id="@shift.ShiftID">Nghỉ phép</button>
+                                                }
+                                                else if (shift.Status == "Nghỉ phép")
+                                                {
+                                                    <button class="btn btn-status-complete" data-status="Hoàn thành" data-id="@shift.ShiftID">Hoàn thành</button>
+                                                    <button class="btn btn-status-absent" data-status="Vắng" data-id="@shift.ShiftID">Vắng</button>
+                                                }
+                                            </div>                                                                                 
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    if (lockEmptyCell)
+                                    {   
+                                        <td class="cell-locked" title="Không thể xếp ca cho ngày này">
+                                            <span>—</span>
+                                        </td>
+                                    } 
+                                    else
+                                    {
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-sm assign-btn"
+                                                    data-emp-id="@emp.EmployeeID"
+                                                    data-date="@date.ToString("yyyy-MM-dd")"
+                                                    data-slot="@slot"> + 
+                                            </button>
+                                        </td>
+                                        
+                                    }
+                                }
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@section Scripts {
+    <script src="~/js/Admin/workshift.js" asp-append-version="true"></script>
+}

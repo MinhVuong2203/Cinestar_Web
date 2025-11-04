@@ -35,6 +35,7 @@ public partial class Employee
 
     [StringLength(100)]
     [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+    [Required(ErrorMessage = "Email không được để trống")]
     [Remote(action: "CheckEmail", controller: "Employee", AdditionalFields = "EmployeeID", ErrorMessage = "Email đã tồn tại")]
     public string? Email { get; set; }
 

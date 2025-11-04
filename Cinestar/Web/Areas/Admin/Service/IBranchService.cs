@@ -9,5 +9,6 @@ namespace Web.Areas.Admin.Service
         public Task DeteleBranch(string branchId);
         public Task<CinemaBranch> GetCinemaBranch(string Id);
         public Task EditBranch(CinemaBranch branch);
+       
     }
 }

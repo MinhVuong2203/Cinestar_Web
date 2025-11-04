@@ -162,8 +162,8 @@ else if (Model != null && Model.Any())
                         </a>
                         <form asp-action="Delete" asp-route-id="@employee.EmployeeID" method="post" style="margin: 0;">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa nhân viên này?')">
-                                <i class="fas fa-trash"></i> Xóa
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn thôi việc nhân viên này?')">
+                                <i class="fas fa-trash"></i> Thôi việc
                             </button>
                         </form>
                     </div>

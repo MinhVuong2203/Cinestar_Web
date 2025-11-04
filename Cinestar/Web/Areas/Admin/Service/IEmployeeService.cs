@@ -10,11 +10,12 @@ namespace Web.Areas.Admin.Service
         Task<bool> IsUsernamexist(string username, Guid? excludeEmployeeId = null);
         bool CheckBirthDate(DateOnly? BirthDate);
         public Task<IEnumerable<Employee>> GetAllEmployees();
-        public Task<Employee?> GetEmployeeById(Guid id);
-     
+        public Task<Employee?> GetEmployeeById(Guid id);     
         public Task<bool> UpdateEmployee(Employee employee);
         //public Task<bool> DeleteEmployee(Guid id); // Soft delete
         public Task<IEnumerable<string>> GetAllRoles();
         public Task<bool> CreateEmployee(Employee employee);
+        public Task DeteleEmployee(Guid id);
+        public double GetSalaryById(Guid id);
     }
 }

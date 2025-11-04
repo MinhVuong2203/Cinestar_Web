@@ -133,6 +133,7 @@ BEGIN
 END;
 GO
 
+-------------------
 CREATE TABLE WorkShift (
     ShiftID VARCHAR(10) PRIMARY KEY,
     EmployeeID UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES Employee(EmployeeID) ON DELETE CASCADE,
@@ -141,9 +142,10 @@ CREATE TABLE WorkShift (
     EndTime DATETIME NOT NULL,
     WorkingHours FLOAT CHECK (WorkingHours >= 0),
     SalaryPerHour DECIMAL(18,2) CHECK (SalaryPerHour >= 0),
-    Status NVARCHAR(30)
+    Status NVARCHAR(30) -- nghỉ phép, Vắng, Hoàn thành, Đang làm, Sắp làm
 );
 GO
+
 
 CREATE TRIGGER trg_WorkShift_Insert
 ON WorkShift
@@ -157,6 +159,21 @@ BEGIN
     FROM inserted;
 END;
 GO
+
+CREATE OR ALTER TRIGGER trg_WorkShift_CalculateHours
+ON WorkShift
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE ws
+    SET ws.WorkingHours = 
+        DATEDIFF(MINUTE, i.StartTime, i.EndTime) / 60.0  -- đổi phút sang giờ (float)
+    FROM WorkShift ws
+    INNER JOIN inserted i ON ws.ShiftID = i.ShiftID;
+END;
+GO
+
 
 
 /* ========== 2. MOVIE GROUP ========== */

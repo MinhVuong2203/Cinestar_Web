@@ -1,0 +1,284 @@
+﻿/* ========== LỌC & BẢNG CHUNG ========== */
+.filter-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+        text-align: center;
+        border: 1px solid #e5e5e5;
+        padding: 2px;
+    }
+
+.nameColunm {
+    min-width: 200px;
+}
+
+/* Cột "Nhân viên" rộng hơn */
+.table th:first-child,
+.table td:first-child {
+    text-align: left;
+    font-weight: 600;
+}
+
+    .table td:first-child small {
+        font-style: italic;
+        color: #6c757d;
+    }
+
+/* ========== MÀU TIÊU ĐỀ CA LÀM ========== */
+th[colspan="3"] {
+    font-weight: 600;
+    background: #f1f1f1;
+    color: #333;
+}
+
+/* Hàng tiêu đề thứ 2 (Sáng, Chiều, Tối) */
+tr:nth-child(2) th:nth-of-type(3n+1) {
+    background: #FFF3CD; /* Sáng – vàng nhạt */
+    color: #856404;
+}
+
+tr:nth-child(2) th:nth-of-type(3n+2) {
+    background: #D1ECF1; /* Chiều – xanh dương nhạt */
+    color: #0C5460;
+}
+
+tr:nth-child(2) th:nth-of-type(3n) {
+    background: #F8D7DA; /* Tối – đỏ nhạt */
+    color: #721C24;
+}
+
+/*=================== Nút trạng thái ============*/
+
+/* ========== NÚT XẾP CA ========== */
+.assign-btn {
+    width: 70px;
+    border: none;
+    color: transparent;
+    font-weight: bold;
+    font-size: 28px;
+    background: #fff;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: 0.1s;
+}
+
+    .assign-btn:hover {
+        background: rgba(21, 159, 137, 0.7);
+        color: #fff;
+    }
+
+/* ========== Ô ĐÃ XẾP CA ========== */
+.status-danglam, .status-vang, .status-hoanthanh, .status-saplam, .status-nghiphep {
+    border: none;
+    padding: 2px !important;
+    color: #fff !important;
+    font-size: 12px;
+    height: 100%;
+}
+
+.status-danglam {
+    background: linear-gradient(135deg, #1e0ceb, #1e1863);
+}
+
+.status-hoanthanh {
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+}
+
+.status-vang {
+    background: linear-gradient(135deg, #FF416C, #FF4B2B);
+}
+
+.status-nghiphep{
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
+.status-saplam {
+    background: linear-gradient(135deg, #DA8EE7, #B06AB3);
+}
+
+/* Nút xóa nhỏ gọn */
+.remove-btn {
+    margin-top: 3px;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+
+/* Tạo header nhóm nếu muốn (optional - cần thêm vào View) */
+.role-group-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-top: 3px solid #495057 !important;
+    border-bottom: 2px solid #495057 !important;
+}
+
+/* ========== PHẦN RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .table th:first-child,
+    .table td:first-child {
+        min-width: 150px;
+        font-size: 0.9rem;
+    }
+
+    /* Giảm độ rộng đường viền trên mobile */
+    tbody tr td:first-child[style*="border-left"] {
+        border-left-width: 3px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .assign-btn {
+        font-size: 0.8rem;
+    }
+
+    th[colspan="3"],
+    .table th,
+    .table td {
+        font-size: 0.85rem;
+    }
+
+    /* Ẩn đường viền trái trên mobile nếu cần */
+    tbody tr td:first-child {
+        border-left-width: 2px !important;
+    }
+}
+
+/* ========== NHÓM CHỨC VỤ - VISUAL GROUPING ========== */
+
+/* Bảo vệ - Nhóm màu xanh lá */
+tr.role-bao-ve td:first-child {
+    background: #F1F8E9;
+    border-left: 4px solid #7CB342;
+}
+
+
+/* Tạp vụ - Nhóm màu cam */
+tr.role-tap-vu td:first-child {
+    background: #FFF3E0;
+    border-left: 4px solid #FF9800;
+}
+
+/* Nhân viên bán vé - Nhóm màu xanh dương */
+tr.role-ban-ve td:first-child {
+    background: #E3F2FD;
+    border-left: 4px solid #2196F3;
+}
+
+
+/* Nhân viên kỹ thuật - Nhóm màu tím */
+tr.role-ky-thuat td:first-child {
+    background: #F3E5F5;
+    border-left: 4px solid #9C27B0;
+}
+
+
+/* Quản lý - Nhóm màu đỏ */
+tr.role-quan-ly td:first-child {
+    background: #FFEBEE;
+    border-left: 4px solid #E53935;
+}
+
+
+/* Tạo khoảng cách giữa các nhóm chức vụ */
+tr.role-bao-ve:last-of-type,
+tr.role-tap-vu:last-of-type,
+tr.role-ban-ve:last-of-type,
+tr.role-ky-thuat:last-of-type,
+tr.role-thu-ngan:last-of-type,
+tr.role-quan-ly:last-of-type {
+    border-bottom: 3px solid #dee2e6;
+}
+
+
+/* Khối nút ẩn */
+.status-actions {
+    display: none;
+    position: absolute;
+    background: #fff;
+    color: #000;
+    font-size: 11px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 6px;
+    z-index: 999;
+}
+
+/* Hiển thị khi hover */
+.shift-cell {
+    position: relative;
+}
+
+    .shift-cell:hover .status-actions {
+        display: flex;
+/*        flex-wrap: wrap;*/
+    }
+
+/* Ô bị khóa (ngày quá khứ/hôm nay khi chưa có ca) */
+.cell-locked {
+    background: #f5f6f8;
+    color: #b6bdc6;
+    min-width: 80px;
+    pointer-events: none; /* chặn click */
+    user-select: none;
+}
+
+/* Nút xếp ca disabled nếu bạn dùng dạng disabled */
+.assign-btn[disabled] {
+    opacity: .5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+
+
+.btn-status-absent {
+    font-size: 11px;
+    padding: 2px;
+    width: 60px;
+    color: #fff;
+    background: linear-gradient(135deg, #FF416C, #FF4B2B);
+}
+
+.btn-status-leave {
+    font-size: 11px;
+    padding: 2px;
+    width: 60px;
+    color: #fff;
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
+.remove-btn {
+    font-size: 11px;
+    padding: 2px;
+    color: #fff;
+    width: 60px;
+    background: linear-gradient(135deg, #FF6A88, #FF99AC);
+}
+
+.btn-status-complete {
+    font-size: 11px;
+    padding: 2px;
+    width: 60px;
+    color: #fff;
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+}
+

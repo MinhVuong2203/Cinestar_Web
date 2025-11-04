@@ -12,6 +12,7 @@ public partial class WorkShift
     [Key]
     [StringLength(10)]
     [Unicode(false)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string ShiftID { get; set; } = string.Empty!;
 
     public Guid EmployeeID { get; set; }
@@ -41,4 +42,5 @@ public partial class WorkShift
     [ForeignKey("EmployeeID")]
     [InverseProperty("WorkShifts")]
     public virtual Employee Employee { get; set; } = null!;
+
 }

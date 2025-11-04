@@ -73,12 +73,11 @@ namespace Web.Areas.Admin.Service
         }
 
 
-
         public async Task<bool> CreateEmployee(Employee employee)
         {
             try
             {
-                employee.Email = employee.Email.ToLower();
+                employee.Email = string.IsNullOrEmpty(employee.Email) ? null : employee.Email.ToLower();
                 employee.RegisterDate = DateOnly.FromDateTime(DateTime.Now);
                 employee.IsDeleted = false;
                 await _context.Employees.AddAsync(employee);
@@ -112,15 +111,26 @@ namespace Web.Areas.Admin.Service
             }
 
         }
-        //}
-        //public Task<bool> DeleteEmployee(Guid id) // Soft delete{
-        //{
-
-            //} 
 
         public async Task<IEnumerable<string>> GetAllRoles()
         {
-            return await _context.Employees.Select(e => e.Role).ToListAsync();
+            return await _context.Employees.Select(e => e.Role).Distinct().ToListAsync();
         }
+
+        public async Task DeteleEmployee(Guid id)
+        {
+            Employee employee = await GetEmployeeById(id);
+            employee.IsDeleted = true;
+            _context.SaveChangesAsync();
+        }
+
+
+        public double GetSalaryById(Guid id)
+        {
+            var emp = _context.Employees.Find(id);
+            if (emp == null) return 0;
+            return emp.HourWage ?? 0; // nếu null thì trả về 0
+        }
+
     }
 }

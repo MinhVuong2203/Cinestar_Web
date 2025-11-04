@@ -36,11 +36,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddDbContext<CineStarContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CineStarDb")), ServiceLifetime.Scoped);
+
+
 // Đăng ký Service
 builder.Services.AddScoped<ICinemaBranchService, CinemaBranchService>();
 builder.Services.AddScoped<ILogin, Login>();
 builder.Services.AddScoped<IPayOsService, PayOsService>();
 
+builder.Services.AddHostedService<WorkShiftStatusUpdater>();
 
 
 // Đăng ký tất cả service trong namespace Web.Areas.Admin.Services
@@ -58,6 +61,9 @@ builder.Services.AddControllersWithViews(option =>
 {
     option.Filters.Add<LoadCinemaBranchesAttribute>();
 });
+
+
+
 
 var app = builder.Build();
 
@@ -85,5 +91,8 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+
 
 app.Run();

@@ -39,7 +39,7 @@
                     <ul class="collapse list-unstyled" id="EmployeeSubmenu">
                         <li><a asp-area="Admin" asp-controller="Employee" asp-action="Index">Nhân viên</a></li>
                         <li><a asp-area="Admin" asp-controller="Employee" asp-action="">Kiểm duyệt hồ sơ</a></li>
-                        <li><a asp-area="Admin" asp-controller="Employee" asp-action="">Phân ca làm việc</a></li>
+                        <li><a asp-area="Admin" asp-controller="WorkShift" asp-action="Index">Phân ca làm việc</a></li>
                     </ul>
                 </li>
                 <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Movie" ? "active" : "")">
