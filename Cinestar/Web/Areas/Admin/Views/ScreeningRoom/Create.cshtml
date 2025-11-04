@@ -1,0 +1,139 @@
+﻿@model Web.Models.Room
+
+@{
+    ViewData["Title"] = "Thêm Phòng chiếu";
+}
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <h2><i class="fas fa-plus"></i> Thêm Phòng chiếu mới</h2>
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-door-open"></i> Thông tin Phòng chiếu
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="RoomName" class="form-label">Tên phòng</label>
+                            <input asp-for="RoomName" class="form-control" placeholder="Ví dụ: Phòng chiếu 1" />
+                            <span asp-validation-for="RoomName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SeatCount" class="form-label">Số ghế</label>
+                            <input asp-for="SeatCount" type="number" min="0" class="form-control" placeholder="Ví dụ: 100" />
+                            <span asp-validation-for="SeatCount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="RoomType" class="form-label">Loại phòng</label>
+                            <select asp-for="RoomType" class="form-select">
+                                <option value="">-- Chọn loại phòng --</option>
+                                <option value="Phòng 2D">Phòng 2D</option>
+                                <option value="Phòng 3D">Phòng 3D</option>
+                                <option value="Phòng IMAX">Phòng IMAX</option>
+                                <option value="Phòng 4DX">Phòng 4DX</option>
+                            </select>
+                            <span asp-validation-for="RoomType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="BranchID" class="form-label">Chi nhánh</label>
+                            <select asp-for="BranchID" class="form-select">
+                                <option value="">-- Chọn chi nhánh --</option>
+                                @foreach (var branch in ViewBag.Branches)
+                                {
+                                    <option value="@branch.BranchID">@branch.BranchName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="BranchID" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"
+                                  placeholder="Mô tả về phòng chiếu..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label">Ảnh phòng chiếu</label>
+                        <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+
+                        <div class="mt-2">
+                            <img id="PreviewImage" src="#" alt="Xem trước ảnh"
+                                 style="display:none; max-width:400px; border-radius:8px;" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Hướng dẫn
+            </div>
+            <div class="card-body">
+                <h6><i class="fas fa-check-circle text-success"></i> Trường bắt buộc:</h6>
+                <ul>
+                    <li>Tên phòng chiếu</li>
+                </ul>
+
+                <hr>
+
+                <h6><i class="fas fa-lightbulb text-warning"></i> Lưu ý:</h6>
+                <ul>
+                    <li>Mã phòng sẽ tự động tạo</li>
+                    <li>Số ghế có thể nhập sau</li>
+                    <li>Hình ảnh có thể để trống</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById('ImageFile').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('PreviewImage');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+}

@@ -1,0 +1,165 @@
+﻿@model Web.Models.Room
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Phòng chiếu";
+}
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <h2><i class="fas fa-edit"></i> Chỉnh sửa Phòng chiếu</h2>
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-door-open"></i> Thông tin Phòng chiếu: @Model.RoomName
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <input type="hidden" asp-for="RoomID" />
+                    <input type="hidden" asp-for="IsDeleted" />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Mã phòng</label>
+                            <input type="text" class="form-control" value="@Model.RoomID" disabled />
+                            <small class="text-muted">Mã phòng không thể thay đổi</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="RoomName" class="form-label">Tên phòng</label>
+                            <input asp-for="RoomName" class="form-control" />
+                            <span asp-validation-for="RoomName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="SeatCount" class="form-label">Số ghế</label>
+                            <input asp-for="SeatCount" type="number" min="0" class="form-control" />
+                            <span asp-validation-for="SeatCount" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="RoomType" class="form-label">Loại phòng</label>
+                            <select asp-for="RoomType" class="form-select">
+                                <option value="">-- Chọn loại phòng --</option>
+                                <option value="Phòng 2D">Phòng 2D</option>
+                                <option value="Phòng 3D">Phòng 3D</option>
+                                <option value="Phòng IMAX">Phòng IMAX</option>
+                                <option value="Phòng 4DX">Phòng 4DX</option>
+                            </select>
+                            <span asp-validation-for="RoomType" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="BranchID" class="form-label">Chi nhánh</label>
+                        <select asp-for="BranchID" class="form-select">
+                            <option value="">-- Chọn chi nhánh --</option>
+                            @foreach (var branch in ViewBag.Branches)
+                            {
+                                <option value="@branch.BranchID">@branch.BranchName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="BranchID" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ảnh phòng chiếu</label>
+
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="mb-2">
+                                <img src="@Model.ImageUrl" alt="Ảnh hiện tại" style="max-width:300px; border-radius:8px;" />
+                                <p class="text-muted small">Ảnh hiện tại</p>
+                            </div>
+                        }
+
+                        <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" />
+                        <input type="hidden" asp-for="ImageUrl" />
+                        <small class="text-muted">Chọn ảnh mới để thay thế (để trống nếu không muốn đổi)</small>
+
+                        <div class="mt-2">
+                            <img id="PreviewImage" src="#" alt="Xem trước ảnh mới"
+                                 style="display:none; max-width:400px; border-radius:8px;" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Cập nhật
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Thông tin
+            </div>
+            <div class="card-body">
+                <p><strong>Mã phòng:</strong> @Model.RoomID</p>
+                <p>
+                    <strong>Trạng thái:</strong>
+                    @if (Model.IsDeleted)
+                    {
+                        <span class="badge bg-danger">Đã xóa</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Đang hoạt động</span>
+                    }
+                </p>
+
+                <hr>
+
+                <h6><i class="fas fa-lightbulb text-warning"></i> Lưu ý:</h6>
+                <ul>
+                    <li>Mã phòng không thể thay đổi</li>
+                    <li>Kiểm tra lại thông tin trước khi lưu</li>
+                    <li>Ảnh mới sẽ thay thế ảnh cũ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById('ImageFile').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('PreviewImage');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+}
