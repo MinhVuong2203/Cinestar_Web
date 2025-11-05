@@ -13,8 +13,6 @@ namespace Web.Areas.Admin.Service
             _db = db;
         }
 
-        // ===== CRUD OPERATIONS =====
-
         public async Task<List<ShowTime>> GetAllAsync()
             => await _db.ShowTimes
                 .Include(x => x.Movie)
@@ -34,21 +32,56 @@ namespace Web.Areas.Admin.Service
         {
             try
             {
-                // Kiểm tra conflict trước khi tạo
-                var movie = await GetMovieByIdAsync(showTime.MovieID);
-                if (movie == null) return false;
+                System.Diagnostics.Debug.WriteLine("\n========== SERVICE CREATE ==========");
+                System.Diagnostics.Debug.WriteLine($"ShowTimeID: '{showTime.ShowTimeID}'");
+                System.Diagnostics.Debug.WriteLine($"MovieID: '{showTime.MovieID}'");
+                System.Diagnostics.Debug.WriteLine($"RoomID: '{showTime.RoomID}'");
+                System.Diagnostics.Debug.WriteLine($"StartTime: {showTime.StartTime}");
+                System.Diagnostics.Debug.WriteLine($"Price: {showTime.Price}");
+                System.Diagnostics.Debug.WriteLine($"IsDeleted: {showTime.IsDeleted}");
 
-                var endTime = showTime.StartTime.AddMinutes(movie.DurationMinutes ?? 0);
-                var hasConflict = await CheckTimeConflictAsync(showTime.RoomID, showTime.StartTime, endTime);
+                showTime.IsDeleted = false;
 
-                if (hasConflict) return false;
-
+                System.Diagnostics.Debug.WriteLine("\nAdding to context...");
                 _db.ShowTimes.Add(showTime);
-                await _db.SaveChangesAsync();
+
+                System.Diagnostics.Debug.WriteLine("Calling SaveChangesAsync...");
+                var saveResult = await _db.SaveChangesAsync();
+
+                System.Diagnostics.Debug.WriteLine($"✅ SUCCESS! Rows affected: {saveResult}");
+                System.Diagnostics.Debug.WriteLine("====================================\n");
                 return true;
             }
-            catch
+            catch (DbUpdateException dbEx)
             {
+                System.Diagnostics.Debug.WriteLine("\n❌❌❌ DATABASE UPDATE EXCEPTION ❌❌❌");
+                System.Diagnostics.Debug.WriteLine($"Message: {dbEx.Message}");
+
+                if (dbEx.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"\nInner Exception: {dbEx.InnerException.Message}");
+
+                    if (dbEx.InnerException.InnerException != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"\nSQL Error Detail: {dbEx.InnerException.InnerException.Message}");
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"\nStack Trace:\n{dbEx.StackTrace}");
+                System.Diagnostics.Debug.WriteLine("============================================\n");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("\n❌❌❌ GENERAL EXCEPTION ❌❌❌");
+                System.Diagnostics.Debug.WriteLine($"Type: {ex.GetType().Name}");
+                System.Diagnostics.Debug.WriteLine($"Message: {ex.Message}");
+
+                if (ex.InnerException != null)
+                    System.Diagnostics.Debug.WriteLine($"\nInner: {ex.InnerException.Message}");
+
+                System.Diagnostics.Debug.WriteLine($"\nStack Trace:\n{ex.StackTrace}");
+                System.Diagnostics.Debug.WriteLine("======================================\n");
                 return false;
             }
         }
@@ -57,20 +90,6 @@ namespace Web.Areas.Admin.Service
         {
             try
             {
-                // Kiểm tra conflict trước khi update (exclude ID hiện tại)
-                var movie = await GetMovieByIdAsync(showTime.MovieID);
-                if (movie == null) return false;
-
-                var endTime = showTime.StartTime.AddMinutes(movie.DurationMinutes ?? 0);
-                var hasConflict = await CheckTimeConflictAsync(
-                    showTime.RoomID,
-                    showTime.StartTime,
-                    endTime,
-                    showTime.ShowTimeID
-                );
-
-                if (hasConflict) return false;
-
                 _db.ShowTimes.Update(showTime);
                 await _db.SaveChangesAsync();
                 return true;
@@ -86,7 +105,6 @@ namespace Web.Areas.Admin.Service
             var st = await _db.ShowTimes.FindAsync(id);
             if (st == null) return false;
             st.IsDeleted = true;
-            _db.ShowTimes.Update(st);
             await _db.SaveChangesAsync();
             return true;
         }
@@ -96,158 +114,81 @@ namespace Web.Areas.Admin.Service
             var st = await _db.ShowTimes.FindAsync(id);
             if (st == null) return false;
             st.IsDeleted = false;
-            _db.ShowTimes.Update(st);
             await _db.SaveChangesAsync();
             return true;
         }
 
-        // ===== DROPDOWN DATA =====
-
         public async Task<List<Movie>> GetAllMoviesAsync()
-            => await _db.Movies
-                .Where(m => !m.IsDeleted)
-                .OrderBy(m => m.Title)
-                .ToListAsync();
+            => await _db.Movies.Where(m => !m.IsDeleted).OrderBy(m => m.Title).ToListAsync();
 
         public async Task<List<CinemaBranch>> GetAllBranchesAsync()
-            => await _db.CinemaBranches
-                .Where(b => !b.IsDeleted)
-                .OrderBy(b => b.BranchName)
-                .ToListAsync();
+            => await _db.CinemaBranches.Where(b => !b.IsDeleted).OrderBy(b => b.BranchName).ToListAsync();
 
         public async Task<List<Room>> GetRoomsByBranchAsync(string branchId)
-            => await _db.Rooms
-                .Where(r => r.BranchID == branchId && !r.IsDeleted)
-                .OrderBy(r => r.RoomName)
-                .ToListAsync();
+            => await _db.Rooms.Where(r => r.BranchID == branchId && !r.IsDeleted).OrderBy(r => r.RoomName).ToListAsync();
 
         public async Task<Movie?> GetMovieByIdAsync(string movieId)
             => await _db.Movies.FindAsync(movieId);
 
-        // ===== TIMELINE & CONFLICT DETECTION =====
-
-        /// <summary>
-        /// Lấy tất cả suất chiếu của phòng trong 1 ngày (để hiển thị timeline)
-        /// </summary>
         public async Task<List<ShowTime>> GetShowTimesByRoomAndDateAsync(string roomId, DateTime date)
         {
             var startOfDay = date.Date;
             var endOfDay = startOfDay.AddDays(1);
-
             return await _db.ShowTimes
                 .Include(x => x.Movie)
-                .Where(st => st.RoomID == roomId
-                    && !st.IsDeleted
-                    && st.StartTime >= startOfDay
-                    && st.StartTime < endOfDay)
+                .Where(st => st.RoomID == roomId && !st.IsDeleted && st.StartTime >= startOfDay && st.StartTime < endOfDay)
                 .OrderBy(st => st.StartTime)
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Kiểm tra xem có conflict về thời gian không
-        /// Phải cách nhau ít nhất 15 phút (buffer time)
-        /// </summary>
-        public async Task<bool> CheckTimeConflictAsync(
-            string roomId,
-            DateTime startTime,
-            DateTime endTime,
-            string? excludeShowTimeId = null)
+        public async Task<bool> CheckTimeConflictAsync(string roomId, DateTime startTime, DateTime endTime, string? excludeShowTimeId = null)
         {
-            // Buffer time: 15 phút trước và sau mỗi suất chiếu
             const int bufferMinutes = 15;
+            var query = _db.ShowTimes.Include(st => st.Movie)
+                .Where(st => st.RoomID == roomId && !st.IsDeleted && st.StartTime.Date == startTime.Date);
 
-            // Lấy tất cả suất chiếu trong phòng vào ngày đó (không bao gồm đã xóa)
-            var query = _db.ShowTimes
-                .Include(st => st.Movie)
-                .Where(st => st.RoomID == roomId
-                    && !st.IsDeleted
-                    && st.StartTime.Date == startTime.Date); // Chỉ lấy cùng ngày
-
-            // Nếu đang edit, loại trừ showtime hiện tại
             if (!string.IsNullOrEmpty(excludeShowTimeId))
-            {
                 query = query.Where(st => st.ShowTimeID != excludeShowTimeId);
-            }
 
             var existingShowTimes = await query.ToListAsync();
 
-            foreach (var existingShowTime in existingShowTimes)
+            foreach (var existing in existingShowTimes)
             {
-                // Tính thời gian kết thúc của suất chiếu đã có
-                var existingEndTime = existingShowTime.StartTime
-                    .AddMinutes(existingShowTime.Movie?.DurationMinutes ?? 0);
+                var existingEnd = existing.StartTime.AddMinutes(existing.Movie?.DurationMinutes ?? 0);
+                var existingStartBuffer = existing.StartTime.AddMinutes(-bufferMinutes);
+                var existingEndBuffer = existingEnd.AddMinutes(bufferMinutes);
 
-                // Tính buffer zones
-                var existingStartWithBuffer = existingShowTime.StartTime.AddMinutes(-bufferMinutes);
-                var existingEndWithBuffer = existingEndTime.AddMinutes(bufferMinutes);
-
-                // Kiểm tra overlap:
-                // Case 1: Suất mới bắt đầu trong khoảng buffer của suất cũ
-                bool newStartInBuffer = startTime >= existingStartWithBuffer
-                    && startTime < existingEndWithBuffer;
-
-                // Case 2: Suất mới kết thúc trong khoảng buffer của suất cũ
-                bool newEndInBuffer = endTime > existingStartWithBuffer
-                    && endTime <= existingEndWithBuffer;
-
-                // Case 3: Suất mới bao trùm hoàn toàn suất cũ (kể cả buffer)
-                bool newCoversExisting = startTime <= existingStartWithBuffer
-                    && endTime >= existingEndWithBuffer;
-
-                if (newStartInBuffer || newEndInBuffer || newCoversExisting)
-                {
-                    return true; // Có conflict
-                }
+                if ((startTime >= existingStartBuffer && startTime < existingEndBuffer) ||
+                    (endTime > existingStartBuffer && endTime <= existingEndBuffer) ||
+                    (startTime <= existingStartBuffer && endTime >= existingEndBuffer))
+                    return true;
             }
-
-            return false; // Không có conflict
+            return false;
         }
 
-        /// <summary>
-        /// Lấy thông tin chi tiết về conflict (dùng cho thông báo lỗi)
-        /// </summary>
-        public async Task<List<ShowTime>> GetConflictingShowTimesAsync(
-            string roomId,
-            DateTime startTime,
-            DateTime endTime,
-            string? excludeShowTimeId = null)
+        public async Task<List<ShowTime>> GetConflictingShowTimesAsync(string roomId, DateTime startTime, DateTime endTime, string? excludeShowTimeId = null)
         {
             const int bufferMinutes = 15;
-
-            var query = _db.ShowTimes
-                .Include(st => st.Movie)
-                .Where(st => st.RoomID == roomId
-                    && !st.IsDeleted
-                    && st.StartTime.Date == startTime.Date);
+            var query = _db.ShowTimes.Include(st => st.Movie)
+                .Where(st => st.RoomID == roomId && !st.IsDeleted && st.StartTime.Date == startTime.Date);
 
             if (!string.IsNullOrEmpty(excludeShowTimeId))
-            {
                 query = query.Where(st => st.ShowTimeID != excludeShowTimeId);
-            }
 
             var existingShowTimes = await query.ToListAsync();
             var conflicts = new List<ShowTime>();
 
-            foreach (var existingShowTime in existingShowTimes)
+            foreach (var existing in existingShowTimes)
             {
-                var existingEndTime = existingShowTime.StartTime
-                    .AddMinutes(existingShowTime.Movie?.DurationMinutes ?? 0);
+                var existingEnd = existing.StartTime.AddMinutes(existing.Movie?.DurationMinutes ?? 0);
+                var existingStartBuffer = existing.StartTime.AddMinutes(-bufferMinutes);
+                var existingEndBuffer = existingEnd.AddMinutes(bufferMinutes);
 
-                var existingStartWithBuffer = existingShowTime.StartTime.AddMinutes(-bufferMinutes);
-                var existingEndWithBuffer = existingEndTime.AddMinutes(bufferMinutes);
-
-                bool hasConflict =
-                    (startTime >= existingStartWithBuffer && startTime < existingEndWithBuffer) ||
-                    (endTime > existingStartWithBuffer && endTime <= existingEndWithBuffer) ||
-                    (startTime <= existingStartWithBuffer && endTime >= existingEndWithBuffer);
-
-                if (hasConflict)
-                {
-                    conflicts.Add(existingShowTime);
-                }
+                if ((startTime >= existingStartBuffer && startTime < existingEndBuffer) ||
+                    (endTime > existingStartBuffer && endTime <= existingEndBuffer) ||
+                    (startTime <= existingStartBuffer && endTime >= existingEndBuffer))
+                    conflicts.Add(existing);
             }
-
             return conflicts;
         }
     }

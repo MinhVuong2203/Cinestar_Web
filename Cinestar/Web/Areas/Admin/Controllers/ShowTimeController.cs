@@ -31,78 +31,66 @@ namespace Web.Areas.Admin.Controllers
         public async Task<IActionResult> Create()
         {
             await LoadSelectLists();
-            return View(new ShowTime());
+            return View(new ShowTime { IsDeleted = false });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ShowTime model)
         {
-            // Loại bỏ validation cho các trường tự động
+            System.Diagnostics.Debug.WriteLine("========== DEBUG CREATE SHOWTIME ==========");
+            System.Diagnostics.Debug.WriteLine($"ShowTimeID: '{model.ShowTimeID}'");
+            System.Diagnostics.Debug.WriteLine($"MovieID: '{model.MovieID}'");
+            System.Diagnostics.Debug.WriteLine($"RoomID: '{model.RoomID}'");
+            System.Diagnostics.Debug.WriteLine($"StartTime: {model.StartTime}");
+            System.Diagnostics.Debug.WriteLine($"Price: {model.Price}");
+            System.Diagnostics.Debug.WriteLine($"IsDeleted: {model.IsDeleted}");
+
+            model.IsDeleted = false;
+
             ModelState.Remove("ShowTimeID");
             ModelState.Remove("Movie");
             ModelState.Remove("Room");
+            ModelState.Remove("Tickets");
+
+            System.Diagnostics.Debug.WriteLine($"\nModelState.IsValid: {ModelState.IsValid}");
+            System.Diagnostics.Debug.WriteLine($"ModelState.ErrorCount: {ModelState.ErrorCount}");
 
             if (!ModelState.IsValid)
             {
+                System.Diagnostics.Debug.WriteLine("\n❌❌❌ MODELSTATE ERRORS ❌❌❌");
+                foreach (var state in ModelState)
+                {
+                    if (state.Value.Errors.Count > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"\n*** Field: {state.Key} ***");
+                        System.Diagnostics.Debug.WriteLine($"    AttemptedValue: '{state.Value.AttemptedValue}'");
+                        System.Diagnostics.Debug.WriteLine($"    RawValue: '{state.Value.RawValue}'");
+                        foreach (var error in state.Value.Errors)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"    - Error: {error.ErrorMessage}");
+                            if (error.Exception != null)
+                                System.Diagnostics.Debug.WriteLine($"    - Exception: {error.Exception.Message}");
+                        }
+                    }
+                }
+                System.Diagnostics.Debug.WriteLine("==========================================\n");
                 await LoadSelectLists();
                 return View(model);
             }
 
-            // Lấy thông tin phim để tính endTime
-            var movie = await _service.GetMovieByIdAsync(model.MovieID);
-            if (movie == null)
-            {
-                ModelState.AddModelError("MovieID", "Phim không tồn tại");
-                await LoadSelectLists();
-                return View(model);
-            }
-
-            // Kiểm tra thời gian bắt đầu phải trong tương lai
-            if (model.StartTime < DateTime.Now)
-            {
-                ModelState.AddModelError("StartTime", "Giờ bắt đầu phải trong tương lai");
-                await LoadSelectLists();
-                return View(model);
-            }
-
-            // Kiểm tra conflict
-            var endTime = model.StartTime.AddMinutes(movie.DurationMinutes ?? 0);
-            var hasConflict = await _service.CheckTimeConflictAsync(
-                model.RoomID,
-                model.StartTime,
-                endTime
-            );
-
-            if (hasConflict)
-            {
-                // Lấy thông tin chi tiết về các suất chiếu bị conflict
-                var conflicts = await _service.GetConflictingShowTimesAsync(
-                    model.RoomID,
-                    model.StartTime,
-                    endTime
-                );
-
-                var conflictMessages = conflicts.Select(c =>
-                    $"{c.Movie?.Title}: {c.StartTime:HH:mm} - {c.StartTime.AddMinutes(c.Movie?.DurationMinutes ?? 0):HH:mm}"
-                );
-
-                ModelState.AddModelError("StartTime",
-                    $"Khung giờ này bị trùng hoặc chưa đủ khoảng cách 15 phút với các suất chiếu: {string.Join(", ", conflictMessages)}");
-
-                await LoadSelectLists();
-                return View(model);
-            }
-
-            // Tạo mới suất chiếu
+            System.Diagnostics.Debug.WriteLine("\n✅ ModelState is VALID, calling service...");
             var result = await _service.CreateAsync(model);
+            System.Diagnostics.Debug.WriteLine($"Service returned: {result}");
+            System.Diagnostics.Debug.WriteLine("==========================================\n");
+
             if (result)
             {
-                TempData["SuccessMessage"] = $"Thêm suất chiếu thành công! Phim: {movie.Title}, Giờ: {model.StartTime:dd/MM/yyyy HH:mm}";
+                TempData["SuccessMessage"] = "Thêm suất chiếu thành công!";
                 return RedirectToAction(nameof(Index));
             }
 
-            ModelState.AddModelError("", "Thêm suất chiếu thất bại. Vui lòng thử lại.");
+            TempData["ErrorMessage"] = "Có lỗi xảy ra khi thêm suất chiếu!";
             await LoadSelectLists();
             return View(model);
         }
@@ -111,7 +99,6 @@ namespace Web.Areas.Admin.Controllers
         {
             var st = await _service.GetByIdAsync(id);
             if (st == null) return NotFound();
-
             await LoadSelectLists();
             return View(st);
         }
@@ -124,60 +111,18 @@ namespace Web.Areas.Admin.Controllers
 
             ModelState.Remove("Movie");
             ModelState.Remove("Room");
+            ModelState.Remove("Tickets");
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                await LoadSelectLists();
-                return View(model);
+                var result = await _service.UpdateAsync(model);
+                if (result)
+                {
+                    TempData["SuccessMessage"] = "Cập nhật suất chiếu thành công!";
+                    return RedirectToAction(nameof(Index));
+                }
+                TempData["ErrorMessage"] = "Cập nhật thất bại!";
             }
-
-            // Lấy thông tin phim
-            var movie = await _service.GetMovieByIdAsync(model.MovieID);
-            if (movie == null)
-            {
-                ModelState.AddModelError("MovieID", "Phim không tồn tại");
-                await LoadSelectLists();
-                return View(model);
-            }
-
-            // Kiểm tra conflict (exclude current showtime)
-            var endTime = model.StartTime.AddMinutes(movie.DurationMinutes ?? 0);
-            var hasConflict = await _service.CheckTimeConflictAsync(
-                model.RoomID,
-                model.StartTime,
-                endTime,
-                model.ShowTimeID // Loại trừ suất chiếu hiện tại
-            );
-
-            if (hasConflict)
-            {
-                var conflicts = await _service.GetConflictingShowTimesAsync(
-                    model.RoomID,
-                    model.StartTime,
-                    endTime,
-                    model.ShowTimeID
-                );
-
-                var conflictMessages = conflicts.Select(c =>
-                    $"{c.Movie?.Title}: {c.StartTime:HH:mm} - {c.StartTime.AddMinutes(c.Movie?.DurationMinutes ?? 0):HH:mm}"
-                );
-
-                ModelState.AddModelError("StartTime",
-                    $"Khung giờ này bị trùng hoặc chưa đủ khoảng cách 15 phút với các suất chiếu: {string.Join(", ", conflictMessages)}");
-
-                await LoadSelectLists();
-                return View(model);
-            }
-
-            // Cập nhật
-            var result = await _service.UpdateAsync(model);
-            if (result)
-            {
-                TempData["SuccessMessage"] = "Cập nhật suất chiếu thành công!";
-                return RedirectToAction(nameof(Index));
-            }
-
-            ModelState.AddModelError("", "Cập nhật thất bại. Vui lòng thử lại.");
             await LoadSelectLists();
             return View(model);
         }
@@ -194,10 +139,7 @@ namespace Web.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var result = await _service.SoftDeleteAsync(id);
-            if (result)
-            {
-                TempData["SuccessMessage"] = "Xóa suất chiếu thành công!";
-            }
+            TempData[result ? "SuccessMessage" : "ErrorMessage"] = result ? "Xóa suất chiếu thành công!" : "Xóa thất bại!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -206,18 +148,10 @@ namespace Web.Areas.Admin.Controllers
         public async Task<IActionResult> Restore(string id)
         {
             var result = await _service.RestoreAsync(id);
-            if (result)
-            {
-                TempData["SuccessMessage"] = "Khôi phục suất chiếu thành công!";
-            }
+            TempData[result ? "SuccessMessage" : "ErrorMessage"] = result ? "Khôi phục thành công!" : "Khôi phục thất bại!";
             return RedirectToAction(nameof(Index));
         }
 
-        // ===== API METHODS FOR AJAX =====
-
-        /// <summary>
-        /// API lấy danh sách phòng theo chi nhánh
-        /// </summary>
         [HttpGet]
         public async Task<JsonResult> GetRoomsByBranch(string branchId)
         {
@@ -225,9 +159,6 @@ namespace Web.Areas.Admin.Controllers
             return Json(rooms.Select(r => new { value = r.RoomID, text = r.RoomName }));
         }
 
-        /// <summary>
-        /// API lấy thời lượng phim
-        /// </summary>
         [HttpGet]
         public async Task<JsonResult> GetMovieDuration(string movieId)
         {
@@ -235,21 +166,15 @@ namespace Web.Areas.Admin.Controllers
             return Json(new { duration = movie?.DurationMinutes ?? 0 });
         }
 
-        /// <summary>
-        /// API lấy timeline của phòng theo ngày
-        /// </summary>
         [HttpGet]
         public async Task<JsonResult> GetRoomTimeline(string roomId, string date)
         {
             try
             {
                 if (!DateTime.TryParse(date, out DateTime selectedDate))
-                {
                     return Json(new { success = false, message = "Ngày không hợp lệ" });
-                }
 
                 var showTimes = await _service.GetShowTimesByRoomAndDateAsync(roomId, selectedDate);
-
                 var data = showTimes.Select(st => new
                 {
                     showTimeId = st.ShowTimeID,
@@ -269,9 +194,6 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
-        /// <summary>
-        /// API kiểm tra conflict về thời gian
-        /// </summary>
         [HttpPost]
         public async Task<JsonResult> CheckTimeConflict(string roomId, DateTime startTime, int duration, string? excludeShowTimeId = null)
         {
@@ -279,21 +201,18 @@ namespace Web.Areas.Admin.Controllers
             {
                 var endTime = startTime.AddMinutes(duration);
                 var hasConflict = await _service.CheckTimeConflictAsync(roomId, startTime, endTime, excludeShowTimeId);
-
-                return Json(new { hasConflict });
+                return Json(new { success = true, hasConflict });
             }
             catch (Exception ex)
             {
-                return Json(new { hasConflict = true, error = ex.Message });
+                return Json(new { success = false, hasConflict = true, message = ex.Message });
             }
         }
 
-        // Helper method để load SelectLists
         private async Task LoadSelectLists()
         {
             var movies = await _service.GetAllMoviesAsync();
             var branches = await _service.GetAllBranchesAsync();
-
             ViewBag.Movies = new SelectList(movies, "MovieID", "Title");
             ViewBag.Branches = new SelectList(branches, "BranchID", "BranchName");
         }
