@@ -31,6 +31,11 @@ namespace Web.Controllers
             return View();
         }
 
+        public IActionResult PurchaseHistory()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<JsonResult> Login(string username, string password, bool remember = false)
         {

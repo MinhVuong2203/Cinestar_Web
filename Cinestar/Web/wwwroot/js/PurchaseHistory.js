@@ -15,9 +15,9 @@
                 window.location.href = 'Profile';
                 return;
             }
-            else if (itemText.includes('Lịch sử mua hàng')) {
-                console.log('Navigating to Purchase History page'); // Debug log
-                window.location.href = 'PurchaseHistory';
+            else if (itemText.includes('Thành viên Cinestar')) {
+                console.log('Navigating to Cinestar Member page'); // Debug log
+                window.location.href = 'CinestarMember';
             }
 
             // Remove selected class from all items first

@@ -11,6 +11,9 @@
                 window.location.href = '/Account/CinestartMember';
                 return;
             }
+            else if (page === 'purchase-history') {
+                window.location.href = '/Account/PurchaseHistory';
+            }
 
             // Remove selected class from all items
             menuItems.forEach(mi => mi.classList.remove('selected'));
