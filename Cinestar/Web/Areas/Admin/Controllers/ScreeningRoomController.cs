@@ -29,6 +29,9 @@ namespace Web.Areas.Admin.Controllers
             ViewBag.DeletedRooms = rooms.Count(r => r.IsDeleted);
             ViewBag.TotalSeats = rooms.Where(r => !r.IsDeleted).Sum(r => r.SeatCount ?? 0);
 
+            // ✅ THÊM: Lấy tất cả chi nhánh từ database
+            ViewBag.AllBranches = await _screeningRoomService.GetActiveBranches();
+
             return View(rooms);
         }
 
@@ -203,5 +206,6 @@ namespace Web.Areas.Admin.Controllers
                 System.IO.File.Delete(imagePath);
             }
         }
+
     }
 }

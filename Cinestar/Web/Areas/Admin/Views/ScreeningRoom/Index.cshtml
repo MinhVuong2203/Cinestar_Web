@@ -42,6 +42,13 @@
         .table tbody tr:hover {
             background-color: #f8f9fa;
         }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
     </style>
 }
 
@@ -49,7 +56,7 @@
     <div class="col-md-12">
         <h2><i class="fas fa-door-open"></i> Quản lý Phòng chiếu</h2>
         <div class="d-flex justify-content-between align-items-center">
-           
+
             <a asp-action="Create" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i>Thêm phòng chiếu mới
             </a>
@@ -61,26 +68,53 @@
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="stats-card">
-            <h3>@ViewBag.TotalRooms</h3>
+            <h3 id="totalRooms">@ViewBag.TotalRooms</h3>
             <p>Tổng số phòng chiếu</p>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stats-card">
-            <h3>@ViewBag.ActiveRooms</h3>
+            <h3 id="activeRooms">@ViewBag.ActiveRooms</h3>
             <p>Phòng đang hoạt động</p>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stats-card">
-            <h3>@ViewBag.TotalSeats</h3>
+            <h3 id="totalSeats">@ViewBag.TotalSeats</h3>
             <p>Tổng số ghế</p>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stats-card">
-            <h3>@ViewBag.DeletedRooms</h3>
+            <h3 id="deletedRooms">@ViewBag.DeletedRooms</h3>
             <p>Phòng đã xóa</p>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="filter-section">
+    <div class="row align-items-end">
+        <div class="col-md-4">
+            <label for="branchFilter" class="form-label">
+                <i class="fas fa-filter me-2"></i>Lọc theo Chi nhánh
+            </label>
+            <select id="branchFilter" class="form-select">
+                <option value="">-- Tất cả chi nhánh --</option>
+                @* ✅ THAY ĐỔI: Hiển thị tất cả chi nhánh từ database *@
+                @if (ViewBag.AllBranches != null)
+                {
+                    foreach (var branch in ViewBag.AllBranches)
+                    {
+                        <option value="@branch.BranchID">@branch.BranchName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button id="resetFilter" class="btn btn-secondary">
+                <i class="fas fa-redo me-2"></i>Đặt lại
+            </button>
         </div>
     </div>
 </div>
@@ -88,7 +122,10 @@
 <!-- Room Table -->
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="fas fa-list me-2"></i>Danh sách Phòng chiếu</span>
+        <span>
+            <i class="fas fa-list me-2"></i>Danh sách Phòng chiếu
+            <span id="roomCount" class="badge bg-secondary">@Model.Count()</span>
+        </span>
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="showDeleted" checked>
             <label class="form-check-label" for="showDeleted">Hiển thị đã xóa</label>
@@ -100,7 +137,6 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Mã phòng</th>
                         <th>Tên phòng</th>
                         <th>Số ghế</th>
                         <th>Loại phòng</th>
@@ -115,9 +151,8 @@
                     }
                     @foreach (var room in Model)
                     {
-                        <tr class="@(room.IsDeleted ? "deleted-row" : "")">
-                            <td>@index</td>
-                            <td>@room.RoomID</td>
+                        <tr class="@(room.IsDeleted ? "deleted-row" : "")" data-branch-id="@room.BranchID">
+                            <td class="row-number">@index</td>
                             <td>@room.RoomName</td>
                             <td>@(room.SeatCount ?? 0)</td>
                             <td>@(room.RoomType ?? "Chưa xác định")</td>
@@ -164,6 +199,11 @@
                     }
                 </tbody>
             </table>
+
+            <div id="noResults" style="display: none;" class="text-center py-4">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Không tìm thấy phòng chiếu nào</p>
+            </div>
         </div>
     </div>
 </div>
@@ -171,14 +211,100 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Chức năng ẩn/hiện các dòng đã xóa
-            $('#showDeleted').change(function() {
-                if ($(this).is(':checked')) {
-                    $('.deleted-row').show();
-                } else {
-                    $('.deleted-row').hide();
-                }
+            // Lọc theo chi nhánh
+            $('#branchFilter').change(function() {
+                filterRooms();
             });
+
+            // Ẩn/hiện các dòng đã xóa
+            $('#showDeleted').change(function() {
+                filterRooms();
+            });
+
+            // Nút đặt lại filter
+            $('#resetFilter').click(function() {
+                $('#branchFilter').val('');
+                $('#showDeleted').prop('checked', true);
+                filterRooms();
+            });
+
+            // Hàm lọc phòng chiếu
+            function filterRooms() {
+                var selectedBranch = $('#branchFilter').val();
+                var showDeleted = $('#showDeleted').is(':checked');
+                var visibleCount = 0;
+                var visibleIndex = 1;
+
+                $('#roomTableBody tr').each(function() {
+                    var $row = $(this);
+                    var branchId = $row.data('branch-id');
+                    var isDeleted = $row.hasClass('deleted-row');
+                    var shouldShow = true;
+
+                    // Lọc theo chi nhánh
+                    if (selectedBranch && branchId != selectedBranch) {
+                        shouldShow = false;
+                    }
+
+                    // Lọc theo trạng thái xóa
+                    if (!showDeleted && isDeleted) {
+                        shouldShow = false;
+                    }
+
+                    // Hiển thị hoặc ẩn dòng
+                    if (shouldShow) {
+                        $row.show();
+                        $row.find('.row-number').text(visibleIndex);
+                        visibleIndex++;
+                        visibleCount++;
+                    } else {
+                        $row.hide();
+                    }
+                });
+
+                // Cập nhật số lượng phòng hiển thị
+                $('#roomCount').text(visibleCount);
+
+                // Hiển thị thông báo nếu không có kết quả
+                if (visibleCount === 0) {
+                    $('#noResults').show();
+                } else {
+                    $('#noResults').hide();
+                }
+
+                // Cập nhật thống kê
+                updateStatistics();
+            }
+
+            // Hàm cập nhật thống kê
+            function updateStatistics() {
+                var totalVisible = 0;
+                var activeVisible = 0;
+                var deletedVisible = 0;
+                var totalSeatsVisible = 0;
+
+                $('#roomTableBody tr:visible').each(function() {
+                    var $row = $(this);
+                    var isDeleted = $row.hasClass('deleted-row');
+                    var seatCount = parseInt($row.find('td:eq(2)').text()) || 0;
+
+                    totalVisible++;
+                    if (isDeleted) {
+                        deletedVisible++;
+                    } else {
+                        activeVisible++;
+                        totalSeatsVisible += seatCount;
+                    }
+                });
+
+                $('#totalRooms').text(totalVisible);
+                $('#activeRooms').text(activeVisible);
+                $('#deletedRooms').text(deletedVisible);
+                $('#totalSeats').text(totalSeatsVisible);
+            }
+
+            // Khởi tạo filter ban đầu
+            filterRooms();
         });
     </script>
 }
