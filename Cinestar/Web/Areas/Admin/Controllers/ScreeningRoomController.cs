@@ -23,17 +23,14 @@ namespace Web.Areas.Admin.Controllers
         {
             var rooms = await _screeningRoomService.GetScreeningRooms();
 
-            // Thống kê
+            // ✅ Chỉ thống kê tổng số (không cần active/deleted)
             ViewBag.TotalRooms = rooms.Count;
-            ViewBag.ActiveRooms = rooms.Count(r => !r.IsDeleted);
-            ViewBag.DeletedRooms = rooms.Count(r => r.IsDeleted);
-            ViewBag.TotalSeats = rooms.Where(r => !r.IsDeleted).Sum(r => r.SeatCount ?? 0);
-
-            // ✅ THÊM: Lấy tất cả chi nhánh từ database
+            ViewBag.TotalSeats = rooms.Sum(r => r.SeatCount ?? 0);
             ViewBag.AllBranches = await _screeningRoomService.GetActiveBranches();
 
             return View(rooms);
         }
+
 
         // GET: Admin/ScreeningRoom/Create
         public async Task<IActionResult> Create()
@@ -54,6 +51,12 @@ namespace Web.Areas.Admin.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    // ✅ TỰ ĐỘNG SET SeatCount = 250
+                    if (!room.SeatCount.HasValue || room.SeatCount.Value <= 0)
+                    {
+                        room.SeatCount = 250;
+                    }
+
                     // Upload ảnh nếu có
                     if (ImageFile != null && ImageFile.Length > 0)
                     {
@@ -75,6 +78,7 @@ namespace Web.Areas.Admin.Controllers
                 return View(room);
             }
         }
+
 
         // GET: Admin/ScreeningRoom/Edit/ROM-12345
         public async Task<IActionResult> Edit(string id)
@@ -143,24 +147,7 @@ namespace Web.Areas.Admin.Controllers
             try
             {
                 await _screeningRoomService.DeleteScreeningRoom(id);
-                TempData["Success"] = "Xóa phòng chiếu thành công!";
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Lỗi: " + ex.Message;
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        // POST: Admin/ScreeningRoom/Restore/ROM-12345
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Restore(string id)
-        {
-            try
-            {
-                await _screeningRoomService.RestoreScreeningRoom(id);
-                TempData["Success"] = "Khôi phục phòng chiếu thành công!";
+                TempData["Success"] = "Xóa phòng chiếu vĩnh viễn thành công!";
             }
             catch (Exception ex)
             {
