@@ -61,11 +61,12 @@
                                 Danh sách phòng
                             </a>
                         </li>
-                        <li>
-                            <a asp-area="Admin" asp-controller="ScreeningRoom" asp-action="SeatManagement">
-                                Quản lý ghế ngồi
+                        <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "SeatManagement" ? "active" : "")">
+                            <a asp-area="Admin" asp-controller="SeatManagement" asp-action="Index">
+                                Quản lý Ghế ngồi
                             </a>
                         </li>
+
                     </ul>
                 </li>
 

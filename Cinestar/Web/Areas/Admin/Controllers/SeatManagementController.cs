@@ -1,0 +1,149 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Web.Areas.Admin.Service;
+using Web.Data;
+using Web.Models;
+
+namespace Web.Areas.Admin.Controllers
+{
+    [Area("Admin")]
+    public class SeatManagementController : Controller
+    {
+        private readonly ISeatManagementService _seatManagementService;
+        private readonly CineStarContext _context; // ✅ Thêm
+
+        public SeatManagementController(
+            ISeatManagementService seatManagementService,
+            CineStarContext context) // ✅ Inject DbContext
+        {
+            _seatManagementService = seatManagementService;
+            _context = context;
+        }
+
+        // GET: Admin/SeatManagement/Index
+        public async Task<IActionResult> Index()
+        {
+            var rooms = await _seatManagementService.GetAllRoomsWithSeats();
+
+            // Thống kê
+            ViewBag.TotalRooms = rooms.Count;
+            ViewBag.TotalSeats = rooms.Sum(r => r.Seats?.Count ?? 0);
+            ViewBag.AllBranches = await _seatManagementService.GetActiveBranches();
+
+            return View(rooms);
+        }
+
+        // GET: Admin/SeatManagement/Edit/ROM-12345
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var room = await _seatManagementService.GetRoomWithSeats(id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            return View(room);
+        }
+
+        // ✅ POST: Admin/SeatManagement/CreateSeat
+        [HttpPost]
+        public async Task<IActionResult> CreateSeat(string roomId, string seatName, string seatType)
+        {
+            try
+            {
+                // Validate
+                if (string.IsNullOrWhiteSpace(seatName))
+                {
+                    return Json(new { success = false, message = "Tên ghế không được để trống!" });
+                }
+
+                // Tạo ghế mới
+                var newSeat = new Seat
+                {
+                    SeatName = seatName.Trim().ToUpper(),
+                    SeatType = seatType,
+                    RoomID = roomId
+                };
+
+                var createdSeat = await _seatManagementService.CreateSeat(newSeat);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Thêm ghế thành công!",
+                    seatId = createdSeat.SeatID,
+                    seatName = createdSeat.SeatName,
+                    reload = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // POST: Admin/SeatManagement/UpdateSeatType
+        [HttpPost]
+        public async Task<IActionResult> UpdateSeat(string seatId, string seatName, string seatType)
+        {
+            try
+            {
+                var seat = await _context.Seats.FirstOrDefaultAsync(s => s.SeatID == seatId);
+
+                if (seat != null)
+                {
+                    seat.SeatName = seatName;  // ✅ Cập nhật tên
+                    seat.SeatType = seatType;
+                    _context.Update(seat);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "Cập nhật thành công!" });
+                }
+
+                return Json(new { success = false, message = "Không tìm thấy ghế!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
+        }
+
+        // ✅ POST: Admin/SeatManagement/DeleteSeat
+        [HttpPost]
+        public async Task<IActionResult> DeleteSeat(string seatId)
+        {
+            try
+            {
+                // Kiểm tra ghế có Ticket không
+                var hasTickets = await _context.Tickets.AnyAsync(t => t.SeatID == seatId);
+
+                if (hasTickets)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Không thể xóa ghế đã có vé đặt!"
+                    });
+                }
+
+                await _seatManagementService.DeleteSeat(seatId);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Xóa ghế thành công!",
+                    reload = true  // Báo hiệu reload trang
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
+        }
+    }
+}

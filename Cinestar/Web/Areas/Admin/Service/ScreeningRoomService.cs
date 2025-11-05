@@ -61,7 +61,7 @@ namespace Web.Areas.Admin.Service
             }
         }
 
-        // ✅ TẠO GHẾ BẰNG RAW SQL (Tránh tracking conflict)
+        // ✅ TẠO GHẾ BẰNG RAW SQL (250 ghế đúng logic)
         private async Task CreateSeatsUsingRawSQL(string roomId)
         {
             var insertStatements = new List<string>();
@@ -76,8 +76,8 @@ namespace Web.Areas.Admin.Service
                 }
             }
 
-            // Hàng G-N: 17 ghế mỗi hàng (8 hàng * 17 = 136 ghế)
-            for (char row = 'G'; row <= 'N'; row++)
+            // Hàng G-O: 17 ghế mỗi hàng (9 hàng * 17 = 153 ghế)
+            for (char row = 'G'; row <= 'O'; row++)
             {
                 for (int col = 1; col <= 17; col++)
                 {
@@ -86,15 +86,15 @@ namespace Web.Areas.Admin.Service
                 }
             }
 
-            // Hàng O: 24 ghế (24 ghế để đủ 250)
-            // Tổng: 90 + 136 + 24 = 250 ghế
-            for (int col = 1; col <= 24; col++)
+            // Hàng P: 7 ghế (để đủ 250 ghế)
+            // Tổng: 90 + 153 + 7 = 250 ghế
+            for (int col = 1; col <= 7; col++)
             {
-                var seatName = $"O{col:D2}";
+                var seatName = $"P{col:D2}";
                 insertStatements.Add($"(N'{seatName}', N'Ghế thường', '{roomId}', 0)");
             }
 
-            // ✅ Chia nhỏ insert (SQL Server giới hạn 1000 rows/batch)
+            // ✅ Insert theo batch
             var batchSize = 100;
             for (int i = 0; i < insertStatements.Count; i += batchSize)
             {
@@ -102,13 +102,14 @@ namespace Web.Areas.Admin.Service
                 var values = string.Join(",\n", batch);
 
                 var sql = $@"
-                    INSERT INTO Seat (SeatName, SeatType, RoomID, IsDeleted)
-                    VALUES {values};
-                ";
+            INSERT INTO Seat (SeatName, SeatType, RoomID, IsDeleted)
+            VALUES {values};
+        ";
 
                 await _context.Database.ExecuteSqlRawAsync(sql);
             }
         }
+
 
         // Cập nhật phòng chiếu
         public async Task EditScreeningRoom(Room room)

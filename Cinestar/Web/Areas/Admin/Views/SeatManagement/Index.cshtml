@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<Web.Models.Room>
 
 @{
-    ViewData["Title"] = "Quản lý Phòng chiếu";
+    ViewData["Title"] = "Quản lý Ghế ngồi";
 }
 
 @section Styles {
     <style>
         .stats-card {
-            background: linear-gradient(135deg, #dc3545, #bb2d3b);
+            background: linear-gradient(135deg, #17a2b8, #138496);
             color: white;
             border-radius: 8px;
             padding: 20px;
@@ -23,10 +23,6 @@
                 margin: 5px 0 0 0;
                 opacity: 0.9;
             }
-
-        .action-buttons .btn {
-            margin-right: 5px;
-        }
 
         .table thead th {
             background-color: #f8f9fa;
@@ -49,12 +45,7 @@
 
 <div class="row mb-3">
     <div class="col-md-12">
-        <h2><i class="fas fa-door-open"></i> Quản lý Phòng chiếu</h2>
-        <div class="d-flex justify-content-between align-items-center">
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Thêm phòng chiếu mới
-            </a>
-        </div>
+        <h2> Quản lý Ghế ngồi</h2>
     </div>
 </div>
 
@@ -127,25 +118,35 @@
                     }
                     @foreach (var room in Model)
                     {
+                        var seatCount = room.Seats?.Count ?? 0;
+
                         <tr data-branch-id="@room.BranchID">
                             <td class="row-number">@index</td>
                             <td>@room.RoomName</td>
-                            <td>@(room.SeatCount ?? 0)</td>
+                            <td>
+                                @if (seatCount > 0)
+                                {
+                                    <span class="badge bg-success">@seatCount ghế</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Chưa có ghế</span>
+                                }
+                            </td>
                             <td>@(room.RoomType ?? "Chưa xác định")</td>
                             <td>@(room.Branch?.BranchName ?? "Chưa có chi nhánh")</td>
                             <td>
-                                <div class="action-buttons">
+                                @if (seatCount > 0)
+                                {
                                     <a asp-action="Edit" asp-route-id="@room.RoomID"
-                                       class="btn btn-sm btn-warning" title="Sửa">
-                                        <i class="fas fa-edit"></i>
+                                       class="btn btn-sm btn-primary" title="Quản lý ghế">
+                                       Quản lý ghế
                                     </a>
-                                    <form asp-action="Delete" asp-route-id="@room.RoomID" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa vĩnh viễn"
-                                                onclick="return confirm('⚠️ CẢNH BÁO: Xóa phòng sẽ XÓA VĨNH VIỄN tất cả ghế và dữ liệu liên quan!\n\nBạn có chắc chắn muốn xóa phòng @room.RoomName?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa có ghế</span>
+                                }
                             </td>
                         </tr>
                         index++;
@@ -191,8 +192,12 @@
                     if (shouldShow) {
                         $row.show();
                         $row.find('.row-number').text(visibleIndex);
-                        var seatCount = parseInt($row.find('td:eq(2)').text()) || 0;
+
+                        // Lấy số ghế từ badge
+                        var seatText = $row.find('td:eq(2) .badge').text();
+                        var seatCount = parseInt(seatText) || 0;
                         totalSeats += seatCount;
+
                         visibleIndex++;
                         visibleCount++;
                     } else {
