@@ -25,6 +25,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    column-gap: 15px;
 }
 
 .box-time {
@@ -34,23 +36,38 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 110px; /* nhỏ lại */
+    min-width: 100px; /* nhỏ lại */
     border: 1px solid #F3EA28;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+    color: #F3EA28;
 }
+    .box-time:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+    }
 
     .box-time .date {
         font-size: 22px; /* nhỏ lại */
         font-weight: bold;
-        color: #F3EA28;
+/*        color: #F3EA28;*/
         margin-bottom: 6px;
         text-align: center;
     }
 
     .box-time .day {
         font-size: 16px; /* nhỏ lại */
-        color: #F3EA28;
+/*        color: #F3EA28;*/
         text-align: center;
+    }
+
+    .box-time.active {
+        background: #F3EA28;
+        color: #6C4FA1;
+        border-color: #F3EA28;
+        font-weight: bold;
+        transform: scale(1.1);
     }
 
 .shtime-body {
