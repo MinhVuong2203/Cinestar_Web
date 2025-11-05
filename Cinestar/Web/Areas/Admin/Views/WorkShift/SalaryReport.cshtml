@@ -1,0 +1,312 @@
+﻿@model Web.Areas.Admin.Controllers.SalaryReportVM
+@{
+    ViewData["Title"] = "Thống kê lương nhân viên";
+}
+
+@section Styles {
+    <link href="~/css/Admin/SalaryReport.css" rel="stylesheet" />
+}
+
+<div class="container-fluid">
+    <div class="page-header">
+        <h2><i class="fas fa-chart-line"></i> Thống kê lương và hiệu suất làm việc</h2>
+    </div>
+
+    <!-- Form lọc -->
+    <div class="filter-card">
+        <form method="get" asp-action="SalaryReport" id="filterForm">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-building"></i> Chi nhánh
+                    </label>
+                    <select name="branchId" class="form-select" required>
+                        <option value="">-- Chọn chi nhánh --</option>
+                        @foreach (var b in ViewBag.Branches)
+                        {
+                            <option value="@b.BranchID" selected="@(b.BranchID==ViewBag.CurrentBranch)">
+                                @b.BranchName
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-calendar-alt"></i> Từ ngày
+                    </label>
+                    <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-calendar-check"></i> Đến ngày
+                    </label>
+                    <input type="date" name="toDate" class="form-control" value="@ViewBag.ToDate" required />
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Xem báo cáo
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @if (Model == null || !Model.EmployeeStats.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Vui lòng chọn chi nhánh và khoảng thời gian để xem báo cáo.
+        </div>
+    }
+    else
+    {
+        <!-- Thống kê tổng quan -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h5>Tổng nhân viên</h5>
+                        <h2>@Model.EmployeeStats.Count</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card stat-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h5>Tổng lương</h5>
+                        <h2>@Model.TotalSalary.ToString("N0") đ</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card stat-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h5>Tổng ca hoàn thành</h5>
+                        <h2>@Model.TotalCompleted</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h5>Tổng ca vắng</h5>
+                        <h2>@Model.TotalAbsent</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút xuất Excel -->
+        <div class="mb-3 text-end">
+            <button type="button" class="btn btn-success" id="exportExcel">
+                <i class="fas fa-file-excel"></i> Xuất báo cáo Excel
+            </button>
+        </div>
+
+        <!-- Bảng chi tiết -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="salaryTable">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ tên</th>
+                            <th>Chức vụ</th>
+                            <th class="text-center">
+                                <i class="fas fa-check-circle text-success"></i>
+                                Hoàn thành
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-clock text-primary"></i>
+                                Đang làm
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-times-circle text-danger"></i>
+                                Vắng
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-plane text-warning"></i>
+                                Nghỉ phép
+                            </th>
+                            <th class="text-center">Tổng ca</th>
+                            <th class="text-end">Lương (đ)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var emp in Model.EmployeeStats.OrderByDescending(e => e.TotalSalary))
+                        {
+                            <tr class="employee-row">
+                                <td>@index</td>
+                                <td>
+                                    <div class="employee-info">
+                                        <strong>@emp.FullName</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge role-badge role-@emp.Role?.ToLower().Replace(" ", "-")">
+                                        @emp.Role
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success-soft">@emp.CompletedCount</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary-soft">@emp.WorkingCount</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-danger-soft">@emp.AbsentCount</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-warning-soft">@emp.LeaveCount</span>
+                                </td>
+                                <td class="text-center">
+                                    <strong>@emp.TotalShifts</strong>
+                                </td>
+                                <td class="text-end">
+                                    <strong class="text-success">@emp.TotalSalary.ToString("N0")</strong>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <th colspan="3" class="text-end">TỔNG CỘNG</th>
+                            <th class="text-center">
+                                <strong class="text-success">@Model.TotalCompleted</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong class="text-primary">@Model.TotalWorking</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong class="text-danger">@Model.TotalAbsent</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong class="text-warning">@Model.TotalLeave</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>@Model.TotalShifts</strong>
+                            </th>
+                            <th class="text-end">
+                                <strong class="text-success">@Model.TotalSalary.ToString("N0") đ</strong>
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Biểu đồ -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <h5><i class="fas fa-chart-pie"></i> Phân bố trạng thái ca làm việc</h5>
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <h5><i class="fas fa-chart-bar"></i> Top 5 nhân viên có lương cao nhất</h5>
+                    <canvas id="salaryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Xuất Excel
+            $('#exportExcel').on('click', function () {
+                const branchId = $('select[name="branchId"]').val();
+                const fromDate = $('input[name="fromDate"]').val();
+                const toDate = $('input[name="toDate"]').val();
+
+                if (!branchId) {
+                    alert('Vui lòng chọn chi nhánh!');
+                    return;
+                }
+
+                window.location.href = `/Admin/SalaryReport/ExportExcel?branchId=${branchId}&fromDate=${fromDate}&toDate=${toDate}`;
+            });
+
+            @if (Model != null && Model.EmployeeStats.Any())
+            {
+                    <text>
+                    // Biểu đồ trạng thái
+                    const statusCtx = document.getElementById('statusChart').getContext('2d');
+                    new Chart(statusCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Hoàn thành', 'Đang làm', 'Vắng', 'Nghỉ phép'],
+                            datasets: [{
+                                data: [@Model.TotalCompleted, @Model.TotalWorking, @Model.TotalAbsent, @Model.TotalLeave],
+                                backgroundColor: ['#28a745', '#007bff', '#dc3545', '#ffc107']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+
+                    // Biểu đồ lương top 5
+                    const topEmployees = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                                        Model.EmployeeStats.OrderByDescending(e => e.TotalSalary).Take(5).Select(e => new { e.FullName, e.TotalSalary }).ToList()
+                                ));
+
+            const salaryCtx = document.getElementById('salaryChart').getContext('2d');
+            new Chart(salaryCtx, {
+                type: 'bar',
+                data: {
+                    labels: topEmployees.map(e => e.FullName),
+                    datasets: [{
+                        label: 'Lương (đ)',
+                        data: topEmployees.map(e => e.TotalSalary),
+                        backgroundColor: '#28a745'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('vi-VN') + ' đ';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            </text>
+                }
+        });
+    </script>
+}

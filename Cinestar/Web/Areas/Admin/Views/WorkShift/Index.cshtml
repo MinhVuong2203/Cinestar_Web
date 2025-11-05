@@ -9,9 +9,9 @@
 
 <h2><i class="fas fa-calendar-alt"></i> Phân ca làm việc</h2>
 
-<form method="get" asp-action="Index">
+<form method="get" asp-action="Index" id="filterForm">
     <div class="row g-3 align-items-end mb-4">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label class="form-label">Chi nhánh</label>
             <select name="branchId" class="form-select" required>
                 <option value="">-- Chọn chi nhánh --</option>
@@ -23,20 +23,51 @@
                 }
             </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <label class="form-label">Chức vụ</label>
+            <select name="role" class="form-select" id="roleFilter">
+                <option value="">-- Tất cả --</option>
+                <option value="Bảo vệ" selected="@(ViewBag.CurrentRole == "Bảo vệ")">Bảo vệ</option>
+                <option value="Tạp vụ" selected="@(ViewBag.CurrentRole == "Tạp vụ")">Tạp vụ</option>
+                <option value="Nhân viên bán vé" selected="@(ViewBag.CurrentRole == "Nhân viên bán vé")">Nhân viên bán vé</option>
+                <option value="Nhân viên kỹ thuật" selected="@(ViewBag.CurrentRole == "Nhân viên kỹ thuật")">Nhân viên kỹ thuật</option>
+                <option value="Quản lý" selected="@(ViewBag.CurrentRole == "Quản lý")">Quản lý</option>
+            </select>
+        </div>
+        <div class="col-md-2">
             <label class="form-label">Từ ngày</label>
             <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate" />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label class="form-label">Đến ngày</label>
             <input type="date" name="toDate" class="form-control" value="@ViewBag.ToDate" />
         </div>
-        <div class="col-md-3">
-            <button type="submit" class="btn btn-primary w-100">
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100" style="padding: 10px 2px;">
                 <i class="fas fa-search"></i> Xem lịch
             </button>
         </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-success w-100" style="padding: 10px 2px;" id="exportExcel">
+                <i class="fas fa-file-excel"></i> Xuất Excel
+            </button>
+        </div>
     </div>
+
+    @if (Model != null && Model.Employees.Any())
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchEmployee" placeholder="Tìm kiếm nhân viên...">
+                </div>
+            </div>
+            <div class="col-md-8 text-end">
+                <small class="text-muted">Tìm thấy: <span id="employeeCount">@Model.Employees.Count</span> nhân viên</small>
+            </div>
+        </div>
+    }
 </form>
 
 @if (Model == null || !Model.Employees.Any())
@@ -46,7 +77,7 @@
 else
 {
     <div class="table-responsive">
-        <table class="table table-bordered align-middle text-center">
+        <table class="table table-bordered align-middle text-center" id="shiftTable">
             <thead class="table-light">
                 <tr>
                     <th rowspan="2">Nhân viên</th>
@@ -70,15 +101,15 @@ else
                     string roleClass = emp.Role?.ToLower().Trim() switch
                     {
                         "bảo vệ" => "role-bao-ve",
-                        "tạp vụ" => "role-tap-vu", 
+                        "tạp vụ" => "role-tap-vu",
                         "nhân viên bán vé" => "role-ban-ve",
                         "nhân viên kỹ thuật" => "role-ky-thuat",
                         "quản lý" => "role-quan-ly",
                         _ => ""
                     };
 
-                    <tr class="@roleClass">
-                        <td class="text-start fw-semibold nameColunm">@emp.FullName<br/><small class="text-muted">@emp.Role</small></td>
+                    <tr class="@roleClass employee-row" data-employee-name="@emp.FullName.ToLower()" data-employee-role="@emp.Role?.ToLower()">
+                        <td class="text-start fw-semibold nameColunm">@emp.FullName<br /><small class="text-muted">@emp.Role</small></td>
                         @foreach (var date in Model.Dates)
                         {
                             foreach (var slot in new[] { "S", "C", "T" })
@@ -91,7 +122,7 @@ else
                                 bool lockEmptyCell = date.Date <= DateTime.Today;
                                 if (shift != null)
                                 {
-                                    <td class="text-white shift-cell " data-status="@shift.Status" data-id="@shift.ShiftID">
+                                    <td class="text-white shift-cell" data-status="@shift.Status" data-id="@shift.ShiftID">
                                         @{
                                             string statusClass = shift.Status?.ToLower().Trim() switch
                                             {
@@ -101,13 +132,11 @@ else
                                                 "nghỉ phép" => "status-nghiphep",
                                                 "sắp làm" => "status-saplam"
                                             };
-                                        }                                       
+                                        }
                                         <button class="@statusClass">
                                             <small style="font-size: 11px;">@shift.StartTime.ToString("HH:mm") - @shift.EndTime.ToString("HH:mm")</small>
                                             <small>@shift.Status</small>
                                         </button>
-                                    
-
                                         <div class="status-actions">
                                             <div style="display: flex; gap: 6px">
                                                 @if (shift.Status == "Sắp làm")
@@ -135,28 +164,28 @@ else
                                                     <button class="btn btn-status-complete" data-status="Hoàn thành" data-id="@shift.ShiftID">Hoàn thành</button>
                                                     <button class="btn btn-status-absent" data-status="Vắng" data-id="@shift.ShiftID">Vắng</button>
                                                 }
-                                            </div>                                                                                 
+                                            </div>
                                         </div>
                                     </td>
                                 }
                                 else
                                 {
                                     if (lockEmptyCell)
-                                    {   
+                                    {
                                         <td class="cell-locked" title="Không thể xếp ca cho ngày này">
                                             <span>—</span>
                                         </td>
-                                    } 
+                                    }
                                     else
                                     {
                                         <td>
                                             <button class="btn btn-outline-primary btn-sm assign-btn"
                                                     data-emp-id="@emp.EmployeeID"
                                                     data-date="@date.ToString("yyyy-MM-dd")"
-                                                    data-slot="@slot"> + 
+                                                    data-slot="@slot">
+                                                +
                                             </button>
                                         </td>
-                                        
                                     }
                                 }
                             }

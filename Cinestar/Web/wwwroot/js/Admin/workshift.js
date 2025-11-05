@@ -43,5 +43,43 @@ $(document).ready(function () {
     });
 
 
+    // Tìm kiếm nhân viên
+    $('#searchEmployee').on('keyup', function () {
+        const searchText = $(this).val().toLowerCase();
+        let visibleCount = 0;
+
+        $('.employee-row').each(function () {
+            const employeeName = $(this).data('employee-name');
+            if (employeeName.includes(searchText)) {
+                $(this).show();
+                visibleCount++;
+            } else {
+                $(this).hide();
+            }
+        });
+
+        $('#employeeCount').text(visibleCount);
+    });
+
+    // Xuất file excel
+    $('#exportExcel').on('click', function () {
+        const branchId = $('select[name="branchId"]').val();
+        const role = $('#roleFilter').val();
+        const fromDate = $('input[name="fromDate"]').val();
+        const toDate = $('input[name="toDate"]').val();
+
+        if (!branchId) {
+            alert('Vui lòng chọn chi nhánh!');
+            return;
+        }
+
+        // Tạo URL với query parameters
+        let url = `/Admin/WorkShift/ExportExcel?branchId=${branchId}&fromDate=${fromDate}&toDate=${toDate}`;
+        if (role) {
+            url += `&role=${encodeURIComponent(role)}`;
+        }
+        // Mở link download
+        window.location.href = url;
+    });
 
 });
