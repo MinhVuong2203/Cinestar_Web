@@ -231,12 +231,7 @@ namespace Web.Controllers
             }
         }
 
-<<<<<<< Updated upstream
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-=======
         [HttpGet]
->>>>>>> Stashed changes
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
