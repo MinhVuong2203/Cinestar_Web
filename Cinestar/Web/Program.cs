@@ -28,42 +28,36 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/AccessDenied";
-        options.ExpireTimeSpan = TimeSpan.FromHours(8);
-        options.SlidingExpiration = true;
+        options.Cookie.MaxAge = null;
         options.Cookie.Name = "CinestarAuth";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
-builder.Services.AddDbContext<CineStarContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CineStarDb")), ServiceLifetime.Scoped);
-
+builder.Services.AddDbContext<CineStarContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CineStarDb")),
+    ServiceLifetime.Scoped);
 
 // Đăng ký Service
 builder.Services.AddScoped<ICinemaBranchService, CinemaBranchService>();
 builder.Services.AddScoped<ILogin, Login>();
 builder.Services.AddScoped<IPayOsService, PayOsService>();
-
 builder.Services.AddHostedService<WorkShiftStatusUpdater>();
-
 
 // Đăng ký tất cả service trong namespace Web.Areas.Admin.Services
 var adminAssembly = typeof(Web.Areas.Admin.Controllers.HomeController).Assembly;
-
 builder.Services.Scan(scan => scan
     .FromAssemblies(adminAssembly)
         .AddClasses(classes => classes.InNamespaces("Web.Areas.Admin.Service"))
         .AsImplementedInterfaces()
         .WithScopedLifetime());
 
-
-
+// Đăng ký Filters
 builder.Services.AddControllersWithViews(option =>
 {
     option.Filters.Add<LoadCinemaBranchesAttribute>();
+    option.Filters.Add<AreaPrefixFilter>(); // THÊM FILTER MỚI
 });
-
-
-
 
 var app = builder.Build();
 
@@ -71,28 +65,48 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Cấu hình router
+// Cấu hình router - THÊM ROUTE CHO CÁC ROLE
 app.MapControllerRoute(
-    name: "admin",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    name: "admin_area",
+    pattern: "admin/{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" }
+);
+
+app.MapControllerRoute(
+    name: "employee_sales",
+    pattern: "employee-sales/{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" }
+);
+
+app.MapControllerRoute(
+    name: "employee_technician",
+    pattern: "employee-technician/{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" }
+);
+
+app.MapControllerRoute(
+    name: "employee_movies",
+    pattern: "employee-movies/{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" }
+);
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+);
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
-
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.Run();

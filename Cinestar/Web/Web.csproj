@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\NewFolder\" />
     <Folder Include="Attributes\" />
     <Folder Include="wwwroot\image\product\" />
   </ItemGroup>

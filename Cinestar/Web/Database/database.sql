@@ -268,6 +268,8 @@ CREATE TABLE ShowTime (
 );
 GO
 
+DROP TRIGGER trg_ShowTime_Insert
+
 CREATE TRIGGER trg_ShowTime_Insert
 ON ShowTime
 INSTEAD OF INSERT
@@ -275,7 +277,7 @@ AS
 BEGIN
     INSERT INTO ShowTime(ShowTimeID, StartTime, Price, MovieID, RoomID, IsDeleted)
     SELECT 
-        'STIME-' + UPPER(SUBSTRING(CONVERT(VARCHAR(40), NEWID()),1,5)),
+        'ST-' + UPPER(SUBSTRING(CONVERT(VARCHAR(40), NEWID()),1,5)),
         StartTime, Price, MovieID, RoomID, IsDeleted
     FROM inserted;
 END;

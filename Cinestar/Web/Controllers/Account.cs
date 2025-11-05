@@ -82,6 +82,20 @@ namespace Web.Controllers
 
                 // Try employee login
                 var employee = _login.loginEmployee(username, password);
+                string role = "";
+                if (employee.Role.Equals("Quản lý"))
+                {
+                    role = "Admin";
+                }else if (employee.Role.Equals("Nhân viên kỹ thuật")) {
+                    role = "EmployeeTechnician";
+                }
+                else if (employee.Role.Equals("Nhân viên bán vé")) {
+                    role = "EmployeeSales";
+                }
+                else if (employee.Role.Equals("Nhân viên phim"))
+                {
+                    role = "EmployeeMovies";
+                }
                 if (employee != null)
                 {
                     var claims = new List<Claim>
@@ -90,21 +104,38 @@ namespace Web.Controllers
                         new Claim(ClaimTypes.Email, employee.Email ?? ""),
                         new Claim(ClaimTypes.NameIdentifier, employee.EmployeeID.ToString()),
                         new Claim("Username", employee.Username ?? ""),
-                        new Claim(ClaimTypes.Role, employee.Role ?? "Employee"),
+                        new Claim(ClaimTypes.Role, role ?? ""),
                         new Claim("UserType", "Employee")
                     };
 
                     var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties
+                    var authProperties = new AuthenticationProperties();
+
+                    if (remember)
                     {
-                        IsPersistent = remember,
-                        ExpiresUtc = remember ? DateTimeOffset.UtcNow.AddDays(30) : DateTimeOffset.UtcNow.AddHours(8)
-                    };
+                        // Cho phép lưu đăng nhập
+                        authProperties.IsPersistent = true;
+                        authProperties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30);
+                    }
+                    else
+                    {
+                        // Cookie session: tắt browser là mất
+                        authProperties.IsPersistent = false;
+                        authProperties.ExpiresUtc = null;
+                    }
+
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimIdentity), authProperties);
 
-                    string redirectUrl = employee.Role?.ToLower() == "admin" ? "/Admin" : "/Admin";
+                    string redirectUrl = role switch
+                    {
+                        "Admin" => "/admin/Home/Index",
+                        "EmployeeSales" => "/employee-sales/Home/Index",
+                        "EmployeeTechnician" => "/employee-technician/Home/Index",
+                        "EmployeeMovies" => "/employee-movies/Home/Index",
+                        _ => "/admin/Home/Index"
+                    };
 
                     return Json(new
                     {
@@ -200,12 +231,17 @@ namespace Web.Controllers
             }
         }
 
+<<<<<<< Updated upstream
         [HttpPost]
         [ValidateAntiForgeryToken]
+=======
+        [HttpGet]
+>>>>>>> Stashed changes
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return Redirect("/Home/Index");
+
         }
     }
 }

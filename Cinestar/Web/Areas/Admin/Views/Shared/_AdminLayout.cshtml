@@ -1,4 +1,20 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var role = User?.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "";
+    var employeeName = User?.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "";
+    var employeeId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
+    // Xác định prefix URL theo role
+    string urlPrefix = role switch
+    {
+        "Admin" => "admin",
+        "EmployeeSales" => "employee-sales",
+        "EmployeeTechnician" => "employee-technician",
+        "EmployeeMovies" => "employee-movies",
+        _ => "admin"
+    };
+}
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -21,6 +37,7 @@
                 <img src="~/image/header-logo.webp" alt="Alternate Text" class="sidebar_img" />
             </div>
 
+<<<<<<< Updated upstream
             <ul class="list-unstyled components">
                 <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
                     <a asp-area="Admin" asp-controller="Home" asp-action="Index">
@@ -92,6 +109,150 @@
                     </a>
                 </li>
             </ul>
+=======
+            @if (role.Equals("Admin"))
+            {
+                <ul class="list-unstyled components">
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                        <a href="/@urlPrefix/Home/Index">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Branch" ? "active" : "")">
+                        <a href="/@urlPrefix/Branch/Index">
+                            <i class="fas fa-building"></i> Quản lý Chi nhánh
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Employee" ? "active" : "")">
+                        <a href="#EmployeeSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                            <i class="fas fa-users"></i> Quản lý nhân sự
+                        </a>
+                        <ul class="collapse list-unstyled" id="EmployeeSubmenu">
+                            <li><a href="/@urlPrefix/Employee/Index">Nhân viên</a></li>
+                            <li><a href="/@urlPrefix/Employee/ApprovalProfile">Kiểm duyệt hồ sơ</a></li>
+                            <li><a href="/@urlPrefix/WorkShift/Index">Phân ca làm việc</a></li>
+                        </ul>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Movie" ? "active" : "")">
+                        <a href="#movieSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                            <i class="fas fa-video"></i> Quản lý Phim
+                        </a>
+                        <ul class="collapse list-unstyled" id="movieSubmenu">
+                            <li><a href="/@urlPrefix/Movies/Index">Thông Tin Phim</a></li>
+                            <li><a href="/@urlPrefix/Movies/List">Phim 2</a></li>
+                        </ul>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "ScreeningRoom" ? "active" : "")">
+                        <a href="#roomSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                            <i class="fas fa-door-open"></i> Quản lý Phòng chiếu
+                        </a>
+                        <ul class="collapse list-unstyled" id="roomSubmenu">
+                            <li>
+                                <a href="/@urlPrefix/ScreeningRoom/Index">
+                                    Danh sách phòng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/@urlPrefix/ScreeningRoom/SeatManagement">
+                                    Quản lý ghế ngồi
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "ShowTime" ? "active" : "")">
+                        <a href="/@urlPrefix/ShowTime/Index">
+                            <i class="fas fa-building"></i> Quản lý Suất chiếu
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" ? "active" : "")">
+                        <a href="/@urlPrefix/Product/Index">
+                            <i class="fas fa-users"></i> Quản lý sản phẩm
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/@urlPrefix/Sales/Index">
+                            <i class="fas fa-file-invoice"></i> Quản lý bán hàng
+                        </a>
+                    </li>
+                </ul>
+            }
+            else if (role.Equals("EmployeeSales"))
+            {
+                <ul class="list-unstyled components">
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                        <a href="/@urlPrefix/Home/Index">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/@urlPrefix/Sales/Index">
+                            <i class="fas fa-file-invoice"></i> Quản lý bán hàng
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Employee" ? "active" : "")">
+                        <a href="#EmployeeSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                            <i class="fas fa-users"></i> Quản lý nhân sự
+                        </a>
+                        <ul class="collapse list-unstyled" id="EmployeeSubmenu">
+                            <li><a href="/@urlPrefix/Employee/Index">Nhân viên</a></li>
+                            <li><a href="/@urlPrefix/Employee/ApprovalProfile">Kiểm duyệt hồ sơ</a></li>
+                            <li><a href="/@urlPrefix/WorkShift/Index">Phân ca làm việc</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+            else if (role.Equals("EmployeeTechnician"))
+            {
+                <ul class="list-unstyled components">
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                        <a href="/@urlPrefix/Home/Index">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "ScreeningRoom" ? "active" : "")">
+                        <a href="#roomSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                            <i class="fas fa-door-open"></i> Quản lý Phòng chiếu
+                        </a>
+                        <ul class="collapse list-unstyled" id="roomSubmenu">
+                            <li>
+                                <a href="/@urlPrefix/ScreeningRoom/Index">
+                                    Danh sách phòng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/@urlPrefix/ScreeningRoom/SeatManagement">
+                                    Quản lý ghế ngồi
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+            else if (role.Equals("EmployeeMovies"))
+            {
+                <ul class="list-unstyled components">
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                        <a href="/@urlPrefix/Home/Index">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Movie" ? "active" : "")">
+                        <a href="#movieSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                            <i class="fas fa-video"></i> Quản lý Phim
+                        </a>
+                        <ul class="collapse list-unstyled" id="movieSubmenu">
+                            <li><a href="/@urlPrefix/Movies/Index">Thông Tin Phim</a></li>
+                            <li><a href="/@urlPrefix/Movies/List">Phim 2</a></li>
+                        </ul>
+                    </li>
+                    <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "ShowTime" ? "active" : "")">
+                        <a href="/@urlPrefix/ShowTime/Index">
+                            <i class="fas fa-building"></i> Quản lý Suất chiếu
+                        </a>
+                    </li>
+                </ul>
+            }
+>>>>>>> Stashed changes
 
             <ul class="list-unstyled">
                 <li>
@@ -100,7 +261,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" onclick="return confirm('Bạn có chắc muốn đăng xuất?');">
+                    <a href="/Account/Logout" onclick="return confirm('Bạn có chắc muốn đăng xuất?');">
                         <i class="fas fa-sign-out-alt"></i> Đăng xuất
                     </a>
                 </li>
@@ -119,13 +280,13 @@
                     <div class="ms-auto d-flex align-items-center">
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle fa-lg"></i> Admin
+                                <i class="fas fa-user-circle fa-lg"></i> @employeeName
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Thông tin</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Cài đặt</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                                <li><a class="dropdown-item" href="/Account/Logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                             </ul>
                         </div>
                     </div>
