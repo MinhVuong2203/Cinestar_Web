@@ -21,6 +21,16 @@ namespace Web.Controllers
             return View();
         }
 
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
+        public IActionResult CinestartMember()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<JsonResult> Login(string username, string password, bool remember = false)
         {
@@ -186,6 +196,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

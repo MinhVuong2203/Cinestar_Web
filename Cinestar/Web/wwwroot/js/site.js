@@ -33,3 +33,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// User dropdown functionality
+//const userDropdown = document.querySelector('.user-dropdown');
+//if (userDropdown) {
+//    const userProfile = userDropdown.querySelector('.user-profile');
+
+//    userProfile.addEventListener('click', (e) => {
+//        e.stopPropagation();
+//        userDropdown.classList.toggle('active');
+//    });
+
+//    // Close dropdown when clicking outside
+//    document.addEventListener('click', (e) => {
+//        if (!userDropdown.contains(e.target)) {
+//            userDropdown.classList.remove('active');
+//        }
+//    });
+//}

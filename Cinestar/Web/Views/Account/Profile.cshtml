@@ -1,0 +1,108 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Thông tin cá nhân";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Profile.css?v=@DateTime.Now.Ticks" />
+}
+
+<div class="profile-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="profile">
+            <div class="avatar">
+                <span>👤</span>
+            </div>
+            <div class="profile-info">
+                <h3>@(User.Identity?.Name ?? "Nguyễn Bình Minh")</h3>
+                <a href="#">
+                    <p>Thay đổi ảnh đại diện</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item active">CFriends</div>
+            <div class="point">
+                <div class="menu-item">Tích điểm CFriends</div>
+                <progress max="100"></progress>
+                <div class="menu-item">0/10k</div>
+            </div>
+            <div class="menu-item selected" data-page="profile">
+                <span class="icon">👤</span>
+                Thông tin khách hàng
+            </div>
+            <div class="menu-item" data-page="member">
+                <span class="icon">⭐</span>
+                Thành viên Cinestar
+            </div>
+            <div class="menu-item">
+                <span class="icon">🛒</span>
+                Lịch sử mua hàng
+            </div>
+            <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" style="margin: 0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item logout">
+                    <span class="icon">🚪</span>
+                    <span>Đăng xuất</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <h1>THÔNG TIN KHÁCH HÀNG</h1>
+
+        <!-- Personal Information Section -->
+        <div class="section">
+            <h2>Thông tin cá nhân</h2>
+            <div class="form-group">
+                <div class="input-row">
+                    <div class="input-field">
+                        <label>Họ và tên</label>
+                        <input type="text" value="@(User.Identity?.Name ?? "Nguyễn Bình Minh")">
+                    </div>
+                    <div class="input-field">
+                        <label>Ngày sinh</label>
+                        <input type="date" value="2005-03-31">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-field">
+                        <label>Số điện thoại</label>
+                        <input type="tel" value="0391096766">
+                    </div>
+                    <div class="input-field">
+                        <label>Email</label>
+                        <input type="email" value="@(User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "minhnguyen14356@gmail.com")">
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn">LƯU THÔNG TIN</button>
+        </div>
+
+        <!-- Password Change Section -->
+        <div class="section">
+            <h2>ĐỔI MẬT KHẨU</h2>
+            <div class="form-group">
+                <div class="input-field">
+                    <label>Mật khẩu cũ *</label>
+                    <input type="password" id="oldPassword">
+                </div>
+                <div class="input-field">
+                    <label>Mật khẩu mới *</label>
+                    <input type="password" id="newPassword">
+                </div>
+                <div class="input-field">
+                    <label>Xác thực mật khẩu *</label>
+                    <input type="password" id="confirmPassword">
+                </div>
+            </div>
+            <button class="save-btn" id="changePasswordBtn">ĐỔI MẬT KHẨU</button>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/Profile.js?v=@DateTime.Now.Ticks"></script>
