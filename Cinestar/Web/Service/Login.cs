@@ -17,6 +17,7 @@ namespace Web.Service
         {
             try
             {
+                //var passHash = password;
                 var customer = _context.Customers.AsNoTracking()
                     .FirstOrDefault(c =>
                         (c.Username == username || c.Email == username || c.Phone == username)
@@ -35,11 +36,23 @@ namespace Web.Service
         {
             try
             {
+                // Tìm employee theo username
                 var employee = _context.Employees.AsNoTracking()
                     .FirstOrDefault(e =>
-                        (e.Username == username || e.Email == username || e.Phone == username)
-                        && e.PasswordHash == password
+                        e.Username == username
                         && e.IsDeleted == false);
+
+                // Verify password với BCrypt hash đã lưu
+                if (employee == null || string.IsNullOrEmpty(employee.PasswordHash))
+                {
+                    return null;
+                }
+
+                // Kiểm tra password bằng BCrypt.Verify
+                if (!BCrypt.Net.BCrypt.Verify(password, employee.PasswordHash))
+                {
+                    return null;
+                }
 
                 return employee;
             }

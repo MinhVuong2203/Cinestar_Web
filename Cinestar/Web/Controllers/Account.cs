@@ -89,7 +89,7 @@ namespace Web.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimIdentity), authProperties);
 
-                    string redirectUrl = employee.Role?.ToLower() == "admin" ? "/Admin" : "/Employee";
+                    string redirectUrl = employee.Role?.ToLower() == "admin" ? "/Admin" : "/Admin";
 
                     return Json(new
                     {
