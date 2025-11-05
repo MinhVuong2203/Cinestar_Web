@@ -1,70 +1,104 @@
-﻿@model IEnumerable<Web.Models.ShowTime>
+﻿
+@model List<Web.Models.ShowTime>
+
 @{
     ViewData["Title"] = "Quản Lý Suất Chiếu";
 }
+ @section Styles{
 <link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
+}
 
-<div class="showtime-container">
-    <div class="header">
-        <h1><i class="fas fa-table"></i> Quản Lý Suất Chiếu</h1>
-        <a asp-action="Create" class="btn btn-create"><i class="fas fa-plus"></i> Thêm Suất Chiếu</a>
+<div class="showtime-page">
+    <!-- Header -->
+    <div class="showtime-page-header">
+        <div class="header-title">
+            <i class="fas fa-film"></i>
+            <h1>Quản Lý Suất Chiếu</h1>
+        </div>
+        <a asp-action="Create" class="btn-add">
+            <i class="fas fa-plus"></i> Thêm Mới
+        </a>
     </div>
-    <table class="st-table">
-        <thead>
-            <tr>
-                <th>Mã</th>
-                <th>Phim</th>
-                <th>Phòng</th>
-                <th>Bắt đầu</th>
-                <th>Giá vé</th>
-                <th>Trạng thái</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var st in Model)
-            {
-                <tr class="@(st.IsDeleted ? "deleted" : "")">
-                    <td>@st.ShowTimeID</td>
-                    <td>@st.Movie?.Title</td>
-                    <td>@st.Room?.RoomID</td>
-                    <td>@st.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@(st.Price.HasValue ? $"{st.Price:N0} đ" : "N/A")</td>
-                    <td>
-                        @if (st.IsDeleted)
-                        {
-                            <span class="badge badge-danger"><i class="fas fa-trash"></i> Đã xóa</span>
-                        }
-                        else
-                        {
-                            <span class="badge badge-success"><i class="fas fa-check"></i> Active</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@st.ShowTimeID" class="btn btn-details"><i class="fas fa-eye"></i></a>
-                        <a asp-action="Edit" asp-route-id="@st.ShowTimeID" class="btn btn-edit"><i class="fas fa-edit"></i></a>
-                        @if (!st.IsDeleted)
-                        {
-                            <a asp-action="Delete" asp-route-id="@st.ShowTimeID" class="btn btn-delete"><i class="fas fa-trash"></i></a>
-                        }
-                        else
-                        {
-                            <form asp-action="Restore" asp-route-id="@st.ShowTimeID" method="post" style="display:inline;">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-restore"><i class="fas fa-undo"></i></button>
-                            </form>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    @if (!Model.Any())
+
+    @if (TempData["SuccessMessage"] != null)
     {
-        <div class="empty-state">
-            <i class="fas fa-calendar"></i>
-            <h3>Chưa có suất chiếu nào!</h3>
-            <a asp-action="Create" class="btn btn-create"><i class="fas fa-plus"></i> Thêm suất chiếu</a>
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["SuccessMessage"]</span>
         </div>
     }
+
+    <!-- Table -->
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Mã Suất Chiếu</th>
+                    <th>Phim</th>
+                    <th>Chi Nhánh</th>
+                    <th>Phòng</th>
+                    <th>Giờ Bắt Đầu</th>
+                    <th>Giờ Kết Thúc</th>
+                    <th>Giá</th>
+                    <th>Trạng Thái</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var endTime = item.StartTime.AddMinutes(item.Movie.DurationMinutes ?? 0);
+                    <tr class="@(item.IsDeleted ? "row-deleted" : "")">
+                        <td>@item.ShowTimeID</td>
+                        <td>@item.Movie.Title</td>
+                        <td>@item.Room.Branch?.BranchName</td>
+                        <td>@item.Room.RoomName</td>
+                        <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@endTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@(item.Price?.ToString("N0")) VNĐ</td>
+                        <td>
+                            @if (item.IsDeleted)
+                            {
+                                <span class="badge badge-deleted">Đã Xóa</span>
+                            }
+                            else if (item.StartTime < DateTime.Now)
+                            {
+                                <span class="badge badge-inactive">Đã Chiếu</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-active">Sắp Chiếu</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <a asp-action="Details" asp-route-id="@item.ShowTimeID" class="btn-action btn-info" title="Chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if (!item.IsDeleted)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.ShowTimeID" class="btn-action btn-warning" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.ShowTimeID" class="btn-action btn-danger" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <form asp-action="Restore" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="@item.ShowTimeID" />
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-action btn-success" title="Khôi phục">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

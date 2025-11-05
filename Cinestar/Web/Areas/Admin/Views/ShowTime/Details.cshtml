@@ -1,30 +1,96 @@
 ﻿@model Web.Models.ShowTime
 @{
     ViewData["Title"] = "Chi Tiết Suất Chiếu";
+    var endTime = Model.StartTime.AddMinutes(Model.Movie.DurationMinutes ?? 0);
 }
+
 <link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
+
 <div class="showtime-container">
-    <div class="form-header">
+    <div class="showtime-header">
         <h1><i class="fas fa-info-circle"></i> Chi Tiết Suất Chiếu</h1>
-        <a asp-action="Index" class="btn btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.ShowTimeID" class="showtime-btn-edit-link">
+                <i class="fas fa-edit"></i> Chỉnh Sửa
+            </a>
+            <a asp-action="Index" class="showtime-btn-back">
+                <i class="fas fa-arrow-left"></i> Quay Lại
+            </a>
+        </div>
     </div>
-    <div class="details-grid">
-        <div class="detail-item">Mã: <b>@Model.ShowTimeID</b></div>
-        <div class="detail-item">Phim: <b>@Model.Movie?.Title</b></div>
-        <div class="detail-item">Phòng: <b>@Model.Room?.RoomID</b></div>
-        <div class="detail-item">Thời gian: <b>@Model.StartTime.ToString("dd/MM/yyyy HH:mm")</b></div>
-        <div class="detail-item">Giá: <b>@(Model.Price.HasValue ? $"{Model.Price:N0} đ" : "Chưa có")</b></div>
-        <div class="detail-item">
-            Trạng thái:
-            @if (Model.IsDeleted)
-            {
-                <span class="badge badge-danger"><i class="fas fa-trash"></i> Đã xóa</span>
-                <form asp-action="Restore" asp-route-id="@Model.ShowTimeID" method="post"><button type="submit" class="btn btn-success"><i class="fas fa-undo"></i> Khôi phục</button></form>
-            }
-            else
-            {
-                <span class="badge badge-success"><i class="fas fa-check"></i> Đang hoạt động</span>
-            }
+
+    <div class="showtime-details-container">
+        <div class="showtime-details-section">
+            <h3><i class="fas fa-clock"></i> Thông Tin Suất Chiếu</h3>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Mã Suất Chiếu:</span>
+                <span class="showtime-detail-value">@Model.ShowTimeID</span>
+            </div>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Trạng Thái:</span>
+                <span class="showtime-detail-value">
+                    @if (Model.IsDeleted)
+                    {
+                        <span class="showtime-badge showtime-badge-deleted">Đã Xóa</span>
+                    }
+                    else if (Model.StartTime < DateTime.Now)
+                    {
+                        <span class="showtime-badge showtime-badge-inactive">Đã Chiếu</span>
+                    }
+                    else
+                    {
+                        <span class="showtime-badge showtime-badge-active">Sắp Chiếu</span>
+                    }
+                </span>
+            </div>
+        </div>
+
+        <div class="showtime-details-section">
+            <h3><i class="fas fa-film"></i> Thông Tin Phim</h3>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Tên Phim:</span>
+                <span class="showtime-detail-value">@Model.Movie.Title</span>
+            </div>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Thời Lượng:</span>
+                <span class="showtime-detail-value">@Model.Movie.DurationMinutes phút</span>
+            </div>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Thể Loại:</span>
+                <span class="showtime-detail-value">@Model.Movie.Genre</span>
+            </div>
+        </div>
+
+        <div class="showtime-details-section">
+            <h3><i class="fas fa-building"></i> Thông Tin Phòng Chiếu</h3>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Chi Nhánh:</span>
+                <span class="showtime-detail-value">@Model.Room.Branch?.BranchName</span>
+            </div>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Phòng:</span>
+                <span class="showtime-detail-value">@Model.Room.RoomName</span>
+            </div>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Số Ghế:</span>
+                <span class="showtime-detail-value">@Model.Room.SeatCount ghế</span>
+            </div>
+        </div>
+
+        <div class="showtime-details-section">
+            <h3><i class="fas fa-calendar-alt"></i> Thời Gian & Giá</h3>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Giờ Bắt Đầu:</span>
+                <span class="showtime-detail-value">@Model.StartTime.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Giờ Kết Thúc:</span>
+                <span class="showtime-detail-value">@endTime.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="showtime-detail-item">
+                <span class="showtime-detail-label">Giá Vé:</span>
+                <span class="showtime-detail-value">@(Model.Price?.ToString("N0")) VNĐ</span>
+            </div>
         </div>
     </div>
 </div>

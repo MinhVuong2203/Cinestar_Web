@@ -1,21 +1,99 @@
 ﻿@model Web.Models.ShowTime
 @{
     ViewData["Title"] = "Xóa Suất Chiếu";
+    var endTime = Model.StartTime.AddMinutes(Model.Movie.DurationMinutes ?? 0);
 }
+
 <link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
 
 <div class="showtime-container">
-    <div class="delete-header">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h1>Xác Nhận Xóa Suất Chiếu</h1>
-        <p>Bạn có chắc chắn muốn xóa suất chiếu <b>@Model.ShowTimeID</b> cho phim <b>@Model.Movie?.Title</b> không?</p>
+    <div class="showtime-header">
+        <h1><i class="fas fa-trash-alt"></i> Xóa Suất Chiếu</h1>
+        <a asp-action="Index" class="showtime-btn-back">
+            <i class="fas fa-arrow-left"></i> Quay Lại
+        </a>
     </div>
-    <form method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="ShowTimeID" />
-        <div class="form-actions">
-            <button type="submit" class="btn btn-delete"><i class="fas fa-trash"></i> Xóa</button>
-            <a asp-action="Index" class="btn btn-cancel"><i class="fas fa-times"></i> Hủy</a>
+
+    <div class="showtime-delete-container">
+        <div class="showtime-alert showtime-alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa suất chiếu này không?
         </div>
-    </form>
+
+        <div class="showtime-details-container">
+            <div class="showtime-details-section">
+                <h3><i class="fas fa-clock"></i> Thông Tin Suất Chiếu</h3>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Mã Suất Chiếu:</span>
+                    <span class="showtime-detail-value">@Model.ShowTimeID</span>
+                </div>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Trạng Thái:</span>
+                    <span class="showtime-detail-value">
+                        @if (Model.StartTime < DateTime.Now)
+                        {
+                            <span class="showtime-badge showtime-badge-inactive">Đã Chiếu</span>
+                        }
+                        else
+                        {
+                            <span class="showtime-badge showtime-badge-active">Sắp Chiếu</span>
+                        }
+                    </span>
+                </div>
+            </div>
+
+            <div class="showtime-details-section">
+                <h3><i class="fas fa-film"></i> Thông Tin Phim</h3>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Tên Phim:</span>
+                    <span class="showtime-detail-value">@Model.Movie.Title</span>
+                </div>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Thời Lượng:</span>
+                    <span class="showtime-detail-value">@Model.Movie.DurationMinutes phút</span>
+                </div>
+            </div>
+
+            <div class="showtime-details-section">
+                <h3><i class="fas fa-building"></i> Thông Tin Phòng Chiếu</h3>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Chi Nhánh:</span>
+                    <span class="showtime-detail-value">@Model.Room.Branch?.BranchName</span>
+                </div>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Phòng:</span>
+                    <span class="showtime-detail-value">@Model.Room.RoomName</span>
+                </div>
+            </div>
+
+            <div class="showtime-details-section">
+                <h3><i class="fas fa-calendar-alt"></i> Thời Gian & Giá</h3>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Giờ Bắt Đầu:</span>
+                    <span class="showtime-detail-value">@Model.StartTime.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Giờ Kết Thúc:</span>
+                    <span class="showtime-detail-value">@endTime.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="showtime-detail-item">
+                    <span class="showtime-detail-label">Giá Vé:</span>
+                    <span class="showtime-detail-value">@(Model.Price?.ToString("N0")) VNĐ</span>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Delete" method="post" class="showtime-delete-form">
+            <input type="hidden" asp-for="ShowTimeID" />
+            @Html.AntiForgeryToken()
+            <div class="showtime-form-actions">
+                <button type="submit" class="showtime-btn-delete-confirm">
+                    <i class="fas fa-trash"></i> Xác Nhận Xóa
+                </button>
+                <a asp-action="Index" class="showtime-btn-cancel">
+                    <i class="fas fa-times"></i> Hủy Bỏ
+                </a>
+            </div>
+        </form>
+    </div>
 </div>

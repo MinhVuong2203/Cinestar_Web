@@ -176,7 +176,7 @@ namespace Web.Areas.Admin.Controllers
         // Helper methods
         private async Task<string> UploadImageAsync(IFormFile file)
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "movies");
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "image", "movie");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
@@ -190,7 +190,7 @@ namespace Web.Areas.Admin.Controllers
                 await file.CopyToAsync(fileStream);
             }
 
-            return "/images/movies/" + uniqueFileName;
+            return "/image/movie/" + uniqueFileName;
         }
 
         private void DeleteImage(string imageUrl)
