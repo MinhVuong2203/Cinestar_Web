@@ -82,29 +82,27 @@ namespace Web.Controllers
 
                 // Try employee login
                 var employee = _login.loginEmployee(username, password);
-                string role = "";
-                if (employee.Role.Equals("Quản lý"))
-                {
-                    role = "Admin";
-                }else if (employee.Role.Equals("Nhân viên kỹ thuật")) {
-                    role = "EmployeeTechnician";
-                }
-                else if (employee.Role.Equals("Nhân viên bán vé")) {
-                    role = "EmployeeSales";
-                }
-                else if (employee.Role.Equals("Nhân viên phim"))
-                {
-                    role = "EmployeeMovies";
-                }
+
                 if (employee != null)
                 {
+                    string role = "";
+
+                    if (employee.Role == "Quản lý")
+                        role = "Admin";
+                    else if (employee.Role == "Nhân viên kỹ thuật")
+                        role = "EmployeeTechnician";
+                    else if (employee.Role == "Nhân viên bán vé")
+                        role = "EmployeeSales";
+                    else if (employee.Role == "Nhân viên phim")
+                        role = "EmployeeMovies";
+
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, employee.FullName ?? ""),
                         new Claim(ClaimTypes.Email, employee.Email ?? ""),
                         new Claim(ClaimTypes.NameIdentifier, employee.EmployeeID.ToString()),
                         new Claim("Username", employee.Username ?? ""),
-                        new Claim(ClaimTypes.Role, role ?? ""),
+                        new Claim(ClaimTypes.Role, role),
                         new Claim("UserType", "Employee")
                     };
 
@@ -113,20 +111,20 @@ namespace Web.Controllers
 
                     if (remember)
                     {
-                        // Cho phép lưu đăng nhập
                         authProperties.IsPersistent = true;
                         authProperties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30);
                     }
                     else
                     {
-                        // Cookie session: tắt browser là mất
                         authProperties.IsPersistent = false;
                         authProperties.ExpiresUtc = null;
                     }
 
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimIdentity), authProperties);
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimIdentity),
+                        authProperties
+                    );
 
                     string redirectUrl = role switch
                     {
@@ -142,16 +140,18 @@ namespace Web.Controllers
                         status = webconstain.success,
                         message = "Đăng nhập thành công",
                         customerName = employee.FullName ?? "Nhân viên",
-                        redirectUrl = redirectUrl,
+                        redirectUrl,
                         userType = "Employee"
                     });
                 }
 
+                // Nếu employee == null → báo sai tài khoản
                 return Json(new
                 {
                     status = webconstain.erro,
                     message = "Tên đăng nhập hoặc mật khẩu không đúng"
                 });
+
             }
             catch (Exception ex)
             {
