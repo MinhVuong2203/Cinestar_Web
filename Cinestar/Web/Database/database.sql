@@ -547,6 +547,29 @@ DROP TABLE [dbo].[Employee]
 DROP TABLE [dbo].[CinemaBranch]
  
 
+ -- Trigger tự động tạo ticket cho TẤT CẢ ghế trong 
+ DROP TRIGGER trg_AutoCreateTickets
+CREATE TRIGGER trg_AutoCreateTickets
+ON ShowTime
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO Ticket (ShowTimeID, SeatID, TicketType, Price, Status)
+    SELECT 
+        i.ShowTimeID,
+        s.SeatID,
+        s.SeatType,  -- 'Standard', 'VIP', 'Couple'
+		CASE 
+            WHEN s.SeatType = 'VIP' THEN i.Price + 20000
+            WHEN s.SeatType = 'Couple' THEN 2*i.Price + 20000
+            ELSE i.Price
+        END,
+        'Available'  -- Trạng thái ban đầu
+    FROM inserted i
+    JOIN Seat s ON s.RoomID = i.RoomID
+    WHERE s.IsDeleted = 0;
+END;
+GO
 
 
 

@@ -1,0 +1,159 @@
+﻿/* wwwroot/css/product-style.css */
+
+/* Card hover effect */
+.card {
+    transition: all 0.3s ease;
+}
+
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+/* Table hover effect */
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.01);
+    }
+
+/* Image preview styling */
+.img-thumbnail {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .img-thumbnail:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+/* Badge styling */
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+}
+
+/* Button group */
+.btn-group .btn {
+    margin: 0 2px;
+}
+
+/* Form styling */
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Alert auto-dismiss animation */
+.alert {
+    animation: slideInDown 0.5s ease;
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Modal backdrop */
+.modal-backdrop.show {
+    opacity: 0.7;
+}
+
+/* Product image container */
+.product-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+    .product-image-container img {
+        transition: transform 0.3s ease;
+    }
+
+    .product-image-container:hover img {
+        transform: scale(1.1);
+    }
+
+/* Status badge in table */
+.table-secondary {
+    opacity: 0.7;
+}
+
+/* Search form */
+.search-form .form-control {
+    border-radius: 20px;
+}
+
+/* Card header gradient */
+.card-header {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 20px;
+}
+
+.page-link {
+    color: #0d6efd;
+    border-radius: 5px;
+    margin: 0 2px;
+}
+
+    .page-link:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+/* Empty state */
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+
+/* Loading spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Price display */
+.price-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #dc3545;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .btn-group .btn {
+            margin: 2px 0;
+            width: 100%;
+        }
+
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
