@@ -92,4 +92,53 @@
             quantity.textContent = count + 1;
         });
     });
+    // === TẠO 3 NGÀY TỰ ĐỘNG ===
+        function generateDateBoxes() {
+            const container = document.getElementById('selectedTimeContainer');
+            if (!container) return;
+
+            const daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            
+            // Tạo 3 ngày: hôm nay, ngày mai, ngày kia
+            for (let i = 0; i < 3; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                
+                const day = date.getDate();
+                const month = date.getMonth() + 1;
+                const dayOfWeek = daysOfWeek[date.getDay()];
+                
+                // Format ngày: dd/mm
+                const dateString = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}`;
+                
+                // Tạo box-time
+                const boxTime = document.createElement('div');
+                boxTime.className = 'box-time';
+                if (i === 0) boxTime.classList.add('active'); // Mặc định chọn hôm nay
+                
+                boxTime.innerHTML = `
+                    <p class="date">${dateString}</p>
+                    <p class="day">${dayOfWeek}</p>
+                `;
+                
+                // Thêm sự kiện click để chọn ngày
+                boxTime.addEventListener('click', function() {
+                    // Xóa active khỏi tất cả box-time
+                    document.querySelectorAll('.box-time').forEach(box => {
+                        box.classList.remove('active');
+                    });
+                    // Thêm active vào box được click
+                    this.classList.add('active');
+                    
+                    // Có thể thêm logic để load lịch chiếu theo ngày ở đây
+                    console.log('Ngày được chọn:', dateString, dayOfWeek);
+                });
+                
+                container.appendChild(boxTime);
+            }
+        }
+
+        // Gọi hàm tạo ngày khi trang load
+        generateDateBoxes();
+
 });

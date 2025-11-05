@@ -9,7 +9,6 @@ namespace Web.Areas.Admin.Service
         Task CreateScreeningRoom(Room room);
         Task EditScreeningRoom(Room room);
         Task DeleteScreeningRoom(string roomId);
-        Task RestoreScreeningRoom(string roomId);
         Task<List<CinemaBranch>> GetActiveBranches();
     }
 }

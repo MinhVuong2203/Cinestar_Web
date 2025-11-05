@@ -12,6 +12,7 @@ public partial class Product
     [Key]
     [StringLength(10)]
     [Unicode(false)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string ProductID { get; set; } = string.Empty!;
 
     [StringLength(100)]

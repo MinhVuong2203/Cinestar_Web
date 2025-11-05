@@ -52,64 +52,46 @@ document.querySelectorAll('.toggle-password').forEach(function (icon) {
         if (input.type === 'password') {
             input.type = 'text';
             icon.style.opacity = 0.5;
-            icon.innerHTML = '&#128064;'; // Eye with slash
+            icon.innerHTML = '&#128064;';
         } else {
             input.type = 'password';
             icon.style.opacity = 1;
-            icon.innerHTML = '&#128065;'; // Normal eye
+            icon.innerHTML = '&#128065;';
         }
     });
 });
 
-// Login function with debugging
+// Login function
 function loginAccount(userInput) {
-    console.log('loginAccount called with:', userInput);
+    console.log('loginAccount called');
 
-    // Check if SweetAlert is available
-    if (typeof Swal === 'undefined') {
-        alert('SweetAlert2 library is not loaded!');
-        console.error('SweetAlert2 is not loaded');
+    if (typeof Swal === 'undefined' || typeof $ === 'undefined') {
+        alert('Required libraries not loaded!');
         return;
     }
 
-    // Check if jQuery is available
-    if (typeof $ === 'undefined') {
-        alert('jQuery library is not loaded!');
-        console.error('jQuery is not loaded');
-        return;
-    }
-
-    // Show loading state
     const submitBtn = document.querySelector('#login-form .btn-submit');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Đang đăng nhập...';
 
-    // Clear previous error messages
     const existingErrors = document.querySelectorAll('#login-form .error-message');
     existingErrors.forEach(error => error.remove());
-
-    console.log('Sending AJAX request to /Account/Login');
 
     $.ajax({
         type: "POST",
         url: "/Account/Login",
         data: userInput,
         dataType: 'json',
-        beforeSend: function () {
-            console.log('AJAX request started');
-        },
         success: function (res) {
-            console.log('AJAX success response:', res);
+            console.log('Login response:', res);
 
             if (res.status === "success") {
-                // Create personalized success message with customer name
                 let welcomeMessage = 'Chào mừng bạn quay trở lại!';
                 if (res.customerName) {
                     welcomeMessage = `Chào mừng ${res.customerName} quay trở lại!`;
                 }
 
-                // Show success message with customer name
                 Swal.fire({
                     icon: 'success',
                     title: 'Đăng nhập thành công',
@@ -126,88 +108,152 @@ function loginAccount(userInput) {
                     showConfirmButton: false,
                     allowOutsideClick: false
                 }).then(() => {
-                    // Redirect based on response
-                    if (res.redirectUrl) {
-                        window.location.href = res.redirectUrl;
-                    } else {
-                        window.location.href = "/";
-                    }
+                    window.location.href = res.redirectUrl || "/";
                 });
-
             } else {
-                // Show error message with improved styling
                 showErrorMessage(res.message || 'Đăng nhập thất bại');
             }
         },
-        error: function (xhr, status, error) {
-            console.error('AJAX error:', { xhr, status, error });
-            console.error('Response Text:', xhr.responseText);
-
-            let errorMessage = 'Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.';
-
+        error: function (xhr) {
+            console.error('Login error:', xhr);
+            let errorMessage = 'Có lỗi xảy ra khi đăng nhập.';
             if (xhr.responseJSON && xhr.responseJSON.message) {
                 errorMessage = xhr.responseJSON.message;
-            } else if (xhr.status === 0) {
-                errorMessage = 'Không thể kết nối tới máy chủ. Vui lòng kiểm tra kết nối mạng.';
-            } else if (xhr.status >= 500) {
-                errorMessage = 'Lỗi máy chủ. Vui lòng thử lại sau ít phút.';
-            } else if (xhr.status === 404) {
-                errorMessage = 'Không tìm thấy đường dẫn đăng nhập. Vui lòng liên hệ quản trị viên.';
             }
-
             showErrorMessage(errorMessage);
         },
         complete: function () {
-            console.log('AJAX request completed');
-            // Reset button state
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }
     });
 }
 
-// Function to show error messages with improved styling
-function showErrorMessage(message) {
-    console.log('Showing error message:', message);
+// Register function
+function registerAccount(userInput) {
+    console.log('registerAccount called');
+    console.log('Data:', userInput);
 
-    // Remove existing error messages
+    if (typeof Swal === 'undefined' || typeof $ === 'undefined') {
+        alert('Required libraries not loaded!');
+        return;
+    }
+
+    const submitBtn = document.querySelector('#register-form .btn-submit');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Đang đăng ký...';
+
+    const existingErrors = document.querySelectorAll('#register-form .error-message');
+    existingErrors.forEach(error => error.remove());
+
+    $.ajax({
+        type: "POST",
+        url: "/Account/Register",
+        data: userInput,
+        dataType: 'json',
+        success: function (res) {
+            console.log('Register response:', res);
+
+            if (res.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng ký thành công',
+                    html: `
+                        <div style="text-align: center;">
+                            <p style="font-size: 16px; margin: 10px 0;">Chào mừng ${res.customerName || 'bạn'} đến với Cinestar!</p>
+                            <p style="font-size: 14px; color: #666;">Bạn sẽ được chuyển hướng đến trang đăng nhập...</p>
+                        </div>
+                    `,
+                    timer: 2500,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                }).then(() => {
+                    // Switch to login form
+                    loginForm.classList.add('active');
+                    registerForm.classList.remove('active');
+                    loginBtn.classList.add('active');
+                    registerBtn.classList.remove('active');
+                    resetForm(registerForm);
+                });
+            } else {
+                console.error('Registration failed:', res.message);
+                showRegisterErrorMessage(res.message || 'Đăng ký thất bại');
+            }
+        },
+        error: function (xhr) {
+            console.error('Register error:', xhr);
+            console.error('Status:', xhr.status);
+            console.error('Response:', xhr.responseText);
+
+            let errorMessage = 'Có lỗi xảy ra khi đăng ký.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.status === 500) {
+                errorMessage = 'Lỗi máy chủ. Vui lòng thử lại sau.';
+            } else if (xhr.status === 400) {
+                errorMessage = 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.';
+            }
+            showRegisterErrorMessage(errorMessage);
+        },
+        complete: function () {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
+}
+
+// Error message functions
+function showErrorMessage(message) {
+    console.log('Login error:', message);
     const existingErrors = document.querySelectorAll('#login-form .error-message');
     existingErrors.forEach(error => error.remove());
 
-    // Create and insert new error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'form-it error-message';
     errorDiv.innerHTML = `<span class="error" style="color: #dc3545; font-weight: 500;">${message}</span>`;
 
-    // Insert before the submit button
     const submitDiv = document.querySelector('#login-form .form-it:has(.btn-submit)');
     if (submitDiv) {
         submitDiv.parentNode.insertBefore(errorDiv, submitDiv);
     }
 
-    // Fallback if SweetAlert is not available
-    if (typeof Swal === 'undefined') {
-        alert(message);
-        return;
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Đăng nhập thất bại',
+            html: `<p style="color: #dc3545;">${message}</p>`,
+            confirmButtonText: 'Thử lại',
+            confirmButtonColor: '#dc3545'
+        });
     }
-
-    // Show SweetAlert with better error styling
-    Swal.fire({
-        icon: 'error',
-        title: 'Đăng nhập thất bại',
-        html: `
-            <div style="text-align: center;">
-                <p style="font-size: 16px; margin: 10px 0; color: #dc3545;">${message}</p>
-                <p style="font-size: 14px; color: #666;">Vui lòng kiểm tra lại thông tin và thử lại.</p>
-            </div>
-        `,
-        confirmButtonText: 'Thử lại',
-        confirmButtonColor: '#dc3545',
-        allowOutsideClick: true
-    });
 }
 
-// Show success message for form validation
+function showRegisterErrorMessage(message) {
+    console.log('Register error:', message);
+    const existingErrors = document.querySelectorAll('#register-form .error-message');
+    existingErrors.forEach(error => error.remove());
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'form-it error-message';
+    errorDiv.innerHTML = `<span class="error" style="color: #dc3545; font-weight: 500;">${message}</span>`;
+
+    const submitDiv = document.querySelector('#register-form .form-it:has(.btn-submit)');
+    if (submitDiv) {
+        submitDiv.parentNode.insertBefore(errorDiv, submitDiv);
+    }
+
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Đăng ký thất bại',
+            html: `<p style="color: #dc3545;">${message}</p>`,
+            confirmButtonText: 'Thử lại',
+            confirmButtonColor: '#dc3545'
+        });
+    }
+}
+
 function showSuccessMessage(message) {
     if (typeof Swal === 'undefined') {
         console.log(message);
@@ -228,112 +274,25 @@ function showSuccessMessage(message) {
     });
 }
 
-// Form validation function with better error messages
+// Validation functions
 function validateLoginForm(username, password) {
     const errors = [];
-
     if (!username || username.trim().length === 0) {
-        errors.push('Vui lòng nhập tên đăng nhập, email hoặc số điện thoại');
+        errors.push('Vui lòng nhập tên đăng nhập');
     }
-
     if (!password || password.trim().length === 0) {
         errors.push('Vui lòng nhập mật khẩu');
     }
-
     if (password && password.length < 6) {
         errors.push('Mật khẩu phải có ít nhất 6 ký tự');
     }
-
     return errors;
 }
 
-// Enhanced form submission handler
-document.addEventListener("DOMContentLoaded", function () {
-    console.log('DOM Content Loaded');
-    console.log('jQuery available:', typeof $ !== 'undefined');
-    console.log('SweetAlert available:', typeof Swal !== 'undefined');
-
-    // Remove any existing handlers
-    $(document).off('submit', '#login-form');
-
-    // Login form submission
-    $(document).on('submit', '#login-form', function (e) {
-        console.log('Login form submitted');
-        e.preventDefault();
-
-        const username = $('#login-account').val().trim();
-        const password = $('#login-password').val().trim();
-        const remember = $('#remember').is(':checked');
-
-        console.log('Form data:', { username, password: '***', remember });
-
-        // Client-side validation
-        const validationErrors = validateLoginForm(username, password);
-
-
-        // Show brief validation success
-        if (username && password) {
-            showSuccessMessage('Đang xác thực thông tin...');
-        }
-
-        // Submit login request
-        loginAccount({
-            username: username,
-            password: password,
-            remember: remember
-        });
-    });
-
-    // Add click handler for submit button as backup
-    $('#login-form .btn-submit').on('click', function (e) {
-        console.log('Submit button clicked directly');
-        // If form doesn't have proper submit handler, trigger it manually
-        const form = $('#login-form');
-        if (form.length > 0) {
-            form.trigger('submit');
-        }
-    });
-
-    // Register form submission (basic structure)
-    $(document).off('submit', '#register-form');
-    $(document).on('submit', '#register-form', function (e) {
-        console.log('Register form submitted');
-        e.preventDefault();
-
-        // Get form data
-        const formData = {
-            fullname: $('#register-fullname').val().trim(),
-            birthday: $('#register-birthday').val(),
-            phone: $('#register-phone').val().trim(),
-            username: $('#register-username').val().trim(),
-            email: $('#register-email').val().trim(),
-            password: $('#register-password').val(),
-            confirmPassword: $('#register-confirm-password').val(),
-            agreePolicy: $('#register-policy').is(':checked')
-        };
-
-        // Basic validation for registration
-        if (validateRegistrationForm(formData)) {
-            console.log('Registration data:', formData);
-
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Chức năng đăng ký',
-                    text: 'Chức năng đăng ký đang được phát triển. Vui lòng liên hệ quản trị viên để được hỗ trợ.',
-                    confirmButtonText: 'Đã hiểu'
-                });
-            } else {
-                alert('Chức năng đăng ký đang được phát triển. Vui lòng liên hệ quản trị viên để được hỗ trợ.');
-            }
-        }
-    });
-});
-
-// Registration validation function
 function validateRegistrationForm(data) {
     const errors = [];
 
+    // Required fields
     if (!data.fullname) errors.push('Vui lòng nhập họ và tên');
     if (!data.birthday) errors.push('Vui lòng chọn ngày sinh');
     if (!data.phone) errors.push('Vui lòng nhập số điện thoại');
@@ -341,16 +300,16 @@ function validateRegistrationForm(data) {
     if (!data.email) errors.push('Vui lòng nhập email');
     if (!data.password) errors.push('Vui lòng nhập mật khẩu');
     if (data.password !== data.confirmPassword) errors.push('Mật khẩu xác nhận không khớp');
-    if (!data.agreePolicy) errors.push('Vui lòng đồng ý với điều khoản và điều kiện');
+    if (!data.agreePolicy) errors.push('Vui lòng đồng ý với điều khoản');
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (data.email && !emailRegex.test(data.email)) {
-        errors.push('Định dạng email không hợp lệ');
+        errors.push('Email không hợp lệ');
     }
 
-    // Phone validation (Vietnamese phone numbers)
-    const phoneRegex = /^(\+84|84|0[3|5|7|8|9])+([0-9]{8})$/;
+    // Phone validation
+    const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
     if (data.phone && !phoneRegex.test(data.phone)) {
         errors.push('Số điện thoại không hợp lệ (VD: 0912345678)');
     }
@@ -360,14 +319,13 @@ function validateRegistrationForm(data) {
         errors.push('Tên đăng nhập phải có ít nhất 3 ký tự');
     }
 
-    // Password strength validation
-    if (data.password && data.password.length < 8) {
-        errors.push('Mật khẩu phải có ít nhất 8 ký tự');
+    // Password validation
+    if (data.password && data.password.length < 6) {
+        errors.push('Mật khẩu phải có ít nhất 6 ký tự');
     }
 
     if (errors.length > 0) {
-        console.log('Registration validation errors:', errors);
-
+        console.log('Validation errors:', errors);
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 icon: 'error',
@@ -375,7 +333,7 @@ function validateRegistrationForm(data) {
                 html: `
                     <div style="text-align: left;">
                         <ul style="margin: 10px 0; padding-left: 20px;">
-                            ${errors.map(error => `<li style="margin: 5px 0;">${error}</li>`).join('')}
+                            ${errors.map(error => `<li>${error}</li>`).join('')}
                         </ul>
                     </div>
                 `,
@@ -391,6 +349,79 @@ function validateRegistrationForm(data) {
     return true;
 }
 
+// Event listeners
+document.addEventListener("DOMContentLoaded", function () {
+    console.log('DOM loaded');
+    console.log('jQuery:', typeof $ !== 'undefined');
+    console.log('SweetAlert:', typeof Swal !== 'undefined');
+
+    // Login form
+    $(document).off('submit', '#login-form');
+    $(document).on('submit', '#login-form', function (e) {
+        console.log('Login form submitted');
+        e.preventDefault();
+
+        const username = $('#login-account').val().trim();
+        const password = $('#login-password').val().trim();
+        const remember = $('#remember').is(':checked');
+
+        const validationErrors = validateLoginForm(username, password);
+        if (validationErrors.length > 0) {
+            showErrorMessage(validationErrors[0]);
+            return;
+        }
+
+        if (username && password) {
+            showSuccessMessage('Đang xác thực...');
+        }
+
+        loginAccount({
+            username: username,
+            password: password,
+            remember: remember
+        });
+    });
+
+    // Register form
+    $(document).off('submit', '#register-form');
+    $(document).on('submit', '#register-form', function (e) {
+      console.log('Register form submitted');
+        e.preventDefault();
+
+        const formData = {
+      fullname: $('#register-fullname').val().trim(),
+       birthday: $('#register-birthday').val(),
+ phone: $('#register-phone').val().trim(),
+ username: $('#register-username').val().trim(),
+     // ✅ BỎ CCCD VÌ ĐÃ COMMENT OUT TRONG HTML
+      // cccd: $('#register-cccd').val().trim(),
+       email: $('#register-email').val().trim(),
+   password: $('#register-password').val(),
+      confirmPassword: $('#register-confirm-password').val(),
+            agreePolicy: $('#register-policy').is(':checked')
+ };
+
+   console.log('Form data:', formData);
+
+        if (!validateRegistrationForm(formData)) {
+       return;
+        }
+
+        console.log('Validation passed');
+
+        // ✅ GỬI DATA KHÔNG CÓ CCCD
+        registerAccount({
+            fullname: formData.fullname,
+            birthday: formData.birthday,
+          phone: formData.phone,
+    username: formData.username,
+    // cccd: formData.cccd, // ✅ BỎ DÒNG NÀY
+    email: formData.email,
+       password: formData.password
+        });
+    });
+});
+
 // Logout function
 function logoutAccount() {
     if (typeof Swal === 'undefined') {
@@ -405,8 +436,6 @@ function logoutAccount() {
         text: 'Bạn có chắc chắn muốn đăng xuất?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
         confirmButtonText: 'Đăng xuất',
         cancelButtonText: 'Hủy'
     }).then((result) => {
@@ -418,18 +447,10 @@ function logoutAccount() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Đăng xuất thành công',
-                        text: 'Hẹn gặp lại bạn!',
                         timer: 1500,
                         showConfirmButton: false
                     }).then(() => {
                         window.location.href = "/";
-                    });
-                },
-                error: function () {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi',
-                        text: 'Không thể đăng xuất. Vui lòng thử lại.'
                     });
                 }
             });
@@ -437,5 +458,4 @@ function logoutAccount() {
     });
 }
 
-// Export logout function for use in other files
 window.logoutAccount = logoutAccount;

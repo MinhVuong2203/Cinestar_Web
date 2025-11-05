@@ -24,11 +24,6 @@
                 opacity: 0.9;
             }
 
-        .deleted-row {
-            background-color: #f8d7da;
-            opacity: 0.7;
-        }
-
         .action-buttons .btn {
             margin-right: 5px;
         }
@@ -42,6 +37,13 @@
         .table tbody tr:hover {
             background-color: #f8f9fa;
         }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
     </style>
 }
 
@@ -49,7 +51,14 @@
     <div class="col-md-12">
         <h2><i class="fas fa-door-open"></i> Quản lý Phòng chiếu</h2>
         <div class="d-flex justify-content-between align-items-center">
-           
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active">Quản lý Phòng chiếu</li>
+                </ol>
+            </nav>
             <a asp-action="Create" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i>Thêm phòng chiếu mới
             </a>
@@ -59,40 +68,53 @@
 
 <!-- Statistics Cards -->
 <div class="row mb-4">
-    <div class="col-md-3">
+    <div class="col-md-6">
         <div class="stats-card">
-            <h3>@ViewBag.TotalRooms</h3>
+            <h3 id="totalRooms">@ViewBag.TotalRooms</h3>
             <p>Tổng số phòng chiếu</p>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6">
         <div class="stats-card">
-            <h3>@ViewBag.ActiveRooms</h3>
-            <p>Phòng đang hoạt động</p>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <h3>@ViewBag.TotalSeats</h3>
+            <h3 id="totalSeats">@ViewBag.TotalSeats</h3>
             <p>Tổng số ghế</p>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <h3>@ViewBag.DeletedRooms</h3>
-            <p>Phòng đã xóa</p>
+</div>
+
+<!-- Filter Section -->
+<div class="filter-section">
+    <div class="row align-items-end">
+        <div class="col-md-4">
+            <label for="branchFilter" class="form-label">
+                <i class="fas fa-filter me-2"></i>Lọc theo Chi nhánh
+            </label>
+            <select id="branchFilter" class="form-select">
+                <option value="">-- Tất cả chi nhánh --</option>
+                @if (ViewBag.AllBranches != null)
+                {
+                    foreach (var branch in ViewBag.AllBranches)
+                    {
+                        <option value="@branch.BranchID">@branch.BranchName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button id="resetFilter" class="btn btn-secondary">
+                <i class="fas fa-redo me-2"></i>Đặt lại
+            </button>
         </div>
     </div>
 </div>
 
 <!-- Room Table -->
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="fas fa-list me-2"></i>Danh sách Phòng chiếu</span>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="showDeleted" checked>
-            <label class="form-check-label" for="showDeleted">Hiển thị đã xóa</label>
-        </div>
+    <div class="card-header">
+        <span>
+            <i class="fas fa-list me-2"></i>Danh sách Phòng chiếu
+            <span id="roomCount" class="badge bg-secondary">@Model.Count()</span>
+        </span>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -100,12 +122,10 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Mã phòng</th>
                         <th>Tên phòng</th>
                         <th>Số ghế</th>
                         <th>Loại phòng</th>
                         <th>Chi nhánh</th>
-                        <th>Trạng thái</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
@@ -115,55 +135,36 @@
                     }
                     @foreach (var room in Model)
                     {
-                        <tr class="@(room.IsDeleted ? "deleted-row" : "")">
-                            <td>@index</td>
-                            <td>@room.RoomID</td>
+                        <tr data-branch-id="@room.BranchID">
+                            <td class="row-number">@index</td>
                             <td>@room.RoomName</td>
                             <td>@(room.SeatCount ?? 0)</td>
                             <td>@(room.RoomType ?? "Chưa xác định")</td>
                             <td>@(room.Branch?.BranchName ?? "Chưa có chi nhánh")</td>
                             <td>
-                                @if (room.IsDeleted)
-                                {
-                                    <span class="badge bg-danger">Đã xóa</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-success">Đang hoạt động</span>
-                                }
-                            </td>
-                            <td>
-                                @if (room.IsDeleted)
-                                {
-                                    <div class="action-buttons">
-                                        <form asp-action="Restore" asp-route-id="@room.RoomID" method="post" style="display:inline;">
-                                            <button type="submit" class="btn btn-sm btn-success" title="Khôi phục"
-                                                    onclick="return confirm('Bạn có chắc muốn khôi phục phòng chiếu này?')">
-                                                <i class="fas fa-undo"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="action-buttons">
-                                        <a asp-action="Edit" asp-route-id="@room.RoomID" class="btn btn-sm btn-warning" title="Sửa">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form asp-action="Delete" asp-route-id="@room.RoomID" method="post" style="display:inline;">
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Xóa"
-                                                    onclick="return confirm('Bạn có chắc muốn xóa phòng chiếu này?')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                }
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@room.RoomID"
+                                       class="btn btn-sm btn-warning" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@room.RoomID" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa vĩnh viễn"
+                                                onclick="return confirm('⚠️ CẢNH BÁO: Xóa phòng sẽ XÓA VĨNH VIỄN tất cả ghế và dữ liệu liên quan!\n\nBạn có chắc chắn muốn xóa phòng @room.RoomName?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         index++;
                     }
                 </tbody>
             </table>
+
+            <div id="noResults" style="display: none;" class="text-center py-4">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Không tìm thấy phòng chiếu nào</p>
+            </div>
         </div>
     </div>
 </div>
@@ -171,14 +172,54 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Chức năng ẩn/hiện các dòng đã xóa
-            $('#showDeleted').change(function() {
-                if ($(this).is(':checked')) {
-                    $('.deleted-row').show();
-                } else {
-                    $('.deleted-row').hide();
-                }
+            $('#branchFilter').change(function() {
+                filterRooms();
             });
+
+            $('#resetFilter').click(function() {
+                $('#branchFilter').val('');
+                filterRooms();
+            });
+
+            function filterRooms() {
+                var selectedBranch = $('#branchFilter').val();
+                var visibleCount = 0;
+                var visibleIndex = 1;
+                var totalSeats = 0;
+
+                $('#roomTableBody tr').each(function() {
+                    var $row = $(this);
+                    var branchId = $row.data('branch-id');
+                    var shouldShow = true;
+
+                    if (selectedBranch && branchId != selectedBranch) {
+                        shouldShow = false;
+                    }
+
+                    if (shouldShow) {
+                        $row.show();
+                        $row.find('.row-number').text(visibleIndex);
+                        var seatCount = parseInt($row.find('td:eq(2)').text()) || 0;
+                        totalSeats += seatCount;
+                        visibleIndex++;
+                        visibleCount++;
+                    } else {
+                        $row.hide();
+                    }
+                });
+
+                $('#roomCount').text(visibleCount);
+                $('#totalRooms').text(visibleCount);
+                $('#totalSeats').text(totalSeats);
+
+                if (visibleCount === 0) {
+                    $('#noResults').show();
+                } else {
+                    $('#noResults').hide();
+                }
+            }
+
+            filterRooms();
         });
     </script>
 }
