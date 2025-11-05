@@ -12,6 +12,8 @@ public partial class ShowTime
     [Key]
     [StringLength(10)]
     [Unicode(false)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
     public string ShowTimeID { get; set; } = string.Empty!;
 
     [Column(TypeName = "datetime")]

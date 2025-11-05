@@ -7,6 +7,13 @@
 
 <div class="showtime-container">
     <div class="showtime-header">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin: 20px 0;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Lỗi!</strong> @TempData["ErrorMessage"]
+            </div>
+        }
         <h1><i class="fas fa-plus-circle"></i> Thêm Suất Chiếu Mới</h1>
         <a asp-action="Index" class="showtime-btn-back">
             <i class="fas fa-arrow-left"></i> Quay Lại
@@ -15,6 +22,7 @@
 
     <div class="showtime-form-container">
         <form asp-action="Create" method="post" id="showtimeForm">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="showtime-form-row">
