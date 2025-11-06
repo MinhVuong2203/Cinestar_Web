@@ -68,13 +68,13 @@
                                             <i class="fa-solid fa-user-circle"></i>
                                             <span>Thông tin cá nhân</span>
                                         </a>
-                                        <form href="/Account/Logout" asp-area="" method="post">
+                                        @* <form href="/Account/Logout" asp-area="" method="post"> *@
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="dropdown-item" style="width: 100%; background: none; border: none; text-align: left; cursor: pointer;">
+                                            <a href="/Account/Logout" class="dropdown-item">
                                                 <i class="fa-solid fa-right-from-bracket"></i>
                                                 <span>Đăng xuất</span>
-                                            </button>
-                                        </form>
+                                            </a>
+                                        @* </form> *@
                                     </div>
                                 </div>
                             }
