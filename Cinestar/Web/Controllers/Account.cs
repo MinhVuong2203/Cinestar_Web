@@ -128,11 +128,11 @@ namespace Web.Controllers
 
                     string redirectUrl = role switch
                     {
-                        "Admin" => "/admin/Home/Index",
-                        "EmployeeSales" => "/employee-sales/Home/Index",
-                        "EmployeeTechnician" => "/employee-technician/Home/Index",
-                        "EmployeeMovies" => "/employee-movies/Home/Index",
-                        _ => "/admin/Home/Index"
+                        "Admin" => "/admin",
+                        "EmployeeSales" => "/employee-sales",
+                        "EmployeeTechnician" => "/employee-technician",
+                        "EmployeeMovies" => "/employee-movies",
+                        _ => "/admin"
                     };
 
                     return Json(new
@@ -235,7 +235,7 @@ namespace Web.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("/Home/Index");
+            return Redirect("/");
 
         }
     }

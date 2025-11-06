@@ -41,7 +41,7 @@
             {
                 <ul class="list-unstyled components">
                     <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
-                        <a href="/@urlPrefix/Home/Index">
+                        <a href="/@urlPrefix">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
@@ -56,7 +56,7 @@
                         </a>
                         <ul class="collapse list-unstyled" id="EmployeeSubmenu">
                             <li><a href="/@urlPrefix/Employee/Index">Nhân viên</a></li>
-                            <li><a href="/@urlPrefix/Employee/ApprovalProfile">Kiểm duyệt hồ sơ</a></li>
+                            <li><a href="/@urlPrefix/WorkShift/SalaryReport">Lương thưởng</a></li>
                             <li><a href="/@urlPrefix/WorkShift/Index">Phân ca làm việc</a></li>
                         </ul>
                     </li>
@@ -107,7 +107,7 @@
             {
                 <ul class="list-unstyled components">
                     <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
-                        <a href="/@urlPrefix/Home/Index">
+                        <a href="/@urlPrefix">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
@@ -123,7 +123,7 @@
             {
                 <ul class="list-unstyled components">
                     <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
-                        <a href="/@urlPrefix/Home/Index">
+                        <a href="/@urlPrefix">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
@@ -150,7 +150,7 @@
             {
                 <ul class="list-unstyled components">
                     <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
-                        <a href="/@urlPrefix/Home/Index">
+                        <a href="/@urlPrefix">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
@@ -171,7 +171,8 @@
                 </ul>
             }
 
-            <ul class="list-unstyled">
+            
+            <ul class="list-unstyled mt-auto">
                 <li>
                     <a asp-controller="Home" asp-action="Index" asp-area="">
                         <i class="fas fa-home"></i> Về trang chủ
@@ -201,7 +202,6 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Thông tin</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Cài đặt</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/Account/Logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                             </ul>

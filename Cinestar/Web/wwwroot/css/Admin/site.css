@@ -32,10 +32,17 @@ body {
     left: 0;
     z-index: 999;
     overflow-y: auto;
+    display: flex; /* Thêm */
+    flex-direction: column; /* Thêm */
 }
 
     .sidebar.active {
         margin-left: calc(-1 * var(--sidebar-width));
+    }
+    .sidebar .mt-auto {
+        margin-top: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 15px;
     }
 
 .sidebar-header {

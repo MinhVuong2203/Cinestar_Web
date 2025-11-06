@@ -199,7 +199,10 @@
         background: linear-gradient(135deg, #E53935, #C62828);
         color: #fff;
     }
-
+    .role-badge.role-nhân-viên-phim {
+        background: linear-gradient(135deg, #ebe121, #706d2c);
+        color: #fff;
+    }
 .bg-success-soft {
     background-color: #d4edda;
     color: #155724;
