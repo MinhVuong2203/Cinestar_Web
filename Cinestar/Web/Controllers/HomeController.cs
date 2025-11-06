@@ -24,15 +24,9 @@ namespace Web.Controllers
         {
             Debug.WriteLine("=== HomeController.Index START ===");
 
-            // Lấy danh sách phim đang chiếu và sắp chiếu
             var nowShowing = _movieService_Cus.GetNowShowingMoviesAsync(12).Result;
             var comingSoon = _movieService_Cus.GetComingSoonMoviesAsync(12).Result;
 
-            // DEBUG: Kiểm tra kết quả
-            Debug.WriteLine($"HomeController - Now Showing: {nowShowing?.Count ?? 0} movies");
-            Debug.WriteLine($"HomeController - Coming Soon: {comingSoon?.Count ?? 0} movies");
-
-            // Truyền dữ liệu qua ViewData
             ViewData["NowShowing"] = nowShowing;
             ViewData["ComingSoon"] = comingSoon;
 

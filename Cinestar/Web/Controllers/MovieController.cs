@@ -30,7 +30,23 @@ namespace Web.Controllers
  
         public IActionResult Details(string id)
         {
-            return View();
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var movie = _movieService_Cus.GetMovieByIdAsync(id).Result;
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy danh sách các thành phố có rạp (cho header)
+            var cities = _cinemaBranchService.GetListCityBranches();
+            ViewData["lstCity"] = cities;
+
+            return View(movie);
         }
 
 
