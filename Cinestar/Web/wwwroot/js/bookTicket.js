@@ -227,7 +227,9 @@ container.innerHTML = '<p class="no-data">Không có rạp chiếu phim này t�
                     container.innerHTML = '<p class="no-data">Không có thông tin vé</p>';
                     return;
                 }
+                
                 let html = '';
+                // Tạo một .content riêng biệt cho mỗi loại vé
                 prices.forEach(price => {
                     html += `
                     <div class="content">
@@ -250,41 +252,9 @@ container.innerHTML = '<p class="no-data">Không có rạp chiếu phim này t�
                             </div>
                         </div>
                     </div>`;
-
-  //      fetch(`/Movie/GetTicketPrices?showTimeId=${showTimeId}`)
-  //      .then(response => response.json())
-  //    .then(prices => {
-  //if (prices.length === 0) {
-  // container.innerHTML = '<p class="no-data">Không có thông tin vé</p>';
-  //       return;
-  //      }
-
-  //    let html = '';
-  //   prices.forEach(price => {
-  //      html += `
-  //         <div class="content">
-  //<div class="content-top">
-  //           <p class="name">${price.ticketType}</p>
-  //<div class="desc">
-  //      <p>${price.description}</p>
-  //        </div>
-  //     <div class="price">
-  //               <p>${price.price.toLocaleString('vi-VN')} VNĐ</p>
-  //          </div>
-  //    </div>
-  // <div class="content-bottom">
-  // <div class="count">
-  //            <div class="count-btn">
-  //            <button class="decrease">-</button>
-  //<span class="quantity">0</span>
-  //          <button class="increase" ${price.availableCount === 0 ? 'disabled' : ''}>+</button>
-  //          </div>
-  //        </div>
-  //       </div>
-  //           </div>`;
-         });
+                });
                 container.innerHTML = html;
-         })
+            })
        .catch(error => {
                 console.error('Error:', error);
          container.innerHTML = '<p class="error">Không thể tải thông tin vé</p>';
@@ -294,14 +264,16 @@ container.innerHTML = '<p class="no-data">Không có rạp chiếu phim này t�
     // === CẬP NHẬT TỔNG TIỀN ===
     function updateTotalPrice() {
         let total = 0;
-        document.querySelectorAll('.ticket-container .content').forEach(content => {
- const qty = parseInt(content.querySelector('.quantity').textContent);
-     const priceText = content.querySelector('.price p').textContent;
-            const price = parseInt(priceText.replace(/[^\d]/g, ''));
+
+        // Lặp qua từng loại vé (mỗi .content là một loại vé riêng biệt)
+        document.querySelectorAll('#ticketContainer .content').forEach(content => {
+            const qty = parseInt(content.querySelector('.quantity').textContent) || 0;
+            const priceText = content.querySelector('.price p').textContent;
+            const price = parseInt(priceText.replace(/[^\d]/g, '')) || 0;
             total += qty * price;
         });
 
         document.getElementById('totalPrice').textContent = total.toLocaleString('vi-VN') + ' VNĐ';
-    document.getElementById('bookBtn').disabled = total === 0;
+        document.getElementById('bookBtn').disabled = total === 0;
     }
 });
