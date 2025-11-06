@@ -30,6 +30,9 @@ namespace Web.Controllers
  
         public IActionResult Details(string id)
         {
+            // Lấy danh sách các thành phố có rạp
+            var cities = _cinemaBranchService.GetListCityBranches();
+            ViewData["lstCity"] = cities;
             return View();
         }
 
