@@ -85,7 +85,7 @@
                                     <i class="fas fa-ticket-alt fa-3x text-primary mb-3"></i>
                                     <h5>Bán vé</h5>
                                     <p class="text-muted">Quản lý và bán vé xem phim</p>
-                                    <a href="#" class="btn btn-primary">
+                                    <a asp-area="Admin" asp-controller="EmployeeSale" asp-action="SaleTicket" class="btn btn-primary">
                                         <i class="fas fa-arrow-right me-1"></i> Vào bán vé
                                     </a>
                                 </div>
@@ -108,7 +108,8 @@
                         <div class="col-md-6">
                             <div class="card border-warning h-100">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-popcorn fa-3x text-warning mb-3"></i>
+                                    <i class="fa-solid fa-utensils fa-3x text-warning mb-3"></i>
+                                    @* <i class="fas fa-popcorn fa-3x text-warning mb-3"></i> *@
                                     <h5>Bán đồ ăn & nước</h5>
                                     <p class="text-muted">Quản lý sản phẩm combo</p>
                                     <a href="#" class="btn btn-warning">

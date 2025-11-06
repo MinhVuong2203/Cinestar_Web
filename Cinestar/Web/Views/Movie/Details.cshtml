@@ -1,6 +1,6 @@
 ﻿@section styles {
     <link href="~/css/movie.css" rel="stylesheet" />
-    <link href="~/css/bookTicket.css" rel="stylesheet" />
+    <link href="~/css/bookTicket.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/lib/fontawesome-free-7.1.0-web/css/all.min.css" rel="stylesheet" />
 }
 @{
@@ -250,7 +250,7 @@
                 </button>
             </div>
         </div>
-        <script src="~/js/bookTicket.js"></script>
+        <script src="~/js/bookTicket.js?v=@DateTime.Now.Ticks"></script>
     </div>
     @* end *@
 
