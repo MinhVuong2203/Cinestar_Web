@@ -1,6 +1,7 @@
 ﻿@model Web.Models.Employee
 @{
 	ViewData["Title"] = "Bán vé";
+    var lstMovies = ViewData["lstMovies"] as List<Movie>;
 }
 @section Styles {
     <link href="~/css/Admin/SaleTicket.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
@@ -18,38 +19,34 @@
             <h3 class="step-title">Chọn phim</h3>
         </div>
         <div class="movie-grid" id="movieGrid">
-            <div class="movie-card" data-movie="1" data-name="Avengers: Endgame">
-                <div class="movie-poster">
-                    <i class="fas fa-film fa-4x text-white"></i>
+            @if (lstMovies != null && lstMovies.Any())
+            {
+                @foreach (var movie in lstMovies)
+                {
+                    <div class="movie-card" data-movie="@movie.MovieID" data-name="@movie.Title">
+                        <div class="movie-poster">
+                            @if (!string.IsNullOrEmpty(movie.ImageUrl))
+                            {
+                                <img src="@movie.ImageUrl" alt="@movie.Title" class="movie-image" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-film fa-4x text-white"></i>
+                            }
+                        </div>
+                        <h5>@movie.Title</h5>
+                        <p class="text-muted mb-0">@movie.Genre • @movie.DurationMinutes phút</p>
+                        <span class="badge-custom">@movie.AgeLimit</span>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-movies">
+                    <i class="fas fa-exclamation-circle fa-3x text-muted"></i>
+                    <p class="text-muted mt-3">Không có phim nào đang chiếu tại chi nhánh này</p>
                 </div>
-                <h5>Avengers: Endgame</h5>
-                <p class="text-muted mb-0">Hành động • 181 phút</p>
-                <span class="badge-custom">C16</span>
-            </div>
-            <div class="movie-card" data-movie="2" data-name="The Batman">
-                <div class="movie-poster">
-                    <i class="fas fa-film fa-4x text-white"></i>
-                </div>
-                <h5>The Batman</h5>
-                <p class="text-muted mb-0">Hành động • 176 phút</p>
-                <span class="badge-custom">C16</span>
-            </div>
-            <div class="movie-card" data-movie="3" data-name="Mai">
-                <div class="movie-poster">
-                    <i class="fas fa-film fa-4x text-white"></i>
-                </div>
-                <h5>Mai</h5>
-                <p class="text-muted mb-0">Tâm lý • 131 phút</p>
-                <span class="badge-custom">C18</span>
-            </div>
-            <div class="movie-card" data-movie="4" data-name="Lật mặt 7">
-                <div class="movie-poster">
-                    <i class="fas fa-film fa-4x text-white"></i>
-                </div>
-                <h5>Lật mặt 7</h5>
-                <p class="text-muted mb-0">Hài • 138 phút</p>
-                <span class="badge-custom">C13</span>
-            </div>
+            }
         </div>
     </div>
 

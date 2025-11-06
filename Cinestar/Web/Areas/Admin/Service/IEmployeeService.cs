@@ -17,5 +17,8 @@ namespace Web.Areas.Admin.Service
         public Task<bool> CreateEmployee(Employee employee);
         public Task DeteleEmployee(Guid id);
         public double GetSalaryById(Guid id);
+
+        //lấy danh sách phim theo chi nhánh của nhân viên
+        public List<Movie> GetMoviesByEmployeeBranchId(string branchId);
     }
 }

@@ -132,5 +132,25 @@ namespace Web.Areas.Admin.Service
             return emp.HourWage ?? 0; // nếu null thì trả về 0
         }
 
+        // Lấy danh sách phim theo chi nhánh của nhân viên
+        public List<Movie> GetMoviesByEmployeeBranchId(string branchId)
+        {
+            if (string.IsNullOrEmpty(branchId))
+                return new List<Movie>();
+
+            // Lấy danh sách phim đang chiếu tại chi nhánh thông qua ShowTime và Room
+            var movies = _context.Movies
+                .Where(m => !m.IsDeleted &&
+                        m.ShowTimes.Any(st => !st.IsDeleted &&
+                                        st.Room != null &&
+                                        !st.Room.IsDeleted &&
+                                        st.Room.BranchID == branchId))
+                .Distinct()
+                .ToList();
+
+            return movies;
+        }
+
+
     }
 }

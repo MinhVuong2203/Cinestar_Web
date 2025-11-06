@@ -125,3 +125,189 @@ function confirmBooking() {
     // Reset form
     location.reload();
 }
+
+// Biến lưu trữ thông tin đặt vé
+let selectedMovie = null;
+let selectedTickets = {};
+let selectedCombos = {};
+let selectedDateTime = null;
+
+// Khởi tạo khi trang load
+document.addEventListener('DOMContentLoaded', function () {
+    initializeDatePicker();
+    initializeMovieSelection();
+    initializeStepNavigation();
+});
+
+// Khởi tạo date picker
+function initializeDatePicker() {
+    const dateSelect = document.getElementById('dateSelect');
+    if (dateSelect) {
+        // Set ngày tối thiểu là hôm nay
+        const today = new Date();
+        dateSelect.min = today.toISOString().split('T')[0];
+        dateSelect.value = today.toISOString().split('T')[0];
+    }
+}
+
+// Khởi tạo chọn phim
+function initializeMovieSelection() {
+    const movieCards = document.querySelectorAll('.movie-card');
+    movieCards.forEach(card => {
+        card.addEventListener('click', function () {
+            selectMovie(this);
+        });
+    });
+}
+
+// Xử lý chọn phim
+function selectMovie(movieCard) {
+    // Bỏ chọn tất cả phim khác
+    document.querySelectorAll('.movie-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    // Chọn phim hiện tại
+    movieCard.classList.add('selected');
+
+    // Lưu thông tin phim
+    selectedMovie = {
+        id: movieCard.dataset.movie,
+        name: movieCard.dataset.name
+    };
+
+    // Hiển thị bước tiếp theo
+    showStep(2);
+    updateSummary();
+}
+
+// Hiển thị bước
+function showStep(stepNumber) {
+    // Ẩn tất cả các bước
+    document.querySelectorAll('.step-card').forEach((step, index) => {
+        if (index + 1 <= stepNumber) {
+            step.classList.remove('hidden');
+        }
+    });
+
+    // Hiển thị summary box nếu đã chọn phim
+    if (stepNumber >= 2) {
+        document.getElementById('summaryBox').classList.remove('hidden');
+    }
+}
+
+// Thay đổi số lượng vé
+function changeQuantity(type, change) {
+    const qtyElement = document.getElementById(`qty-${type}`);
+    const currentQty = parseInt(qtyElement.textContent) || 0;
+    const newQty = Math.max(0, currentQty + change);
+
+    qtyElement.textContent = newQty;
+    selectedTickets[type] = newQty;
+
+    // Kiểm tra nếu có vé được chọn thì hiển thị bước tiếp theo
+    const totalTickets = Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
+    if (totalTickets > 0) {
+        showStep(3);
+    }
+
+    updateSummary();
+}
+
+// Thay đổi số lượng combo
+function changeComboQuantity(combo, change) {
+    const qtyElement = document.getElementById(`combo-${combo}`);
+    const currentQty = parseInt(qtyElement.textContent) || 0;
+    const newQty = Math.max(0, currentQty + change);
+
+    qtyElement.textContent = newQty;
+    selectedCombos[combo] = newQty;
+
+    updateSummary();
+}
+
+// Khởi tạo navigation cho các bước
+function initializeStepNavigation() {
+    // Xử lý chọn giờ
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.addEventListener('click', function () {
+            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+            this.classList.add('selected');
+
+            const date = document.getElementById('dateSelect').value;
+            const time = this.dataset.time;
+            selectedDateTime = `${date} ${time}`;
+
+            showStep(4);
+            updateSummary();
+        });
+    });
+}
+
+// Cập nhật tổng kết
+function updateSummary() {
+    // Cập nhật tên phim
+    document.getElementById('summary-movie').textContent = selectedMovie ? selectedMovie.name : '-';
+
+    // Cập nhật ngày giờ
+    document.getElementById('summary-datetime').textContent = selectedDateTime || '-';
+
+    // Cập nhật vé
+    const ticketSummary = [];
+    const ticketPrices = { standard: 80000, vip: 120000, couple: 200000 };
+    const ticketNames = { standard: 'Vé thường', vip: 'Vé VIP', couple: 'Vé đôi' };
+
+    for (let [type, qty] of Object.entries(selectedTickets)) {
+        if (qty > 0) {
+            ticketSummary.push(`${ticketNames[type]}: ${qty}`);
+        }
+    }
+    document.getElementById('summary-tickets').textContent = ticketSummary.length > 0 ? ticketSummary.join(', ') : '-';
+
+    // Cập nhật combo
+    const comboSummary = [];
+    for (let [combo, qty] of Object.entries(selectedCombos)) {
+        if (qty > 0) {
+            comboSummary.push(`${combo}: ${qty}`);
+        }
+    }
+    document.getElementById('summary-combos').textContent = comboSummary.length > 0 ? comboSummary.join(', ') : 'Không có';
+
+    // Tính tổng tiền
+    let total = 0;
+
+    // Tiền vé
+    for (let [type, qty] of Object.entries(selectedTickets)) {
+        total += (ticketPrices[type] || 0) * qty;
+    }
+
+    // Tiền combo (cần định nghĩa giá combo)
+    const comboPrices = { combo1: 70000, combo2: 120000, popcorn: 45000, drink: 30000 };
+    for (let [combo, qty] of Object.entries(selectedCombos)) {
+        total += (comboPrices[combo] || 0) * qty;
+    }
+
+    document.getElementById('summary-total').textContent = total.toLocaleString('vi-VN') + ' ₫';
+}
+
+// Xác nhận đặt vé
+function confirmBooking() {
+    if (!selectedMovie) {
+        alert('Vui lòng chọn phim!');
+        return;
+    }
+
+    const totalTickets = Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
+    if (totalTickets === 0) {
+        alert('Vui lòng chọn ít nhất một vé!');
+        return;
+    }
+
+    if (!selectedDateTime) {
+        alert('Vui lòng chọn ngày giờ chiếu!');
+        return;
+    }
+
+    // Xử lý logic đặt vé ở đây
+    alert('Đang xử lý đặt vé...');
+}

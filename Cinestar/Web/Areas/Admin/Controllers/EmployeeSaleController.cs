@@ -46,6 +46,8 @@ namespace Web.Areas.Admin.Controllers
             // Lấy thông tin employee từ database
             var employee = await _employeeService.GetEmployeeById(employeeId);
 
+            //lấy danh sách phim theo chi nhánh của nhân viên
+            ViewData["lstMovies"] = _employeeService.GetMoviesByEmployeeBranchId(employee.BranchID);
             if (employee == null)
             {
                 TempData["Error"] = "Nhân viên không tồn tại!";
