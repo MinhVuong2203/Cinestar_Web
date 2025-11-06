@@ -501,7 +501,8 @@ body {
 }
 
 .btn-view-more {
-    display: block;
+    display: block; /* Thay đổi từ block sang inline-block */
+    width: fit-content;
     margin: 40px auto 0;
     padding: 15px 50px;
     background: transparent;
@@ -512,6 +513,8 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none; /* Bỏ gạch chân cho thẻ <a> */
+    text-align: center; /* Căn giữa text */
 }
 
 .btn-view-more:hover {

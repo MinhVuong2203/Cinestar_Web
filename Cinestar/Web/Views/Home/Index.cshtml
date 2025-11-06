@@ -190,7 +190,7 @@
             }
             else
             {
-                <button class="btn-view-more" disabled style="opacity: 0.5; cursor: not-allowed;">XEM THÊM</button>
+                <a class="btn-view-more disabled" style="opacity: 0.5; cursor: not-allowed; pointer-events: none; text-decoration: none;">XEM THÊM</a>
             }
         </div>
     </section>
@@ -292,13 +292,13 @@
 
             <div class="carousel-dots" id="carouselDots3"></div>
 
-            @if (comingSoonMovies != null && comingSoonMovies.Count > 0)
+            @if (nowShowingMovies != null && nowShowingMovies.Count > 0)
             {
-                <a href="@Url.Action("ComingSoon", "Movie")" class="btn-view-more">XEM THÊM</a>
+                <a href="@Url.Action("NowShowing", "Movie")" class="btn-view-more">XEM THÊM</a>
             }
             else
             {
-                <button class="btn-view-more" disabled style="opacity: 0.5; cursor: not-allowed;">XEM THÊM</button>
+                <a class="btn-view-more disabled" style="opacity: 0.5; cursor: not-allowed; pointer-events: none; text-decoration: none;">XEM THÊM</a>
             }
         </div>
     </section>
