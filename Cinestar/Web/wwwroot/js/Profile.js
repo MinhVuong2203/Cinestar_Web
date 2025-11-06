@@ -25,11 +25,11 @@
         });
     });
 
-    // Handle logout with confirmation
-    const logoutForm = document.getElementById('logoutForm');
-    if (logoutForm) {
-        logoutForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+    // ✅ Handle logout with confirmation (ĐỔI TỪ FORM SANG LINK)
+    const logoutLink = document.getElementById('logoutLink');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function (e) {
+            e.preventDefault(); // Ngăn chặn click mặc định
 
             // Using SweetAlert2 if available
             if (typeof Swal !== 'undefined') {
@@ -52,15 +52,14 @@
                                 Swal.showLoading();
                             }
                         });
-                        // Submit form using native submit (bypass event listener)
-                        e.target.submit();
+                        // ✅ Redirect đến link logout
+                        window.location.href = '/Account/Logout';
                     }
                 });
             } else {
                 // Fallback to confirm dialog
                 if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                    // Submit form using native submit
-                    e.target.submit();
+                    window.location.href = '/Account/Logout';
                 }
             }
         });

@@ -14,7 +14,7 @@
                 <span>👤</span>
             </div>
             <div class="profile-info">
-                <h3>Nguyễn Bình Minh</h3>
+                <h3>@(User.Identity?.Name ?? "Nguyễn Bình Minh")</h3>
                 <a href="#">
                     <p>Thay đổi ảnh đại diện</p>
                 </a>
@@ -25,74 +25,44 @@
             <div class="menu-item active">CFriends</div>
             <div class="point">
                 <div class="menu-item">Tích điểm CFriends</div>
-                <progress max="100" value="0"></progress>
+                <progress max="100"></progress>
                 <div class="menu-item">0/10k</div>
             </div>
-            <div class="menu-item">
+            <div class="menu-item" data-page="profile">
                 <span class="icon">👤</span>
                 Thông tin khách hàng
             </div>
-            <div class="menu-item selected">
+            <div class="menu-item" data-page="member">
                 <span class="icon">⭐</span>
                 Thành viên Cinestar
             </div>
-            <div class="menu-item">
+            <div class="menu-item selected" data-page="purchase-history">
                 <span class="icon">🛒</span>
                 Lịch sử mua hàng
             </div>
-            <div class="menu-item logout">
-                <span class="icon">🚪</span>
-                Đăng xuất
+            @* <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" style="margin: 0;"> *@
+            @* <a href="/Account/Logout" id="logoutForm">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item logout">
+                    <span class="icon">🚪</span>
+                    <span>Đăng xuất</span>
+                </button>
+            </a> *@
+            @* </form> *@
+            <div class="menu-item">
+                <a href="/Account/Logout" id="logoutLink" class="logout">
+                    <span class="icon">🚪</span>
+                    <span>Đăng xuất</span>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Main content -->
     <div class="main-content">
-        <h1>ĐĂNG KÝ THÀNH VIÊN</h1>
+        <h1>LỊCH SỬ MUA HÀNG</h1>
 
-        <div class="membership-info">
-            <h2>Tích điểm CVIP MEMBER</h2>
-            <span class="points">0/10K</span>
-        </div>
-        <progress max="100" value="0"></progress>
-        <div class="cards-section">
-            <div class="membership-card cfriend">
-                <div class="card-header">
-                    <h3>CFRIEND</h3>
-                </div>
-                <div class="card-content">
-                    <p>Được cấp khi đạt khi mua 3 vé xem phim bất kỳ tại Cinestar.</p>
-                    <h4>ƯU ĐIỂM ĐỂ ĐIỂM TIÊU CHUẨN MANG THEO CỘNG TỰ HẠO ĐÁI:</h4>
-                    <ul>
-                        <li>Được giảm 10% trực tiếp trên giá vé khi đến bộp nước khi mua tại quầy.</li>
-                        <li>Được tặng 1 vé xem phim 2D vào tuần sinh nhật (tuổi từ Thứ Hai đến Chủ Nhật) vé sẽ được gởi qua email.</li>
-                        <li>Được tham gia các chương trình dành cho khách VIP.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="membership-card cvip">
-                <div class="card-header">
-                    <h3>CVIP</h3>
-                </div>
-                <div class="card-content">
-                    <p>Được cấp khi thành viên CFriend đã tích lũy được tổi thiểu 10.000 điểm.</p>
-                    <h4>ƯU ĐIỂM ĐỂ ĐIỂM TIÊU CHUẨN MANG THEO CỘNG TỰ HẠO ĐÁI:</h4>
-                    <ul>
-                        <li>Được giảm 15% trực tiếp trên giá vé khi đến bộp nước khi mua tại quầy</li>
-                        <li>Có cơ hội nhận vé thành viên Lễ Bà Mật Phim của các chương trình Hot nhất mùa và ưu đãi.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <button class="register-btn" disabled>Bạn Đã LÀ THÀNH VIÊN CFRIEND</button>
-
-        <div class="rewards-section">
-            <img src="~/image/mucThuong.png" alt="Alternate Text" />
-        </div>
     </div>
 </div>
 
-<script src="~/js/CinestartMember.js?v=@DateTime.Now.Ticks"></script>
+<script src="~/js/PurchaseHistory.js?v=@DateTime.Now.Ticks"></script>

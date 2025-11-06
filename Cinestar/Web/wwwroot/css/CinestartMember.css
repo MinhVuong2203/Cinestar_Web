@@ -79,6 +79,34 @@
     .menu-item .icon {
         margin-right: 10px;
     }
+    .menu-item a{
+        text-decoration: none;
+        color: white;
+    }
+    .menu-item.logout {
+        width: 100%;
+        background: none;
+        border: none;
+        text-align: left;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        margin-top: 30px;
+        opacity: 0.8;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .menu-item.logout span {
+            display: inline;
+            font-weight: bold;
+            color: white;
+        }
+
+        .menu-item.logout:hover {
+            background: rgba(255, 0, 0, 0.2);
+            opacity: 1;
+        }
 
 .point {
     margin: 10px 0;
