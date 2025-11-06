@@ -38,5 +38,40 @@ namespace Web.Service
                 return new List<string>();
             }
         }
+        //lấy danh sách rạp theo thành phố
+        public List<CinemaBranch> GetBranchesByCity(string city)
+        {
+            try
+            {
+                return _context.CinemaBranches
+                    .Where(b => !b.IsDeleted && b.City == city)
+                    .AsNoTracking()
+                    .ToList();
+            }
+            catch
+            {
+                return new List<CinemaBranch>();
+            }
+        }
+
+        // Lấy danh sách rạp theo thành phố và có chiếu phim cụ thể
+        public List<CinemaBranch> GetBranchesByCityAndMovie(string city, string movieId)
+        {
+            try
+            {
+                return _context.CinemaBranches
+                    .Where(b => !b.IsDeleted && b.City == city)
+                    .Where(b => b.Rooms.Any(r => !r.IsDeleted &&
+                        r.ShowTimes.Any(st => !st.IsDeleted
+                            && st.MovieID == movieId
+                            && st.StartTime >= DateTime.Today))) // Chỉ lấy lịch chiếu từ hôm nay
+                    .AsNoTracking()
+                    .ToList();
+            }
+            catch
+            {
+                return new List<CinemaBranch>();
+            }
+        }
     }
 }
