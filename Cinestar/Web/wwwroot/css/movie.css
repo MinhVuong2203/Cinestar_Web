@@ -301,6 +301,15 @@
     margin-bottom: 30px;
 }
 
+.TitleBrand{
+    color: #fff;
+/*    margin: 20px auto;*/
+
+    text-align: center;
+    font-weight: 600;
+    padding: 40px 0px;
+}
+
 table {
     border-collapse: separate;
     border-spacing: 16px;

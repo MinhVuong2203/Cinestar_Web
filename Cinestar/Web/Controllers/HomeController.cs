@@ -38,7 +38,6 @@ namespace Web.Controllers
 
             Debug.WriteLine("=== HomeController.Index END ===");
             return View();
-            return View();
         }
 
         public IActionResult Privacy()

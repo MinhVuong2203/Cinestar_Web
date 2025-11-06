@@ -108,7 +108,7 @@
                             for (int slideIndex = 0; slideIndex < slideCount; slideIndex++)
                             {
                                 var moviesInSlide = nowShowingMovies.Skip(slideIndex * 4).Take(4).ToList();
-                                <div class="carousel-slide">
+                                <div class="carousel-slide" style="">
                                     <div class="row g-4 justify-content-between">
                                         @foreach (var movie in moviesInSlide)
                                         {
@@ -155,7 +155,7 @@
                                                                 <span class="play-icon">▶</span> Xem Trailer
                                                             </a>
                                                         }
-                                                        <a href="@Url.Action("Detail", "Movie", new { id = movie.MovieID })" class="btn-book">ĐẶT VÉ</a>
+                                                        <a href="@Url.Action("Details", "Movie", new { area = "", id = movie.MovieID })" class="btn-book">ĐẶT VÉ</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -263,7 +263,7 @@
                                                                 <span class="play-icon">▶</span> Xem Trailer
                                                             </a>
                                                         }
-                                                        <a href="@Url.Action("Detail", "Movie", new { id = movie.MovieID })" class="btn-book">TÌM HIỂU THÊM</a>
+                                                        <a href="@Url.Action("Details", "Movie", new { area = "", id = movie.MovieID })" class="btn-book">TÌM HIỂU THÊM</a>
                                                     </div>
                                                 </div>
                                             </div>

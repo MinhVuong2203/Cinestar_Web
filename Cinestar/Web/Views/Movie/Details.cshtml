@@ -1,0 +1,1147 @@
+﻿@section styles {
+    <link href="~/css/movie.css" rel="stylesheet" />
+    <link href="~/css/bookTicket.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome-free-7.1.0-web/css/all.min.css" rel="stylesheet" />
+}
+<div class="container">
+    @* thông tin phim*@
+    <div class="movie-detail-container">
+        <div class="movie-content">
+            <!-- Poster Section -->
+            <div class="movie-poster">
+                <div class="type-badge">2D</div>
+                <div class="age-rating">T13</div>
+                <img src="~/image/cuc-vang-cua-ngoai-poster.webp" alt="Cục Vàng Của Ngoại">
+            </div>
+
+            <!-- Info Section -->
+            <div class="movie-info">
+                <h1 class="movie-title">CỤC VÀNG CỦA NGOẠI (T13)</h1>
+
+                <div class="movie-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-home"></i>
+                        <span>Gia đình, Tâm Lý</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="far fa-clock"></i>
+                        <span>119'</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-flag"></i>
+                        <span>Việt Nam</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-closed-captioning"></i>
+                        <span>VN</span>
+                    </div>
+                    <div class="meta-item age-restriction">
+                        <i class="fas fa-user-friends"></i>
+                        <span>T13: Phim dành cho khán giả từ đủ 13 tuổi trở lên (13+)</span>
+                    </div>
+                </div>
+
+                <div class="movie-section">
+                    <h2 class="section-title">MÔ TẢ</h2>
+                    <div class="description-grid">
+                        <div class="desc-item">
+                            <strong>Đạo diễn:</strong> Khương Ngọc
+                        </div>
+                        <div class="desc-item">
+                            <strong>Diễn viên:</strong> Việt Hương, Hồng Đào, Lê Khánh, Bằng Di, Lâm Thanh Mỹ, Hữu Châu, Tuấn Khải, Thu Đan, Panda
+                        </div>
+                        <div class="desc-item">
+                            <strong>Khởi chiếu:</strong> Thứ Sáu, 17/10/2025
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-section">
+                    <h2 class="section-title">NỘI DUNG PHIM</h2>
+                    <div class="movie-synopsis">
+                        <p class="synopsis-text">
+                            Lấy cảm hứng từ những ký ức tuổi thơ ngoài ngọa, "Cục Vàng Của Ngoại" mang đến câu chuyện ấm áp về tình bà cháu trong một xóm nhỏ chân chùa nghĩa tình. Bà Hậu - người phụ nữ cả đời tần tảo, nay trở thành chỗ dựa duy nhất của cháu ngoại khi con gái bỏ đi. Dẫu cuộc sống còn nhiều nhọc nhằn, tình thương bà dành cho cháu vẫn luôn tròn ven. Với bà, cháu là "cục vàng" - niềm vui, niềm an ủi và cũng là lẽ sống của đời mình. Bộ phim như những dấn khán giả trở lại những khoảnh khắc<span class="ellipsis">...</span>
+                            <span class="synopsis-more hidden">quen thuộc nơi xóm nhỏ: nụ cười hồn nhiên của cháu, vòng tay chở che của bà và sự đùm bọc từ hàng xóm láng giềng. Tất cả cùng hòa thành một bức tranh đời thường ấm áp, gợi nhắc về tuổi thơ bình yên và tình người mộc mạc, chân thành</span> <span class="read-more">Xem thêm</span>
+                        </p>
+                    </div>
+                </div>
+
+                <a href="#" class="btn-cta btn-yellow btn-hover-purple btn-text-dark btn-text-hover-light btn-lg">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Xem Trailer</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    @* đặt vé *@
+    <div class="shtime-wr">
+        <div class="shtime-heading">
+            <h2 class="heading">LỊCH CHIẾU</h2>
+            <div class="selected-time" id="selectedTimeContainer">
+                
+            </div>
+        </div>
+
+        <div class="shtime-body">
+            <h2 class="heading">DANH SÁCH RẠP</h2>
+            <div class="select-location">
+                <div class="location-selected" id="selected-branch">
+                    <i class="fas fa-location-dot" style="color: #ffffff;"></i>
+                    <span class="location-name" id="selected-branch">TIỀN GIANG</span>
+                    <span class="dropdown-arrow">&#9662;</span>
+                </div>
+                <div class="location-dropdown">
+                    @{
+                        if (ViewData["lstCity"] != null)
+                        {
+                            var cities = ViewData["lstCity"] as List<string>;
+                            foreach (var city in cities)
+                            {
+                                <div class="location-option">@city</div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="shtime-fr">
+            <ul class="cinestar-list">
+                <li class="cinestar-item open">
+                    <div class="cinestar-heading">
+                        <h4 class="title">Cinestar Mỹ Tho (Tiền Giang)</h4>
+                        <span class="chevron">
+                            <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
+                        </span>
+                    </div>
+                    <div class="cinestar-body">
+                        <p class="address">Số 52 Đinh Bộ Lĩnh, Phường Mỹ Tho, Tỉnh Đồng Tháp</p>
+                        <ul class="list-infor">
+                            <li class="item-infor">
+                                <div class="tt">Standard</div>
+                                <ul class="list-time">
+                                    <li class="item-time">11:00</li>
+                                    <li class="item-time active">12:00</li>
+                                    <li class="item-time">13:20</li>
+                                    <li class="item-time">14:20</li>
+                                    <li class="item-time">15:40</li>
+                                    <li class="item-time">16:40</li>
+                                    <li class="item-time">18:00</li>
+                                    <li class="item-time">19:20</li>
+                                    <li class="item-time">21:20</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="ticket-wr">
+            <h2 class="heading">CHỌN LOẠI VÉ</h2>
+            <div class="ticket-container">
+                <div class="content">
+                    <div class="content-top">
+                        <p class="name">NGƯỜI LỚN</p>
+                        <div class="desc">
+                            <p>NẰM</p>
+                        </div>
+                        <div class="price">
+                            <p>99,000 VNĐ</p>
+                        </div>
+                    </div>
+
+                    <div class="content-bottom">
+                        <div class="count">
+                            <div class="count-btn">
+                                <button class="decrease">-</button>
+                                <span class="quantity">0</span>
+                                <button class="increase">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sticky-bar" id="stickyBar">
+            <div class="movie-info">
+                <h3 class="movie-title1">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                <p class="cinema-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="cinemaName"> Cinestar Mỹ Tho (Tiền Giang)</span> | <span id="selectedSeatsDisplay">Chưa chọn ghế</span>
+                </p>
+            </div>
+            <div class="time-price">
+                <div class="time-section">
+                    <span class="time-label">
+                        <i class="fas fa-clock"></i>
+                        Thời gian giữ vé:
+                    </span>
+                    <div class="time-box" id="countdownTimer">05:00</div>
+                </div>
+                <div class="price-section">
+                    <span class="price-label">Tạm tính</span>
+                    <span class="price-amount" id="totalPrice">0 VNĐ</span>
+                </div>
+                <button class="book-btn1" id="bookBtn" disabled>
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>ĐẶT VÉ</span>
+                </button>
+            </div>
+        </div>
+        <script src="~/js/bookTicket.js"></script>
+    </div>
+    @* end *@
+
+        <h1 class="TitleBrand" >Chọn ghế - Rạp 03</h1>
+        <div style="position: relative;">
+            <img src="~/image/img-screen.png" class="screen"></img>
+            <div class="screen-label">Màn hình</div>
+
+        </div>
+
+        <div class="seating-area">
+            <table id="seatingTable">
+                <!-- Hàng A -->
+                <tr>
+                    <td class="row-label">A</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">A01</td>
+                    <td class="seat regular">A02</td>
+                    <td class="seat regular">A03</td>
+                    <td class="seat regular">A04</td>
+                    <td class="seat regular">A05</td>
+                    <td class="seat regular">A06</td>
+                    <td class="seat regular">A07</td>
+                    <td class="seat regular">A08</td>
+                    <td class="seat regular">A09</td>
+                    <td class="seat regular">A10</td>
+                    <td class="seat regular">A11</td>
+                    <td class="seat regular">A12</td>
+                    <td class="seat regular">A13</td>
+                    <td class="seat regular">A14</td>
+                    <td class="seat regular">A15</td>
+                </tr>
+                <!-- Hàng B -->
+                <tr>
+                    <td class="row-label">B</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">B01</td>
+                    <td class="seat regular">B02</td>
+                    <td class="seat regular">B03</td>
+                    <td class="seat regular">B04</td>
+                    <td class="seat regular">B05</td>
+                    <td class="seat regular">B06</td>
+                    <td class="seat regular">B07</td>
+                    <td class="seat regular">B08</td>
+                    <td class="seat regular">B09</td>
+                    <td class="seat regular">B10</td>
+                    <td class="seat regular">B11</td>
+                    <td class="seat regular">B12</td>
+                    <td class="seat regular">B13</td>
+                    <td class="seat regular">B14</td>
+                    <td class="seat regular">B15</td>
+                </tr>
+                <!-- Hàng C -->
+                <tr>
+                    <td class="row-label">C</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">C01</td>
+                    <td class="seat regular">C02</td>
+                    <td class="seat regular">C03</td>
+                    <td class="seat regular">C04</td>
+                    <td class="seat regular">C05</td>
+                    <td class="seat regular">C06</td>
+                    <td class="seat regular">C07</td>
+                    <td class="seat regular">C08</td>
+                    <td class="seat regular">C09</td>
+                    <td class="seat regular">C10</td>
+                    <td class="seat regular">C11</td>
+                    <td class="seat regular">C12</td>
+                    <td class="seat regular">C13</td>
+                    <td class="seat regular">C14</td>
+                    <td class="seat regular">C15</td>
+                </tr>
+                <!-- Hàng D -->
+                <tr>
+                    <td class="row-label">D</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">D01</td>
+                    <td class="seat regular">D02</td>
+                    <td class="seat regular">D03</td>
+                    <td class="seat regular">D04</td>
+                    <td class="seat regular">D05</td>
+                    <td class="seat regular">D06</td>
+                    <td class="seat regular">D07</td>
+                    <td class="seat regular">D08</td>
+                    <td class="seat regular">D09</td>
+                    <td class="seat regular">D10</td>
+                    <td class="seat regular">D11</td>
+                    <td class="seat regular">D12</td>
+                    <td class="seat regular">D13</td>
+                    <td class="seat regular">D14</td>
+                    <td class="seat regular">D15</td>
+                </tr>
+                <!-- Hàng E -->
+                <tr>
+                    <td class="row-label">E</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">E01</td>
+                    <td class="seat regular">E02</td>
+                    <td class="seat regular">E03</td>
+                    <td class="seat regular">E04</td>
+                    <td class="seat regular">E05</td>
+                    <td class="seat regular">E06</td>
+                    <td class="seat regular">E07</td>
+                    <td class="seat regular">E08</td>
+                    <td class="seat regular">E09</td>
+                    <td class="seat regular">E10</td>
+                    <td class="seat regular">E11</td>
+                    <td class="seat regular">E12</td>
+                    <td class="seat regular">E13</td>
+                    <td class="seat regular">E14</td>
+                    <td class="seat regular">E15</td>
+                </tr>
+                <!-- Hàng F -->
+                <tr>
+                    <td class="row-label">F</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">F01</td>
+                    <td class="seat regular">F02</td>
+                    <td class="seat regular">F03</td>
+                    <td class="seat booked">F04</td>
+                    <td class="seat booked">F05</td>
+                    <td class="seat booked">F06</td>
+                    <td class="seat booked">F07</td>
+                    <td class="seat booked">F08</td>
+                    <td class="seat regular">F09</td>
+                    <td class="seat regular">F10</td>
+                    <td class="seat regular">F11</td>
+                    <td class="seat regular">F12</td>
+                    <td class="seat regular">F13</td>
+                    <td class="seat regular">F14</td>
+                    <td class="seat regular">F15</td>
+                </tr>
+                <!-- Hàng G -->
+                <tr>
+                    <td class="row-label">G</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">G01</td>
+                    <td class="seat regular">G02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">G03</td>
+                    <td class="seat regular">G04</td>
+                    <td class="seat regular">G05</td>
+                    <td class="seat regular">G06</td>
+                    <td class="seat regular">G07</td>
+                    <td class="seat regular">G08</td>
+                    <td class="seat regular">G09</td>
+                    <td class="seat regular">G10</td>
+                    <td class="seat regular">G11</td>
+                    <td class="seat regular">G12</td>
+                    <td class="seat regular">G13</td>
+                    <td class="seat regular">G14</td>
+                    <td class="seat regular">G15</td>
+                    <td class="seat regular">G16</td>
+                    <td class="seat regular">G17</td>
+                </tr>
+                <!-- Hàng H -->
+                <tr>
+                    <td class="row-label">H</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">H01</td>
+                    <td class="seat regular">H02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">H03</td>
+                    <td class="seat regular">H04</td>
+                    <td class="seat regular">H05</td>
+                    <td class="seat regular">H06</td>
+                    <td class="seat booked">H07</td>
+                    <td class="seat booked">H08</td>
+                    <td class="seat booked">H09</td>
+                    <td class="seat booked">H10</td>
+                    <td class="seat regular">H11</td>
+                    <td class="seat regular">H12</td>
+                    <td class="seat regular">H13</td>
+                    <td class="seat regular">H14</td>
+                    <td class="seat regular">H15</td>
+                    <td class="seat regular">H16</td>
+                    <td class="seat regular">H17</td>
+                </tr>
+                <!-- Hàng J -->
+                <tr>
+                    <td class="row-label">J</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">J01</td>
+                    <td class="seat regular">J02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">J03</td>
+                    <td class="seat regular">J04</td>
+                    <td class="seat regular">J05</td>
+                    <td class="seat regular">J06</td>
+                    <td class="seat regular">J07</td>
+                    <td class="seat booked">J08</td>
+                    <td class="seat booked">J09</td>
+                    <td class="seat regular">J10</td>
+                    <td class="seat regular">J11</td>
+                    <td class="seat regular">J12</td>
+                    <td class="seat regular">J13</td>
+                    <td class="seat regular">J14</td>
+                    <td class="seat regular">J15</td>
+                    <td class="seat regular">J16</td>
+                    <td class="seat regular">J17</td>
+                </tr>
+                <!-- Hàng K -->
+                <tr>
+                    <td class="row-label">K</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">K01</td>
+                    <td class="seat regular">K02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">K03</td>
+                    <td class="seat regular">K04</td>
+                    <td class="seat regular">K05</td>
+                    <td class="seat regular">K06</td>
+                    <td class="seat booked">K07</td>
+                    <td class="seat booked">K08</td>
+                    <td class="seat booked">K09</td>
+                    <td class="seat regular">K10</td>
+                    <td class="seat regular">K11</td>
+                    <td class="seat regular">K12</td>
+                    <td class="seat regular">K13</td>
+                    <td class="seat regular">K14</td>
+                    <td class="seat regular">K15</td>
+                    <td class="seat regular">K16</td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng L -->
+                <tr>
+                    <td class="row-label">L</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">L01</td>
+                    <td class="seat regular">L02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">L03</td>
+                    <td class="seat regular">L04</td>
+                    <td class="seat regular">L05</td>
+                    <td class="seat regular">L06</td>
+                    <td class="seat booked">L07</td>
+                    <td class="seat regular">L08</td>
+                    <td class="seat regular">L09</td>
+                    <td class="seat booked">L10</td>
+                    <td class="seat booked">L11</td>
+                    <td class="seat regular">L12</td>
+                    <td class="seat regular">L13</td>
+                    <td class="seat regular">L14</td>
+                    <td class="seat regular">L15</td>
+                    <td class="seat regular">L16</td>
+                    <td class="seat regular">L17</td>
+                </tr>
+                <!-- Hàng M -->
+                <tr>
+                    <td class="row-label">M</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">M01</td>
+                    <td class="seat regular">M02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">M03</td>
+                    <td class="seat regular">M04</td>
+                    <td class="seat regular">M05</td>
+                    <td class="seat regular">M06</td>
+                    <td class="seat regular">M07</td>
+                    <td class="seat regular">M08</td>
+                    <td class="seat booked">M09</td>
+                    <td class="seat booked">M10</td>
+                    <td class="seat regular">M11</td>
+                    <td class="seat regular">M12</td>
+                    <td class="seat regular">M13</td>
+                    <td class="seat regular">M14</td>
+                    <td class="seat regular">M15</td>
+                    <td class="seat regular">M16</td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng N -->
+                <tr>
+                    <td class="row-label">N</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">N01</td>
+                    <td class="seat regular">N02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">N03</td>
+                    <td class="seat regular">N04</td>
+                    <td class="seat regular">N05</td>
+                    <td class="seat regular">N06</td>
+                    <td class="seat regular">N07</td>
+                    <td class="seat booked">N08</td>
+                    <td class="seat booked">N09</td>
+                    <td class="seat regular">N10</td>
+                    <td class="seat regular">N11</td>
+                    <td class="seat regular">N12</td>
+                    <td class="seat regular">N13</td>
+                    <td class="seat regular">N14</td>
+                    <td class="seat regular">N15</td>
+                    <td class="seat regular">N16</td>
+                    <td class="seat regular">N17</td>
+                </tr>
+                <!-- Hàng O -->
+                <tr>
+                    <td class="row-label">O</td>
+                    <td class="empty"></td>
+                    <td class="seat regular">O01</td>
+                    <td class="seat regular">O02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat regular">O03</td>
+                    <td class="seat regular">O04</td>
+                    <td class="seat regular">O05</td>
+                    <td class="seat regular">O06</td>
+                    <td class="seat regular">O07</td>
+                    <td class="seat booked">O08</td>
+                    <td class="seat booked">O09</td>
+                    <td class="seat regular">O10</td>
+                    <td class="seat regular">O11</td>
+                    <td class="seat regular">O12</td>
+                    <td class="seat regular">O13</td>
+                    <td class="seat regular">O14</td>
+                    <td class="seat regular">O15</td>
+                    <td class="seat regular">O16</td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng P -->
+                <tr>
+                    <td class="row-label">P</td>
+                    <td class="empty"></td>
+                    <td class="seat couple">P01</td>
+                    <td class="seat couple">P02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">P03</td>
+                    <td class="seat couple">P04</td>
+                    <td class="seat couple">P05</td>
+                    <td class="seat couple">P06</td>
+                    <td class="seat couple">P07</td>
+                    <td class="seat couple">P08</td>
+                    <td class="seat couple">P09</td>
+                    <td class="seat couple">P10</td>
+                    <td class="seat couple">P11</td>
+                    <td class="seat couple">P12</td>
+                    <td class="seat couple">P13</td>
+                    <td class="seat couple">P14</td>
+                    <td class="seat couple">P15</td>
+                    <td class="seat couple">P16</td>
+                    <td class="seat couple">P17</td>
+                </tr>
+                <!-- Hàng Q -->
+                <tr>
+                    <td class="row-label">Q</td>
+                    <td class="empty"></td>
+                    <td class="seat couple">Q01</td>
+                    <td class="seat couple">Q02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">Q03</td>
+                    <td class="seat couple">Q04</td>
+                    <td class="seat couple">Q05</td>
+                    <td class="seat couple">Q06</td>
+                    <td class="seat couple">Q07</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">Q10</td>
+                    <td class="seat couple">Q11</td>
+                    <td class="seat couple">Q12</td>
+                    <td class="seat couple">Q13</td>
+                    <td class="seat couple">Q14</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                </tr>
+                <!-- Hàng R -->
+                <tr>
+                    <td class="row-label">R</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R01</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R02</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R03</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="seat couple">R04</td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                    <td class="empty"></td>
+                   
+                </tr>
+            </table>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box regular"></div>
+                <span>Ghế Thường</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box couple"></div>
+                <span>Ghế Đôi (2 Người)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box selected"></div>
+                <span>Ghế chọn</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box booked"></div>
+                <span>Ghế đã đặt</span>
+            </div>
+        </div>
+
+    <section class="food-section">
+        <div class="container">
+            <h2 class="section-title text-center">CHỌN BẮP NƯỚC</h2>
+        </div>
+
+        <!-- Dòng sản phẩm COMBO NGÀN -->
+        <div id="combo" class="product-category">
+            <div class="container">
+                <h3 class="category-title">COMBO 2 NGĂN</h3>
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Combo Gấu">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">COMBO GẤU</h5>
+                                        <p class="product-info">1 bắp ngọt + 1 nước ngọt</p>
+                                        <p class="product-price">189,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1562777953-4456cfd4c2d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Combo Đôi">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">COMBO ĐÔI</h5>
+                                        <p class="product-info">2 bắp ngọt + 2 nước ngọt</p>
+                                        <p class="product-price">229,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Combo Gia Đình">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">COMBO GIA ĐÌNH</h5>
+                                        <p class="product-info">2 bắp ngọt + 2 nước ngọt + 1 snack</p>
+                                        <p class="product-price">299,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dòng sản phẩm NƯỚC NGỐT -->
+        <div id="soft-drink" class="product-category">
+            <div class="container">
+                <h3 class="category-title">NƯỚC NGỐT</h3>
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1607305387299-a3d9611cd469?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Fanta">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">FANTA</h5>
+                                        <p class="product-info">Nước ngọt vị cam</p>
+                                        <p class="product-price">37,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1622635362426-9e4a88fdeea2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Sprite">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">SPRITE</h5>
+                                        <p class="product-info">Nước ngọt vị chanh xanh</p>
+                                        <p class="product-price">37,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1596894387814-769c3e8e9b6a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Coke Zero">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">COKE ZERO</h5>
+                                        <p class="product-info">Nước ngọt không calo</p>
+                                        <p class="product-price">37,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dòng sản phẩm NƯỚC ĐÓNG CHAI -->
+        <div id="bottled-water" class="product-category">
+            <div class="container">
+                <h3 class="category-title">NƯỚC ĐÓNG CHAI</h3>
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1548839140-29a74924eb0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Dasani">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">NUỚC SUỐI DASANI</h5>
+                                        <p class="product-info">Nước suối đóng chai 500ml</p>
+                                        <p class="product-price">25,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1583337130435-07e2ff46d8a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="La Vie">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">NUỚC SUỐI LA VIE</h5>
+                                        <p class="product-info">Nước suối đóng chai 750ml</p>
+                                        <p class="product-price">30,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dòng sản phẩm SNACKS - KEO -->
+        <div id="snacks" class="product-category">
+            <div class="container">
+                <h3 class="category-title">SNACKS - KẸO</h3>
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1564905459672-65525e8a5786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Poca">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">POCA KHÔAI TÂY</h5>
+                                        <p class="product-info">Snack khoai tây vị muối biển</p>
+                                        <p class="product-price">58,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="product-card">
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Oishi">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 class="product-name">OISHI SNACK</h5>
+                                        <p class="product-info">Snack khoai tây vị tôm</p>
+                                        <p class="product-price">55,000 VND</p>
+                                        <div class="quantity-control">
+                                            <button class="qty-btn minus">-</button>
+                                            <span class="qty-value">0</span>
+                                            <button class="qty-btn plus">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const readMoreBtn = document.querySelector('.read-more');
+        const synopsisMore = document.querySelector('.synopsis-more');
+        const ellipsis = document.querySelector('.ellipsis');
+
+        if (readMoreBtn && synopsisMore && ellipsis) {
+            readMoreBtn.addEventListener('click', function() {
+                if (synopsisMore.classList.contains('hidden')) {
+                    // Hiện nội dung đầy đủ, ẩn dấu ba chấm
+                    synopsisMore.classList.remove('hidden');
+                    ellipsis.classList.add('hidden');
+                    readMoreBtn.textContent = 'Thu gọn';
+                } else {
+                    // Ẩn nội dung, hiện lại dấu ba chấm
+                    synopsisMore.classList.add('hidden');
+                    ellipsis.classList.remove('hidden');
+                    readMoreBtn.textContent = 'Xem thêm';
+                }
+            });
+        }
+
+    // === STICKY BAR FUNCTIONALITY ===
+    const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
+    const seatCount = document.getElementById('seatCount');
+    const totalPrice = document.getElementById('totalPrice');
+    const bookButton = document.getElementById('bookBtn');
+    const countdownTimer = document.getElementById('countdownTimer');
+    const stickyBar = document.getElementById('stickyBar');
+
+    // Show sticky bar after page loads with class
+    setTimeout(function() {
+        if (stickyBar) {
+            stickyBar.classList.add('show');
+        }
+    }, 500);
+
+    // Countdown timer (5 minutes)
+    let timeLeft = 300;
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        if (countdownTimer) {
+            countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color when time is low (1 minute)
+            if (timeLeft <= 60) {
+                countdownTimer.classList.add('warning');
+            } else {
+                countdownTimer.classList.remove('warning');
+            }
+        }
+
+        if (timeLeft <= 0) {
+            alert('Thời gian giữ vé đã hết!');
+            // Reset selections
+            document.querySelectorAll('.seat.selected').forEach(seat => {
+                seat.classList.remove('selected');
+                const originalClass = seat.textContent.includes('P') || seat.textContent.includes('Q') || seat.textContent.includes('R') ? 'couple' : 'regular';
+                seat.classList.add(originalClass);
+            });
+            updateStickyBar();
+            timeLeft = 300; // Reset timer
+            if (countdownTimer) {
+                countdownTimer.classList.remove('warning');
+            }
+        }
+        timeLeft--;
+    }
+
+    // Start timer
+    setInterval(updateTimer, 1000);
+
+    // Update sticky
+    function updateStickyBar() {
+        const selectedSeats = document.querySelectorAll('.seat.selected');
+        const seatNames = Array.from(selectedSeats).map(seat => seat.textContent).sort();
+        const cinemaBranch = document.getElementById('selected-branch').textContent;
+
+   //      if (cinemaBranch) {
+   //          Update cinema branch display
+			// const cinemaInfo = document.querySelector('.cinema-info');
+			// if (cinemaInfo) cinemaInfo.textContent = "Cinema " + cinemaBranch;
+
+   //      }
+
+        // Update seat count
+        if (seatCount) seatCount.textContent = selectedSeats.length;
+
+        if (selectedSeats.length > 0) {
+            // Update selected seats display
+            if (selectedSeatsDisplay) selectedSeatsDisplay.textContent = seatNames.join(', ');
+
+            // Calculate total price
+            const total = selectedSeats.length * 99000; // 99,000 VND per seat
+            if (totalPrice) totalPrice.textContent = total.toLocaleString('vi-VN') + ' VNĐ';
+
+            // Enable book button
+            if (bookButton) {
+                bookButton.disabled = false;
+            }
+        } else {
+            // No seats selected
+            if (selectedSeatsDisplay) selectedSeatsDisplay.textContent = 'Chưa chọn ghế';
+            if (totalPrice) totalPrice.textContent = '0 VNĐ';
+
+            // Disable book button
+            if (bookButton) {
+                bookButton.disabled = true;
+            }
+        }
+    }
+
+    // Seat selection logic with animation
+    const seats = document.querySelectorAll('td.seat:not(.booked)');
+    seats.forEach(seat => {
+        seat.addEventListener('click', function () {
+            // Add click effect
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                // Restore original class
+                const originalClass = this.textContent.includes('P') || this.textContent.includes('Q') || this.textContent.includes('R') ? 'couple' : 'regular';
+                this.classList.add(originalClass);
+            } else {
+                this.classList.add('selected');
+                this.classList.remove('regular', 'couple');
+            }
+            updateStickyBar();
+        });
+
+        // Add hover effects
+        seat.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('booked')) {
+                this.style.transform = 'scale(1.05)';
+            }
+        });
+
+        seat.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.transform = 'scale(1)';
+            }
+        });
+    });
+
+    // Book button functionality
+    if (bookButton) {
+         bookButton.addEventListener('click', function (e) {
+             e.preventDefault();
+
+             const selectedSeats = document.querySelectorAll('.seat.selected');
+
+             if (selectedSeats.length === 0) {
+                 alert('Vui lòng chọn ghế trước khi đặt vé!');
+                 return;
+             }
+
+             window.location.href = '/Payment/Index';
+         });
+    }
+
+    // Initial update
+    updateStickyBar();
+    });
+
+        // const seats = document.querySelectorAll('td.seat:not(.booked)');
+
+        // seats.forEach(seat => {
+        //     seat.addEventListener('click', function() {
+        //         if (this.classList.contains('selected')) {
+        //             if (this.classList.contains('couple')) {
+        //                 this.classList.remove('selected');
+        //                 this.classList.add('couple');
+        //             } else {
+        //                 this.classList.remove('selected');
+        //                 this.classList.add('regular');
+        //             }
+        //         } else {
+        //             this.classList.add('selected');
+        //             this.classList.remove('regular', 'couple');
+        //         }
+        //     });
+        // });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryLinks = document.querySelectorAll('.category-link');
+
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Ngăn hành vi mặc định của thẻ a
+
+                // Xóa class 'active' khỏi tất cả các link
+                categoryLinks.forEach(l => l.classList.remove('active'));
+
+                // Thêm class 'active' vào link vừa được nhấn
+                link.classList.add('active');
+
+                // Lấy id của section từ href của link
+                const targetSectionId = link.getAttribute('href');
+
+                // Cuộn mượt mà đến section tương ứng
+                const targetSection = document.querySelector(targetSectionId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start' // Cuộn đến đầu của section
+                    });
+                }
+            });
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý nút tăng/giảm số lượng
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            const minusBtn = card.querySelector('.minus');
+            const plusBtn = card.querySelector('.plus');
+            const qtyValue = card.querySelector('.qty-value');
+
+            minusBtn.addEventListener('click', () => {
+                let currentValue = parseInt(qtyValue.textContent);
+                // Thay đổi ở đây: cho phép giảm xuống 0
+                if (currentValue > 0) {
+                    qtyValue.textContent = currentValue - 1;
+                }
+            });
+
+            plusBtn.addEventListener('click', () => {
+                let currentValue = parseInt(qtyValue.textContent);
+                qtyValue.textContent = currentValue + 1;
+            });
+        });
+    });
+</script>

@@ -182,7 +182,7 @@ body {
 /* Mỗi Slide - chiếm 100% width của viewport */
 .carousel-slide {
     min-width: 100%;
-    flex-shrink: 0;
+/*    flex-shrink: 0;*/
 }
 
 /* Row trong slide không wrap */

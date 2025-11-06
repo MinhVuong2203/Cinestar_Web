@@ -285,7 +285,7 @@ GO
 
 CREATE TABLE Ticket (
     TicketID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    ShowTimeID VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES ShowTime(ShowTimeID),
+    ShowTimeID VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES ShowTime(ShowTimeID) ON DELETE CASCADE,
     SeatID VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES Seat(SeatID),
     TicketType NVARCHAR(50),
     Price DECIMAL(18,2) CHECK (Price >= 0),
@@ -550,8 +550,7 @@ DROP TABLE [dbo].[CinemaBranch]
  
 
  -- Trigger tự động tạo ticket cho TẤT CẢ ghế trong 
- DROP TRIGGER trg_AutoCreateTickets
-CREATE TRIGGER trg_AutoCreateTickets
+CREATE OR ALTER TRIGGER trg_AutoCreateTickets
 ON ShowTime
 AFTER INSERT
 AS
@@ -562,8 +561,8 @@ BEGIN
         s.SeatID,
         s.SeatType,  -- 'Standard', 'VIP', 'Couple'
 		CASE 
-            WHEN s.SeatType = 'VIP' THEN i.Price + 20000
-            WHEN s.SeatType = 'Couple' THEN 2*i.Price + 20000
+            WHEN s.SeatType = N'Ghế VIP' THEN i.Price + 20000
+            WHEN s.SeatType = N'Ghế Couple' THEN 2*i.Price + 20000
             ELSE i.Price
         END,
         'Available'  -- Trạng thái ban đầu
@@ -572,6 +571,32 @@ BEGIN
     WHERE s.IsDeleted = 0;
 END;
 GO
+
+
+CREATE OR ALTER TRIGGER trg_UpdateTicketPrice
+ON ShowTime
+AFTER UPDATE
+AS
+BEGIN
+    -- Chỉ update khi giá hoặc phòng chiếu thay đổi
+    IF UPDATE(Price)
+    BEGIN
+        UPDATE t
+        SET Price =
+            CASE 
+                WHEN s.SeatType = N'Ghế VIP' THEN i.Price + 20000
+                WHEN s.SeatType = N'Ghế Couple' THEN 2*i.Price + 20000
+                ELSE i.Price
+            END
+        FROM Ticket t
+        JOIN inserted i ON t.ShowTimeID = i.ShowTimeID
+        JOIN Seat s ON s.SeatID = t.SeatID;
+    END
+END;
+GO
+
+
+
 
 
 
