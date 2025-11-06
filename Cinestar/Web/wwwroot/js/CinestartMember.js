@@ -38,13 +38,42 @@
         });
     }
 
-    // Handle logout
-    const logoutBtn = document.querySelector('.logout');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function () {
-            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                alert('Đã đăng xuất thành công!');
-                // window.location.href = 'login.html';
+    // ✅ Handle logout with confirmation (ĐỔI TỪ FORM SANG LINK)
+    const logoutLink = document.getElementById('logoutLink');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function (e) {
+            e.preventDefault(); // Ngăn chặn click mặc định
+
+            // Using SweetAlert2 if available
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Xác nhận đăng xuất',
+                    text: 'Bạn có chắc chắn muốn đăng xuất?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#667eea',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Đăng xuất',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading
+                        Swal.fire({
+                            title: 'Đang đăng xuất...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        // ✅ Redirect đến link logout
+                        window.location.href = '/Account/Logout';
+                    }
+                });
+            } else {
+                // Fallback to confirm dialog
+                if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                    window.location.href = '/Account/Logout';
+                }
             }
         });
     }

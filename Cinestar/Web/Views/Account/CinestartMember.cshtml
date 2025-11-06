@@ -14,7 +14,7 @@
                 <span>👤</span>
             </div>
             <div class="profile-info">
-                <h3>Nguyễn Bình Minh</h3>
+                <h3>@(User.Identity?.Name ?? "Nguyễn Bình Minh")</h3>
                 <a href="#">
                     <p>Thay đổi ảnh đại diện</p>
                 </a>
@@ -25,24 +25,35 @@
             <div class="menu-item active">CFriends</div>
             <div class="point">
                 <div class="menu-item">Tích điểm CFriends</div>
-                <progress max="100" value="0"></progress>
+                <progress max="100"></progress>
                 <div class="menu-item">0/10k</div>
             </div>
-            <div class="menu-item">
+            <div class="menu-item" data-page="profile">
                 <span class="icon">👤</span>
                 Thông tin khách hàng
             </div>
-            <div class="menu-item selected">
+            <div class="menu-item selected" data-page="member">
                 <span class="icon">⭐</span>
                 Thành viên Cinestar
             </div>
-            <div class="menu-item">
+            <div class="menu-item" data-page="purchase-history">
                 <span class="icon">🛒</span>
                 Lịch sử mua hàng
             </div>
-            <div class="menu-item logout">
-                <span class="icon">🚪</span>
-                Đăng xuất
+            @* <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" style="margin: 0;"> *@
+            @* <a href="/Account/Logout" id="logoutForm">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item logout">
+                    <span class="icon">🚪</span>
+                    <span>Đăng xuất</span>
+                </button>
+            </a> *@
+            @* </form> *@
+            <div class="menu-item">
+                <a href="/Account/Logout" id="logoutLink" class="logout">
+                    <span class="icon">🚪</span>
+                    <span>Đăng xuất</span>
+                </a>
             </div>
         </div>
     </div>
