@@ -1,1 +1,150 @@
-﻿<h1>Trang nhân viên bán hàng</h1>
+﻿@model Web.Models.Employee
+
+@{
+    ViewData["Title"] = "Trang nhân viên bán hàng";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Thông tin nhân viên -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" alt="@Model.FullName" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                <i class="fas fa-user fa-3x text-white"></i>
+                            </div>
+                        }
+                    </div>
+                    
+                    <h4 class="mb-1">@Model.FullName</h4>
+                    <p class="text-muted mb-3">@Model.Role</p>
+                    
+                    <hr />
+                    
+                    <div class="text-start">
+                        <p class="mb-2">
+                            <i class="fas fa-id-card text-primary me-2"></i>
+                            <strong>Mã NV:</strong> @Model.EmployeeID.ToString().Substring(0, 8)
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-building text-primary me-2"></i>
+                            <strong>Chi nhánh:</strong> @(Model.Branch?.BranchName ?? "Chưa có")
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            <strong>Email:</strong> @(Model.Email ?? "Chưa cập nhật")
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-phone text-primary me-2"></i>
+                            <strong>SĐT:</strong> @(Model.Phone ?? "Chưa cập nhật")
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-calendar text-primary me-2"></i>
+                            <strong>Ngày sinh:</strong> @(Model.BirthDate?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-money-bill text-primary me-2"></i>
+                            <strong>Lương/giờ:</strong> @((Model.HourWage ?? 0).ToString("N0")) VNĐ
+                        </p>
+                        <p class="mb-0">
+                            <i class="fas fa-user-check text-primary me-2"></i>
+                            <strong>Ngày vào làm:</strong> @(Model.RegisterDate?.ToString("dd/MM/yyyy") ?? "")
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Khu vực làm việc -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        Khu vực bán hàng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Chào mừng <strong>@Model.FullName</strong> đến với hệ thống bán hàng Cinestar!
+                    </div>
+
+                    <!-- Các chức năng của nhân viên bán vé -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card border-primary h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-ticket-alt fa-3x text-primary mb-3"></i>
+                                    <h5>Bán vé</h5>
+                                    <p class="text-muted">Quản lý và bán vé xem phim</p>
+                                    <a href="#" class="btn btn-primary">
+                                        <i class="fas fa-arrow-right me-1"></i> Vào bán vé
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card border-success h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-receipt fa-3x text-success mb-3"></i>
+                                    <h5>Lịch sử giao dịch</h5>
+                                    <p class="text-muted">Xem lịch sử bán hàng</p>
+                                    <a href="#" class="btn btn-success">
+                                        <i class="fas fa-arrow-right me-1"></i> Xem lịch sử
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card border-warning h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-popcorn fa-3x text-warning mb-3"></i>
+                                    <h5>Bán đồ ăn & nước</h5>
+                                    <p class="text-muted">Quản lý sản phẩm combo</p>
+                                    <a href="#" class="btn btn-warning">
+                                        <i class="fas fa-arrow-right me-1"></i> Vào bán combo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card border-info h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                                    <h5>Thống kê</h5>
+                                    <p class="text-muted">Xem báo cáo doanh thu</p>
+                                    <a href="#" class="btn btn-info">
+                                        <i class="fas fa-arrow-right me-1"></i> Xem thống kê
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+        }
+    </style>
+}
