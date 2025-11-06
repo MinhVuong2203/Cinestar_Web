@@ -33,19 +33,16 @@
 
                         <!-- CTA Buttons -->
                         <div class="cta-buttons">
-                            <a asp-controller="Movie" asp-action="Index" class="btn-xs btn-cta btn-yellow btn-hover-purple btn-text-light btn-text-hover-light">
+                            <a asp-controller="Movie" asp-action="Index" asp-area="" class="btn-xs btn-cta btn-yellow btn-hover-purple btn-text-light btn-text-hover-light">
                                 <i class="fa-solid fa-ticket" style="color: #ffffff;"></i>
                                 <span>ĐẶT VÉ NGAY</span>
                             </a>
-                            <a asp-controller="Booking" asp-action="Combo" class="btn-xs btn-cta btn-purple btn-hover-orange btn-text-light">
-                                <i class="fa-solid fa-glass-water"></i>
-                                <span>ĐẶT BẮP NƯỚC</span>
-                            </a>
+                           
                         </div>
 
                         <!-- Search Bar -->
                         <div class="header-search">
-                            <form asp-controller="Movie" asp-action="Search" method="get">
+                            <form asp-controller="Movie" asp-action="Search" asp-area="" method="get">
                                 <input type="text" name="keyword" placeholder="Tìm phim, rạp" class="search-input" />
                                 <button type="submit" class="search-btn">
                                     <i class="fa-brands fa-searchengin" style="color: darkgray"></i>
@@ -64,7 +61,7 @@
                                         @* <i class="fa-solid fa-chevron-down"></i> *@
                                     </button>
                                     <div class="user-dropdown-menu">
-                                        <a asp-controller="Account" asp-action="Profile" class="dropdown-item">
+                                        <a asp-controller="Account" asp-action="Profile" asp-area="" class="dropdown-item">
                                             <i class="fa-solid fa-user-circle"></i>
                                             <span>Thông tin cá nhân</span>
                                         </a>
@@ -123,7 +120,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <a asp-controller="Showtimes" asp-action="Index" class="nav-link">
+                            <a asp-controller="Showtimes" asp-action="Index" asp-area="" class="nav-link">
                                 <i class="fa-solid fa-location-dot"></i>
                                 <span>Lịch chiếu</span>
                             </a>
@@ -131,10 +128,10 @@
 
                         <!-- Right Navigation -->
                         <div class="nav-right">
-                            <a asp-controller="Promotion" asp-action="Index" class="nav-link">Khuyến mãi</a>
-                            <a asp-controller="Event" asp-action="Index" class="nav-link">Tổ chức sự kiện</a>
-                            <a asp-controller="Service" asp-action="Index" class="nav-link">Dịch vụ giải trí khác</a>
-                            <a asp-controller="About" asp-action="Index" class="nav-link">Giới thiệu</a>
+                            <a asp-controller="Promotion" asp-action="Index" asp-area="" class="nav-link">Khuyến mãi</a>
+                            <a asp-controller="Event" asp-action="Index" asp-area="" class="nav-link">Tổ chức sự kiện</a>
+                            <a asp-controller="Service" asp-action="Index" asp-area="" class="nav-link">Dịch vụ giải trí khác</a>
+                            <a asp-controller="About" asp-action="Index" asp-area="" class="nav-link">Giới thiệu</a>
                         </div>
                     </div>
 
@@ -159,14 +156,11 @@
 
                             <!-- CTA Buttons -->
                             <div class="cta-buttons">
-                                <a asp-controller="Movie" asp-action="Index" class="btn-cta btn-yellow btn-hover-purple btn-text-dark btn-text-hover-light">
+                                <a asp-controller="Movie" asp-action="Index" asp-area="" class="btn-cta btn-yellow btn-hover-purple btn-text-dark btn-text-hover-light">
                                     <i class="fa-thin fa-ticket"></i>
                                     <span>ĐẶT VÉ NGAY</span>
                                 </a>
-                                <a asp-controller="Booking" asp-action="Combo" class="btn-cta btn-purple btn-hover-orange btn-text-light">
-                                    <i class="icon-popcorn"></i>
-                                    <span>ĐẶT BẮP NƯỚC</span>
-                                </a>
+                            
                             </div>
 
                             <!-- Social Links -->
@@ -195,16 +189,16 @@
                         <div class="footer-column col-lg-2 col-md-3 col-6">
                             <h3 class="footer-title">TÀI KHOẢN</h3>
                             <ul class="footer-links">
-                                <li><a asp-controller="Account" asp-action="Login">Đăng nhập</a></li>
-                                <li><a asp-controller="Account" asp-action="Register">Đăng ký</a></li>
-                                <li><a asp-controller="Member" asp-action="Index">Membership</a></li>
+                                <li><a asp-controller="Account" asp-action="Login" asp-area="">Đăng nhập</a></li>
+                                <li><a asp-controller="Account" asp-action="Register" asp-area="">Đăng ký</a></li>
+                                <li><a asp-controller="Member" asp-action="Index" asp-area="">Membership</a></li>
                             </ul>
 
                             <h3 class="footer-title mt-4">XEM PHIM</h3>
                             <ul class="footer-links">
-                                <li><a asp-controller="Movie" asp-action="NowShowing">Phim đang chiếu</a></li>
-                                <li><a asp-controller="Movie" asp-action="ComingSoon">Phim sắp chiếu</a></li>
-                                <li><a asp-controller="Movie" asp-action="Special">Suất chiếu đặc biệt</a></li>
+                                <li><a asp-controller="Movie" asp-action="NowShowing" asp-area="">Phim đang chiếu</a></li>
+                                <li><a asp-controller="Movie" asp-action="ComingSoon" asp-area="">Phim sắp chiếu</a></li>
+                                <li><a asp-controller="Movie" asp-action="Special" asp-area="">Suất chiếu đặc biệt</a></li>
                             </ul>
                         </div>
 
@@ -212,15 +206,15 @@
                         <div class="footer-column col-lg-2 col-md-3 col-6">
                             <h3 class="footer-title">THUÊ SỰ KIỆN</h3>
                             <ul class="footer-links">
-                                <li><a asp-controller="Rental" asp-action="Theater">Thuê rạp</a></li>
-                                <li><a asp-controller="Rental" asp-action="Types">Các loại hình cho thuê khác</a></li>
+                                <li><a asp-controller="Rental" asp-action="Theater" asp-area="">Thuê rạp</a></li>
+                                <li><a asp-controller="Rental" asp-action="Types" asp-area="">Các loại hình cho thuê khác</a></li>
                             </ul>
 
                             <h3 class="footer-title mt-4">CINESTAR</h3>
                             <ul class="footer-links">
-                                <li><a asp-controller="About" asp-action="Index">Giới thiệu</a></li>
-                                <li><a asp-controller="About" asp-action="Contact">Liên hệ</a></li>
-                                <li><a asp-controller="Career" asp-action="Index">Tuyển dụng</a></li>
+                                <li><a asp-controller="About" asp-action="Index" asp-area="">Giới thiệu</a></li>
+                                <li><a asp-controller="About" asp-action="Contact" asp-area="">Liên hệ</a></li>
+                                <li><a asp-controller="Career" asp-action="Index" asp-area="">Tuyển dụng</a></li>
                             </ul>
                         </div>
 
@@ -228,13 +222,13 @@
                         <div class="footer-column col-lg-2 col-md-3 col-6">
                             <h3 class="footer-title">DỊCH VỤ KHÁC</h3>
                             <ul class="footer-links">
-                                <li><a asp-controller="Service" asp-action="Restaurant">Nhà hàng</a></li>
-                                <li><a asp-controller="Service" asp-action="Kidzone">Kidzone</a></li>
-                                <li><a asp-controller="Service" asp-action="Bowling">Bowling</a></li>
-                                <li><a asp-controller="Service" asp-action="Billiards">Billiards</a></li>
-                                <li><a asp-controller="Service" asp-action="Gym">Gym</a></li>
-                                <li><a asp-controller="Service" asp-action="Opera">Nhà hát Opera</a></li>
-                                <li><a asp-controller="Service" asp-action="Coffee">Coffee</a></li>
+                                <li><a asp-controller="Service" asp-action="Restaurant" asp-area="">Nhà hàng</a></li>
+                                <li><a asp-controller="Service" asp-action="Kidzone" asp-area="">Kidzone</a></li>
+                                <li><a asp-controller="Service" asp-action="Bowling" asp-area="">Bowling</a></li>
+                                <li><a asp-controller="Service" asp-action="Billiards" asp-area="">Billiards</a></li>
+                                <li><a asp-controller="Service" asp-action="Gym" asp-area="">Gym</a></li>
+                                <li><a asp-controller="Service" asp-action="Opera" asp-area="">Nhà hát Opera</a></li>
+                                <li><a asp-controller="Service" asp-action="Coffee" asp-area="">Coffee</a></li>
                             </ul>
                         </div>
 
@@ -242,7 +236,7 @@
                         <div class="footer-column col-lg-2 col-md-3 col-6">
                             <h3 class="footer-title">HỆ THỐNG RẠP</h3>
                             <ul class="footer-links">
-                                <a asp-controller="Cinema" asp-action="Detail" asp-route-slug="quan-thanh">
+                                <a asp-controller="Cinema" asp-action="Detail" asp-route-slug="quan-thanh" asp-area="">
                                     Tất cả hệ thống rạp
                                 </a>
                                 @{
@@ -275,9 +269,9 @@
 
                         <!-- Legal Links -->
                         <div class="legal-links">
-                            <a asp-controller="Legal" asp-action="Privacy">Chính sách bảo mật</a>
-                            <a asp-controller="Legal" asp-action="Terms">Tin điện ảnh</a>
-                            <a asp-controller="Legal" asp-action="QA">Hỏi và đáp</a>
+                            <a asp-controller="Legal" asp-action="Privacy" asp-area="">Chính sách bảo mật</a>
+                            <a asp-controller="Legal" asp-action="Terms" asp-area="">Tin điện ảnh</a>
+                            <a asp-controller="Legal" asp-action="QA" asp-area="">Hỏi và đáp</a>
                         </div>
 
                     </div>
