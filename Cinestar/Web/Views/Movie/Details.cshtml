@@ -26,7 +26,7 @@
             <div class="movie-poster">
                 @if (!string.IsNullOrEmpty(Model.Sub))
                 {
-                    <div class="type-badge">@Model.Sub</div>
+                    <div class="type-badge">2D</div>
                 }
                 @if (!string.IsNullOrEmpty(Model.AgeLimit))
                 {
@@ -76,7 +76,7 @@
                     {
                         <div class="meta-item age-restriction">
                             <i class="fas fa-user-friends"></i>
-                            <span>@Model.AgeLimit: Phim dành cho khán giả từ đủ @Model.AgeLimit.Replace("T", "") tuổi trở lên (@Model.AgeLimit.Replace("T", "")+)</span>
+                            <span>@GetAgeLimitDisplay(Model.AgeLimit)</span>
                         </div>
                     }
                 </div>
