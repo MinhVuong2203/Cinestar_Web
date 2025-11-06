@@ -40,6 +40,7 @@ builder.Services.AddDbContext<CineStarContext>(options =>
 
 // Đăng ký Service
 builder.Services.AddScoped<ICinemaBranchService, CinemaBranchService>();
+builder.Services.AddScoped<IMovieService_Cus, MovieService_Cus>();
 builder.Services.AddScoped<ILogin, Login>();
 builder.Services.AddScoped<IPayOsService, PayOsService>();
 builder.Services.AddHostedService<WorkShiftStatusUpdater>();

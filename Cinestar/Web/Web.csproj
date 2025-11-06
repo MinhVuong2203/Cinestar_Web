@@ -25,4 +25,8 @@
     <Folder Include="wwwroot\image\product\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Service\IMovieService_Cus.cs" />
+  </ItemGroup>
+
 </Project>
