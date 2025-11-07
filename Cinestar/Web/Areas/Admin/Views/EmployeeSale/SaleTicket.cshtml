@@ -1,11 +1,21 @@
 ﻿@model Web.Models.Employee
 @{
-	ViewData["Title"] = "Bán vé";
+    ViewData["Title"] = "Bán vé";
     var lstMovies = ViewData["lstMovies"] as List<Movie>;
 }
 @section Styles {
     <link href="~/css/Admin/SaleTicket.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
 }
+
+@* Hiển thị thông báo nếu không có phim *@
+@if (!string.IsNullOrEmpty(ViewBag.NoMoviesMessage as string))
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-info-circle"></i> @ViewBag.NoMoviesMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="booking-container">
     <div class="cinema-info">
         <h4><i class="fas fa-map-marker-alt"></i> Chi nhánh: <strong>@(Model.Branch?.BranchName)</strong></h4>
@@ -37,6 +47,17 @@
                         <h5>@movie.Title</h5>
                         <p class="text-muted mb-0">@movie.Genre • @movie.DurationMinutes phút</p>
                         <span class="badge-custom">@movie.AgeLimit</span>
+                        <!--Nút đặt vé-->
+                        <a asp-area="Admin" 
+                          asp-controller="EmployeeSale" 
+                          asp-action="TicketSelling" 
+                          asp-route-movieId="@movie.MovieID" 
+                          class="btn btn-primary btn-book"
+                          data-movie-id="@movie.MovieID">
+                            Đặt vé
+                        </a>
+                        @* Debug: Hiển thị MovieID *@
+                        <small class="text-muted d-block mt-1">ID: @movie.MovieID</small>
                     </div>
                 }
             }
@@ -49,213 +70,45 @@
             }
         </div>
     </div>
-
-    <!-- Bước 2: Chọn loại vé -->
-    <!--<div class="step-card hidden" id="step2">
-        <div class="step-header">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Chọn loại vé</h3>
-        </div>
-        <div class="ticket-option" data-type="standard" data-price="80000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-ticket-alt"></i> Vé thường</h5>
-                    <p class="text-muted mb-0">Ghế thường</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">80.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeQuantity('standard', -1)">-</button>
-                        <span class="quantity-value" id="qty-standard">0</span>
-                        <button class="quantity-btn" onclick="changeQuantity('standard', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ticket-option" data-type="vip" data-price="120000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-crown"></i> Vé VIP</h5>
-                    <p class="text-muted mb-0">Ghế VIP cao cấp</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">120.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeQuantity('vip', -1)">-</button>
-                        <span class="quantity-value" id="qty-vip">0</span>
-                        <button class="quantity-btn" onclick="changeQuantity('vip', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ticket-option" data-type="couple" data-price="200000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-heart"></i> Vé đôi</h5>
-                    <p class="text-muted mb-0">Ghế đôi couple</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">200.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeQuantity('couple', -1)">-</button>
-                        <span class="quantity-value" id="qty-couple">0</span>
-                        <button class="quantity-btn" onclick="changeQuantity('couple', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>-->
-    <!-- Bước 2: Chọn loại vé -->
-    <div class="step-card hidden" id="step2">
-        <div class="step-header">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Chọn loại vé</h3>
-        </div>
-        <div id="ticketOptions">
-            <!-- Sẽ được load động từ JavaScript -->
-            <div class="loading-message text-center py-4">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
-                <p class="mt-2">Đang tải thông tin vé...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bước 3: Chọn giờ xem -->
-    <div class="step-card hidden" id="step3">
-        <div class="step-header">
-            <div class="step-number">3</div>
-            <h3 class="step-title">Chọn giờ xem</h3>
-        </div>
-        <div class="mb-3">
-            <label class="form-label"><i class="fas fa-calendar"></i> Chọn ngày:</label>
-            <input type="date" class="form-control" id="dateSelect" min="">
-        </div>
-        <div class="time-grid" id="timeGrid">
-            <div class="time-slot" data-time="09:00">
-                <h5>09:00</h5>
-                <small class="text-muted">Phòng 1</small>
-            </div>
-            <div class="time-slot" data-time="11:30">
-                <h5>11:30</h5>
-                <small class="text-muted">Phòng 2</small>
-            </div>
-            <div class="time-slot" data-time="14:00">
-                <h5>14:00</h5>
-                <small class="text-muted">Phòng 1</small>
-            </div>
-            <div class="time-slot" data-time="16:30">
-                <h5>16:30</h5>
-                <small class="text-muted">Phòng 3</small>
-            </div>
-            <div class="time-slot" data-time="19:00">
-                <h5>19:00</h5>
-                <small class="text-muted">Phòng 2</small>
-            </div>
-            <div class="time-slot" data-time="21:30">
-                <h5>21:30</h5>
-                <small class="text-muted">Phòng 1</small>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bước 4: Chọn bắp nước -->
-    <div class="step-card hidden" id="step4">
-        <div class="step-header">
-            <div class="step-number">4</div>
-            <h3 class="step-title">Chọn bắp nước (Tùy chọn)</h3>
-        </div>
-        <div class="combo-item" data-combo="combo1" data-price="70000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-box"></i> Combo 1</h5>
-                    <p class="text-muted mb-0">1 Bắp lớn + 1 Nước lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">70.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo1', -1)">-</button>
-                        <span class="quantity-value" id="combo-combo1">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo1', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="combo-item" data-combo="combo2" data-price="120000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-box"></i> Combo 2</h5>
-                    <p class="text-muted mb-0">2 Bắp lớn + 2 Nước lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">120.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo2', -1)">-</button>
-                        <span class="quantity-value" id="combo-combo2">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo2', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="combo-item" data-combo="popcorn" data-price="45000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-popcorn"></i> Bắp rang</h5>
-                    <p class="text-muted mb-0">1 Bắp lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">45.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('popcorn', -1)">-</button>
-                        <span class="quantity-value" id="combo-popcorn">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('popcorn', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="combo-item" data-combo="drink" data-price="30000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-glass-water"></i> Nước ngọt</h5>
-                    <p class="text-muted mb-0">1 Nước lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">30.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('drink', -1)">-</button>
-                        <span class="quantity-value" id="combo-drink">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('drink', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tổng kết đơn hàng -->
-    <div class="summary-box hidden" id="summaryBox">
-        <h4><i class="fas fa-receipt"></i> Tổng kết đơn hàng</h4>
-        <div class="summary-row">
-            <span>Phim:</span>
-            <span id="summary-movie">-</span>
-        </div>
-        <div class="summary-row">
-            <span>Ngày giờ:</span>
-            <span id="summary-datetime">-</span>
-        </div>
-        <div class="summary-row">
-            <span>Loại vé:</span>
-            <span id="summary-tickets">-</span>
-        </div>
-        <div class="summary-row">
-            <span>Bắp nước:</span>
-            <span id="summary-combos">Không có</span>
-        </div>
-        <div class="summary-row total-row">
-            <span>TỔNG CỘNG:</span>
-            <span id="summary-total">0 ₫</span>
-        </div>
-        <button class="btn-book" onclick="confirmBooking()">
-            <i class="fas fa-check-circle"></i> XÁC NHẬN ĐẶT VÉ
-        </button>
-    </div>
 </div>
+
+@section Scripts {
+    <script>
+        console.log('=== SaleTicket Page Loaded ===');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          const links = document.querySelectorAll('.btn-book');
+  console.log('Found links:', links.length);
+       
+   links.forEach((link, index) => {
+     const movieId = link.getAttribute('data-movie-id');
+ const href = link.getAttribute('href');
+     
+    console.log(`Link ${index}:`);
+   console.log(`  - href: ${href}`);
+                console.log(`  - data-movie-id: ${movieId}`);
+   console.log(`  - full link object:`, link);
+    
+           // Test click
+     link.addEventListener('click', function(e) {
+    console.log('=== Link Clicked ===');
+        console.log('  - this.href:', this.href);
+     console.log('  - data-movie-id:', this.getAttribute('data-movie-id'));
+      console.log('  - Event:', e);
+     
+          // Không preventDefault - để link hoạt động
+       });
+     });
+   
+            // Thêm test: Tạo URL thủ công
+   if (links.length > 0) {
+  const firstLink = links[0];
+      const movieId = firstLink.getAttribute('data-movie-id');
+       const manualUrl = `/Admin/EmployeeSale/TicketSelling?movieId=${encodeURIComponent(movieId)}`;
+       console.log('Manual URL would be:', manualUrl);
+      }
+  });
+    </script>
+}
+
 <script src="/js/Admin/SaleTicket.js?v=@DateTime.Now.Ticks"></script>

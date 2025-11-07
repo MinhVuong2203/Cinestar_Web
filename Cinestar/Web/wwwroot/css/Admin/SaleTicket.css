@@ -71,9 +71,9 @@
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     padding: 15px;
-    cursor: pointer;
     transition: all 0.3s ease;
     background: white;
+    position: relative;
 }
 
     .movie-card:hover {
@@ -86,6 +86,13 @@
         border-color: var(--primary-color);
         background: linear-gradient(135deg, rgba(196, 30, 58, 0.1), rgba(139, 0, 0, 0.1));
         box-shadow: 0 5px 15px rgba(196, 30, 58, 0.3);
+    }
+
+    /* Đảm bảo link bên trong hoạt động */
+    .movie-card .btn-book {
+position: relative;
+        z-index: 10;
+        pointer-events: auto;
     }
 
 .movie-poster {
@@ -228,7 +235,7 @@
 
 .btn-book {
     width: 100%;
-    padding: 15px;
+  padding: 15px;
     font-size: 18px;
     font-weight: bold;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -238,11 +245,23 @@
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 20px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    position: relative;
+ z-index: 100;
 }
 
     .btn-book:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(196, 30, 58, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-book:focus {
+        outline: 2px solid var(--primary-color);
+   outline-offset: 2px;
     }
 
 /* ===== UTILITY CLASSES ===== */

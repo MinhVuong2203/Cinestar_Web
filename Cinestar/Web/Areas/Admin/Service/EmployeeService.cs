@@ -211,6 +211,83 @@ namespace Web.Areas.Admin.Service
                 return null;
             }
         }
+        // Lấy danh sách suất chiếu theo movieId, branchId và ngày
+        public dynamic GetShowTimesByMovieAndDate(string movieId, string branchId, DateTime date)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(movieId) || string.IsNullOrEmpty(branchId))
+                {
+                    Console.WriteLine("ERROR: MovieId or BranchId is empty");
+                    return new List<object>();
+                }
 
+                Console.WriteLine($"=== GetShowTimesByMovieAndDate Service Method ===");
+                Console.WriteLine($"MovieId: '{movieId}'");
+                Console.WriteLine($"BranchId: '{branchId}'");
+                Console.WriteLine($"Date: {date:yyyy-MM-dd}");
+
+                var showTimes = _context.ShowTimes
+                    .Include(st => st.Room)
+                    .Include(st => st.Movie)
+                    .Where(st => st.MovieID == movieId &&
+                                !st.IsDeleted &&
+                                st.Room != null &&
+                                !st.Room.IsDeleted &&
+                                st.Room.BranchID == branchId &&
+                                st.StartTime.Date == date.Date)
+                    .OrderBy(st => st.StartTime)
+                    .Select(st => new
+                    {
+                        ShowTimeID = st.ShowTimeID,
+                        StartTime = st.StartTime,
+                        TimeDisplay = st.StartTime.ToString("HH:mm"),
+                        RoomName = st.Room.RoomName,
+                        RoomType = st.Room.RoomType,
+                        Price = st.Price ?? 0,
+                        MovieTitle = st.Movie.Title,
+                        MovieDuration = st.Movie.DurationMinutes ?? 120,
+                        // Tính số ghế trống
+                        TotalSeats = _context.Seats.Count(s => s.RoomID == st.RoomID && !s.IsDeleted),
+                        AvailableSeats = _context.Tickets.Count(t => 
+                           t.ShowTimeID == st.ShowTimeID && 
+                                !t.IsDeleted && 
+                                t.Status == "Available")
+                    })
+                    .ToList();
+
+                Console.WriteLine($"Query completed. Found {showTimes.Count} showtimes");
+
+                if (showTimes.Count == 0)
+                {
+                    Console.WriteLine("WARNING: No showtimes found. Checking conditions:");
+                    Console.WriteLine($"  - Movie exists: {_context.Movies.Any(m => m.MovieID == movieId && !m.IsDeleted)}");
+                    Console.WriteLine($"  - Branch exists: {_context.CinemaBranches.Any(b => b.BranchID == branchId && !b.IsDeleted)}");
+                    Console.WriteLine($"  - ShowTimes for movie: {_context.ShowTimes.Count(st => st.MovieID == movieId && !st.IsDeleted)}");
+                    Console.WriteLine($"  - ShowTimes for movie & branch: {_context.ShowTimes.Count(st => st.MovieID == movieId && !st.IsDeleted && st.Room.BranchID == branchId)}");
+                    Console.WriteLine($"  - ShowTimes for movie & branch & date: {_context.ShowTimes.Count(st => st.MovieID == movieId && !st.IsDeleted && st.Room.BranchID == branchId && st.StartTime.Date == date.Date)}");
+                }
+                else
+                {
+                    foreach (var st in showTimes)
+                    {
+                        Console.WriteLine($"  - {st.ShowTimeID}: {st.StartTime:yyyy-MM-dd HH:mm} in {st.RoomName} ({st.AvailableSeats}/{st.TotalSeats} seats)");
+                    }
+                }
+
+                return showTimes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"EXCEPTION in GetShowTimesByMovieAndDate:");
+                Console.WriteLine($"  Message: {ex.Message}");
+                Console.WriteLine($"  StackTrace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"  InnerException: {ex.InnerException.Message}");
+                }
+                return new List<object>();
+            }
+        }
     }
 }
