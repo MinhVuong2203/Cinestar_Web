@@ -26,7 +26,7 @@
             <div class="movie-poster">
                 @if (!string.IsNullOrEmpty(Model.Sub))
                 {
-                    <div class="type-badge">@Model.Sub</div>
+                    <div class="type-badge">2D</div>
                 }
                 @if (!string.IsNullOrEmpty(Model.AgeLimit))
                 {
@@ -76,7 +76,7 @@
                     {
                         <div class="meta-item age-restriction">
                             <i class="fas fa-user-friends"></i>
-                            <span>@Model.AgeLimit: Phim dành cho khán giả từ đủ @Model.AgeLimit.Replace("T", "") tuổi trở lên (@Model.AgeLimit.Replace("T", "")+)</span>
+                            <span>@GetAgeLimitDisplay(Model.AgeLimit)</span>
                         </div>
                     }
                 </div>
@@ -134,71 +134,105 @@
         </div>
     </div>
     @* đặt vé *@
+    @{
+        var branches = ViewData["Branches"] as List<CinemaBranch> ?? new List<CinemaBranch>();
+        var selectedBranch = ViewData["SelectedBranch"] as CinemaBranch;
+        var selectedCity = ViewData["SelectedCity"] as string ?? "HỒ CHÍ MINH";
+    }
+
     <div class="shtime-wr">
+        <!-- ========== LỊCH CHIẾU (7 NGÀY) ========== -->
         <div class="shtime-heading">
             <h2 class="heading">LỊCH CHIẾU</h2>
             <div class="selected-time" id="selectedTimeContainer">
-                
+                @for (int i = 0; i < 7; i++)
+                {
+                    var date = DateTime.Today.AddDays(i);
+                    var dateStr = date.ToString("yyyy-MM-dd");
+                    var dayName = date.ToString("ddd", new System.Globalization.CultureInfo("vi-VN"));
+
+                    <div class="box-time @(i == 0 ? "active" : "")"
+                         data-date="@dateStr"
+                         data-movie-id="@Model.MovieID">
+                        <p class="date">@date.ToString("dd/MM")</p>
+                        <p class="day">@dayName</p>
+                    </div>
+                }
             </div>
         </div>
 
+        <!-- ========== CHỌN THÀNH PHỐ ========== -->
         <div class="shtime-body">
             <h2 class="heading">DANH SÁCH RẠP</h2>
             <div class="select-location">
-                <div class="location-selected" id="selected-branch">
+                <div class="location-selected">
                     <i class="fas fa-location-dot" style="color: #ffffff;"></i>
-                    <span class="location-name" id="selected-branch">TIỀN GIANG</span>
+                    <span class="location-name">@selectedCity</span>
                     <span class="dropdown-arrow">&#9662;</span>
                 </div>
+
                 <div class="location-dropdown">
-                    @{
-                        if (ViewData["lstCity"] != null)
+                    @if (ViewData["lstCity"] != null)
+                    {
+                        var cities = ViewData["lstCity"] as List<string>;
+                        foreach (var city in cities)
                         {
-                            var cities = ViewData["lstCity"] as List<string>;
-                            foreach (var city in cities)
-                            {
-                                <div class="location-option">@city</div>
-                            }
+                            <div class="location-option"
+                                 data-city="@city"
+                                 data-movie-id="@Model.MovieID">
+                                @city
+                            </div>
                         }
                     }
                 </div>
             </div>
         </div>
 
-        <div class="shtime-fr">
-            <ul class="cinestar-list">
-                <li class="cinestar-item open">
-                    <div class="cinestar-heading">
-                        <h4 class="title">Cinestar Mỹ Tho (Tiền Giang)</h4>
-                        <span class="chevron">
-                            <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
-                        </span>
-                    </div>
-                    <div class="cinestar-body">
-                        <p class="address">Số 52 Đinh Bộ Lĩnh, Phường Mỹ Tho, Tỉnh Đồng Tháp</p>
-                        <ul class="list-infor">
-                            <li class="item-infor">
-                                <div class="tt">Standard</div>
-                                <ul class="list-time">
-                                    <li class="item-time">11:00</li>
-                                    <li class="item-time active">12:00</li>
-                                    <li class="item-time">13:20</li>
-                                    <li class="item-time">14:20</li>
-                                    <li class="item-time">15:40</li>
-                                    <li class="item-time">16:40</li>
-                                    <li class="item-time">18:00</li>
-                                    <li class="item-time">19:20</li>
-                                    <li class="item-time">21:20</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
+        <!-- ========== DANH SÁCH RẠP ========== -->
+        <div class="shtime-fr" id="branchesContainer">
+            @if (branches.Any())
+            {
+                <ul class="cinestar-list">
+                    @foreach (var branch in branches)
+                    {
+                        var isFirst = branch == branches.First();
+
+                        <li class="cinestar-item @(isFirst ? "open" : "")"
+                            data-branch-id="@branch.BranchID">
+
+                            <!-- Tiêu đề rạp -->
+                            <div class="cinestar-heading">
+                                <h4 class="title">@branch.BranchName</h4>
+                                <span class="chevron">
+                                    <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
+                                </span>
+                            </div>
+
+                            <!-- Thông tin rạp & lịch chiếu -->
+                            <div class="cinestar-body">
+                                <p class="address">@branch.Address, @branch.District</p>
+
+                                <div class="showtime-container" data-branch-id="@branch.BranchID">
+                                    <p class="loading">Đang tải lịch chiếu...</p>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="no-data">Không có rạp chiếu phim này tại khu vực đã chọn</p>
+            }
         </div>
 
+        <!-- ========== CHỌN LOẠI VÉ ========== -->
         <div class="ticket-wr">
             <h2 class="heading">CHỌN LOẠI VÉ</h2>
+            <div class="ticket-container" id="ticketContainer">
+                <p class="text-muted text-center">Vui lòng chọn suất chiếu để xem loại vé</p>
+            </div>
+            <!--<h2 class="heading">CHỌN LOẠI VÉ</h2>
             <div class="ticket-container">
                 <div class="content">
                     <div class="content-top">
@@ -221,18 +255,24 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
 
+        <!-- ========== STICKY BAR (THANH TOÁN) ========== -->
         <div class="sticky-bar" id="stickyBar">
             <div class="movie-info">
-                <h3 class="movie-title1">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                <h3 class="movie-title1">
+                    @Model.Title @(!string.IsNullOrEmpty(Model.AgeLimit) ? $"({Model.AgeLimit})" : "")
+                </h3>
                 <p class="cinema-info">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span id="cinemaName"> Cinestar Mỹ Tho (Tiền Giang)</span> | <span id="selectedSeatsDisplay">Chưa chọn ghế</span>
+                    <span id="cinemaName">@(selectedBranch?.BranchName ?? "Chưa chọn rạp")</span> |
+                    <span id="selectedSeatsDisplay">Chưa chọn suất</span>
                 </p>
             </div>
+
             <div class="time-price">
+                <!-- Đồng hồ đếm ngược -->
                 <div class="time-section">
                     <span class="time-label">
                         <i class="fas fa-clock"></i>
@@ -240,16 +280,21 @@
                     </span>
                     <div class="time-box" id="countdownTimer">05:00</div>
                 </div>
+
+                <!-- Tổng tiền -->
                 <div class="price-section">
                     <span class="price-label">Tạm tính</span>
                     <span class="price-amount" id="totalPrice">0 VNĐ</span>
                 </div>
+
+                <!-- Nút đặt vé -->
                 <button class="book-btn1" id="bookBtn" disabled>
                     <i class="fas fa-ticket-alt"></i>
                     <span>ĐẶT VÉ</span>
                 </button>
             </div>
         </div>
+
         <script src="~/js/bookTicket.js?v=@DateTime.Now.Ticks"></script>
     </div>
     @* end *@
@@ -601,7 +646,6 @@
                     <td class="seat regular">O04</td>
                     <td class="seat regular">O05</td>
                     <td class="seat regular">O06</td>
-                    <td class="seat regular">O07</td>
                     <td class="seat booked">O08</td>
                     <td class="seat booked">O09</td>
                     <td class="seat regular">O10</td>

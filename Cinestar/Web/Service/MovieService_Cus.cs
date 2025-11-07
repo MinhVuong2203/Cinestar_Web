@@ -74,5 +74,52 @@ namespace Web.Service
 
             return movie;
         }
+
+        //lấy danh sách ngày chiếu phim dd/mm/yyyy
+        public List<string> GetMovieDates(string movieId)
+        {
+            try
+            {
+                var dates = _context.ShowTimes
+                    .Where(st => !st.IsDeleted
+                        && st.MovieID == movieId
+                        && st.StartTime >= DateTime.Today)
+                    .Select(st => st.StartTime.Date)
+                    .Distinct()
+                    .OrderBy(d => d)
+                    .Select(d => d.ToString("dd/MM/yyyy"))
+                    .ToList();
+
+                return dates;
+            }
+            catch
+            {
+                return new List<string>();
+            }
+        }
+
+        //lấy danh sách giờ chiếu phim theo movieId và date
+        public List<string> GetMovieShowTimes(string movieId, string date)
+        {
+            try
+            {
+                DateTime parsedDate = DateTime.ParseExact(date, "dd/MM/yyyy", null);
+                var showTimes = _context.ShowTimes
+                    .Where(st => !st.IsDeleted
+                        && st.MovieID == movieId
+                        && st.StartTime.Date == parsedDate.Date
+                        && st.StartTime >= DateTime.Now)
+                    .Select(st => st.StartTime.ToString("HH:mm"))
+                    .Distinct()
+                    .OrderBy(t => t)
+                    .ToList();
+                return showTimes;
+            }
+            catch
+            {
+                return new List<string>();
+            }
+        }
+
     }
 }

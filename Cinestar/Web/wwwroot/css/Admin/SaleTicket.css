@@ -3,11 +3,18 @@
     --secondary-color: #8b0000;
 }
 
-
 .booking-container {
     max-width: 900px;
     margin: 30px auto;
     padding: 20px;
+}
+
+.cinema-info {
+    background: linear-gradient(135deg, rgba(196, 30, 58, 0.1), rgba(139, 0, 0, 0.1));
+    border-left: 4px solid var(--primary-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
 
 .step-card {
@@ -53,6 +60,7 @@
     margin: 0;
 }
 
+/* ===== MOVIE STYLES ===== */
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -81,35 +89,59 @@
     }
 
 .movie-poster {
-    width: 100%;
-    height: 250px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 8px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-.ticket-option, .time-slot, .combo-item {
+.movie-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.no-movies {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+}
+
+.badge-custom {
+    background: var(--primary-color);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+/* ===== TICKET STYLES ===== */
+.ticket-option, .combo-item {
     border: 2px solid #e0e0e0;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
+    background: white;
 }
 
-    .ticket-option:hover, .time-slot:hover, .combo-item:hover {
+    .ticket-option:hover, .combo-item:hover {
         border-color: var(--primary-color);
         background: rgba(196, 30, 58, 0.05);
     }
 
-    .ticket-option.selected, .time-slot.selected, .combo-item.selected {
+    .ticket-option.selected, .combo-item.selected {
         border-color: var(--primary-color);
         background: linear-gradient(135deg, rgba(196, 30, 58, 0.1), rgba(139, 0, 0, 0.1));
     }
 
+/* ===== TIME STYLES ===== */
 .time-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -117,10 +149,26 @@
 }
 
 .time-slot {
-    text-align: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
     padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
 }
 
+    .time-slot:hover {
+        border-color: var(--primary-color);
+        background: rgba(196, 30, 58, 0.05);
+    }
+
+    .time-slot.selected {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, rgba(196, 30, 58, 0.1), rgba(139, 0, 0, 0.1));
+    }
+
+/* ===== QUANTITY CONTROL ===== */
 .quantity-control {
     display: flex;
     align-items: center;
@@ -136,6 +184,10 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
 
     .quantity-btn:hover {
@@ -150,6 +202,7 @@
     text-align: center;
 }
 
+/* ===== SUMMARY BOX ===== */
 .summary-box {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -192,23 +245,54 @@
         box-shadow: 0 10px 25px rgba(196, 30, 58, 0.4);
     }
 
-.cinema-info {
-    background: linear-gradient(135deg, rgba(196, 30, 58, 0.1), rgba(139, 0, 0, 0.1));
-    border-left: 4px solid var(--primary-color);
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.badge-custom {
-    background: var(--primary-color);
-    color: white;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    margin-left: 10px;
-}
-
+/* ===== UTILITY CLASSES ===== */
 .hidden {
     display: none;
+}
+
+/* ===== LOADING & ERROR STATES ===== */
+.loading-message, .error-message {
+    color: #6c757d;
+    text-align: center;
+    padding: 40px;
+}
+
+    .loading-message i {
+        color: #007bff;
+    }
+
+    .error-message i {
+        color: #dc3545;
+    }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .booking-container {
+        margin: 15px;
+        padding: 15px;
+    }
+
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .time-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .quantity-control {
+        gap: 10px;
+    }
+
+    .quantity-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .quantity-value {
+        font-size: 16px;
+        min-width: 30px;
+    }
 }

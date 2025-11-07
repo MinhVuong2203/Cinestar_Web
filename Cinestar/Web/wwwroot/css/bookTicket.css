@@ -315,19 +315,28 @@
     width: 100%;
     max-width: 750px;
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 12px;
     padding: 32px;
     display: flex;
     flex-direction: column;
-    padding: 20px 24px;
-    background-color: #4B2991;
+    gap: 24px; /* Thêm khoảng cách giữa các loại vé */
 }
 
 .content {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    background-color: #4B2991;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 20px 24px;
+    /* Thêm hiệu ứng cho từng ô vé */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(243, 234, 40, 0.2);
 }
 
 .content-top {
@@ -347,7 +356,7 @@
 
     .content-top .desc {
         flex: 1;
-        text-align: center;
+        text-align: left; /* Căn trái thay vì center */
     }
 
         .content-top .desc p {
@@ -359,7 +368,7 @@
 
     .content-top .price {
         flex: 1;
-        text-align: right;
+        text-align: left; /* Căn trái thay vì phải */
     }
 
         .content-top .price p {
@@ -404,6 +413,11 @@
         .count-btn button:hover {
             background: rgba(75, 41, 145, 0.1);
         }
+
+    .count-btn button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 
     .count-btn .quantity {
         color: #4B2991;

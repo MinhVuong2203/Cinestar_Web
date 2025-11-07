@@ -8,11 +8,18 @@ namespace Web.Controllers
     {
         private readonly ICinemaBranchService _cinemaBranchService;
         private readonly IMovieService_Cus _movieService_Cus;
-        public MovieController(ICinemaBranchService cinemaBranchService, IMovieService_Cus movieService_Cus)
+        private readonly IShowTimeService _showTimeService; // THÊM
+
+        public MovieController(
+            ICinemaBranchService cinemaBranchService,
+            IMovieService_Cus movieService_Cus,
+            IShowTimeService showTimeService) // THÊM
         {
             _cinemaBranchService = cinemaBranchService;
             _movieService_Cus = movieService_Cus;
+            _showTimeService = showTimeService; // THÊM
         }
+
         [LoadCinemaBranches]
         public IActionResult Index()
         {
@@ -27,7 +34,7 @@ namespace Web.Controllers
             ViewData["ComingSoon"] = comingSoon;
             return View();
         }
- 
+
         public IActionResult Details(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -46,9 +53,64 @@ namespace Web.Controllers
             var cities = _cinemaBranchService.GetListCityBranches();
             ViewData["lstCity"] = cities;
 
+            // Lấy thành phố mặc định (thành phố đầu tiên)
+            var defaultCity = cities.FirstOrDefault() ?? "HỒ CHÍ MINH";
+
+            // Lấy danh sách rạp chiếu phim này ở thành phố mặc định
+            var branches = _cinemaBranchService.GetBranchesByCityAndMovie(defaultCity, id);
+            ViewData["Branches"] = branches;
+            ViewData["SelectedCity"] = defaultCity;
+
+            // Lấy lịch chiếu cho rạp đầu tiên (nếu có)
+            //if (branches.Any())
+            //{
+            //    var firstBranch = branches.First();
+            //    var today = DateTime.Today;
+            //    var showTimes = _showTimeService.GetShowTimesByBranchMovieDate(
+            //        firstBranch.BranchID,
+            //        id,
+            //        today
+            //    );
+            //    ViewData["ShowTimes"] = showTimes;
+            //    ViewData["SelectedBranch"] = firstBranch;
+            //}
+
             return View(movie);
         }
 
+        // API: Lấy danh sách rạp theo thành phố và phim
+        [HttpGet]
+        public IActionResult GetBranchesByCity(string city, string movieId)
+        {
+            var branches = _cinemaBranchService.GetBranchesByCityAndMovie(city, movieId);
+            return Json(branches.Select(b => new
+            {
+                branchId = b.BranchID,
+                branchName = b.BranchName,
+                address = b.Address,
+                district = b.District
+            }));
+        }
 
+        // API: Lấy lịch chiếu theo rạp, phim và ngày
+        [HttpGet]
+        public IActionResult GetShowTimes(string branchId, string movieId, string date)
+        {
+            if (!DateTime.TryParse(date, out var selectedDate))
+            {
+                return BadRequest("Invalid date format");
+            }
+
+            var showTimes = _showTimeService.GetShowTimesByBranchMovieDate(branchId, movieId, selectedDate);
+            return Json(showTimes);
+        }
+
+        // API: Lấy thông tin giá vé theo suất chiếu
+        [HttpGet]
+        public IActionResult GetTicketPrices(string showTimeId)
+        {
+            var ticketPrices = _showTimeService.GetTicketPricesByShowTime(showTimeId);
+            return Json(ticketPrices);
+        }
     }
 }

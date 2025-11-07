@@ -212,7 +212,7 @@ GO
 
 CREATE TABLE Room (
     RoomID VARCHAR(10) PRIMARY KEY,
-    RoomName NVARCHAR(100) NOT NULL UNIQUE,
+    RoomName NVARCHAR(100) NOT NULL,
     SeatCount INT CHECK (SeatCount >= 0),
     Description NVARCHAR(MAX),
     RoomType NVARCHAR(50),
