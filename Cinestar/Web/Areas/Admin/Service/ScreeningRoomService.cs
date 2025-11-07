@@ -57,44 +57,78 @@ namespace Web.Areas.Admin.Service
 
             if (!string.IsNullOrEmpty(createdRoomId))
             {
-                await CreateSeatsUsingRawSQL(createdRoomId);
+                await CreateSeatsUsingRawSQL(createdRoomId, room.SeatCount ?? 250); // Truyền seatCount thực sự ở đây!
             }
+
         }
 
         // ✅ TẠO GHẾ BẰNG RAW SQL (250 ghế đúng logic)
-        private async Task CreateSeatsUsingRawSQL(string roomId)
+        private async Task CreateSeatsUsingRawSQL(string roomId, int seatCount)
         {
             var insertStatements = new List<string>();
+            int totalSeats = 0;
 
-            // Hàng A-F: 15 ghế mỗi hàng (6 hàng * 15 = 90 ghế)
-            for (char row = 'A'; row <= 'F'; row++)
+            // GHẾ ĐÔI - A,B: 15 ghế/hàng
+            for (char row = 'A'; row <= 'B' && totalSeats < seatCount; row++)
             {
-                for (int col = 1; col <= 15; col++)
+                for (int col = 1; col <= 15 && totalSeats < seatCount; col++)
                 {
-                    var seatName = $"{row}{col:D2}";
-                    insertStatements.Add($"(N'{seatName}', N'Ghế thường', '{roomId}', 0)");
+                    string seatName = $"{row}{col:D2}";
+                    insertStatements.Add($"(N'{seatName}', N'Ghế đôi', '{roomId}', 0)");
+                    totalSeats++;
                 }
             }
 
-            // Hàng G-O: 17 ghế mỗi hàng (9 hàng * 17 = 153 ghế)
-            for (char row = 'G'; row <= 'O'; row++)
+            // C-E: thường, 15 ghế/hàng
+            for (char row = 'C'; row <= 'E' && totalSeats < seatCount; row++)
             {
-                for (int col = 1; col <= 17; col++)
+                for (int col = 1; col <= 15 && totalSeats < seatCount; col++)
                 {
-                    var seatName = $"{row}{col:D2}";
+                    string seatName = $"{row}{col:D2}";
                     insertStatements.Add($"(N'{seatName}', N'Ghế thường', '{roomId}', 0)");
+                    totalSeats++;
                 }
             }
 
-            // Hàng P: 7 ghế (để đủ 250 ghế)
-            // Tổng: 90 + 153 + 7 = 250 ghế
-            for (int col = 1; col <= 7; col++)
+            // F: 15 ghế, VIP từ F03-F13
+            if (totalSeats < seatCount)
             {
-                var seatName = $"P{col:D2}";
-                insertStatements.Add($"(N'{seatName}', N'Ghế thường', '{roomId}', 0)");
+                char row = 'F';
+                for (int col = 1; col <= 15 && totalSeats < seatCount; col++)
+                {
+                    string seatType = (col >= 3 && col <= 13) ? "Ghế VIP" : "Ghế thường";
+                    string seatName = $"{row}{col:D2}";
+                    insertStatements.Add($"(N'{seatName}', N'{seatType}', '{roomId}', 0)");
+                    totalSeats++;
+                }
             }
 
-            // ✅ Insert theo batch
+            // G-L: 17 ghế/hàng, VIP từ col 4-14
+            for (char row = 'G'; row <= 'L' && totalSeats < seatCount; row++)
+            {
+                for (int col = 1; col <= 17 && totalSeats < seatCount; col++)
+                {
+                    string seatType = (col >= 4 && col <= 14) ? "Ghế VIP" : "Ghế thường";
+                    string seatName = $"{row}{col:D2}";
+                    insertStatements.Add($"(N'{seatName}', N'{seatType}', '{roomId}', 0)");
+                    totalSeats++;
+                }
+            }
+
+            // Nếu vẫn chưa đủ, sinh tiếp các hàng thường (M, N... 17 ghế/hàng)
+            char addRow = 'M';
+            while (totalSeats < seatCount && addRow <= 'Z')
+            {
+                for (int col = 1; col <= 17 && totalSeats < seatCount; col++)
+                {
+                    string seatName = $"{addRow}{col:D2}";
+                    insertStatements.Add($"(N'{seatName}', N'Ghế thường', '{roomId}', 0)");
+                    totalSeats++;
+                }
+                addRow++;
+            }
+
+            // Batched Insert như cũ
             var batchSize = 100;
             for (int i = 0; i < insertStatements.Count; i += batchSize)
             {
@@ -109,6 +143,11 @@ namespace Web.Areas.Admin.Service
                 await _context.Database.ExecuteSqlRawAsync(sql);
             }
         }
+
+
+
+
+
 
 
         // Cập nhật phòng chiếu

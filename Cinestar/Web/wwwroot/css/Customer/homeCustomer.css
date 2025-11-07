@@ -582,7 +582,6 @@ body {
     background-size: cover;
     background-position: center;
     padding: 60px 20px;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -638,18 +637,17 @@ body {
 }
 
 .card-title {
-    font-size: 28px;
     margin-bottom: 15px;
     padding-bottom: 20px;
 }
 
 .cfriend .card-title {
-    font-size: 40px;
+    font-size: 35px;
     color: #fff;
 }
 
 .cvip .card-title {
-    font-size: 40px;
+    font-size: 35px;
     color: #fff;
 }
 
@@ -1104,7 +1102,7 @@ body {
 
     .promotion-card .card-img {
         width: 100%;
-        height: 280px;
+        height: 250px;
         object-fit: cover;
         transition: transform 0.5s ease;
     }
@@ -1152,31 +1150,27 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.2);
     color: #fff;
     width: 50px;
     height: 50px;
-    border-radius: 50%;
-    border: 2px solid #ffc107;
-    font-size: 18px;
+    font-size: 25px;
     transition: all 0.3s ease;
     opacity: 0.8;
     z-index: 10;
 }
 
     .promotion-section .custom-nav-btn:hover {
-        background-color: #ffc107;
         color: #333;
         transform: translateY(-50%) scale(1.1);
         opacity: 1;
     }
 
 .promotion-section .carousel-control-prev {
-    left: 15px;
+    left: -25px;
 }
 
 .promotion-section .carousel-control-next {
-    right: 15px;
+    right: -25px;
 }
 
 /* Nút Tất Cả Ưu Đãi */
