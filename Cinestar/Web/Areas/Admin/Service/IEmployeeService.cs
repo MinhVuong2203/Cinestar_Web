@@ -22,5 +22,8 @@ namespace Web.Areas.Admin.Service
         public List<Movie> GetMoviesByEmployeeBranchId(string branchId);
         // Lấy thông tin loại vé và giá của phim tại chi nhánh
         public dynamic GetTicketTypesAndPrices(string movieId, string branchId);
+
+        // Lấy danh sách suất chiếu theo movieId, branchId và ngày
+        public dynamic GetShowTimesByMovieAndDate(string movieId, string branchId, DateTime date);
     }
 }

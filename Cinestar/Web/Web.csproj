@@ -22,6 +22,9 @@
 
   <ItemGroup>
     <Folder Include="Areas\NewFolder\" />
+    <Folder Include="wwwroot\image\membership\" />
+    <Folder Include="wwwroot\image\other_services\" />
+    <Folder Include="wwwroot\image\sale\" />
     <Folder Include="wwwroot\image\product\" />
   </ItemGroup>
 

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Web.Areas.Admin.Service;
+using Web.Data;
 using Web.Models;
+
 
 namespace Web.Areas.Admin.Controllers
 {
@@ -9,14 +12,19 @@ namespace Web.Areas.Admin.Controllers
     {
         private readonly IScreeningRoomService _screeningRoomService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly CineStarContext _context;
+
 
         public ScreeningRoomController(
             IScreeningRoomService screeningRoomService,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            CineStarContext context)
         {
             _screeningRoomService = screeningRoomService;
             _webHostEnvironment = webHostEnvironment;
+            _context = context;
         }
+
 
         // GET: Admin/ScreeningRoom/Index
         public async Task<IActionResult> Index()
@@ -39,35 +47,38 @@ namespace Web.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: Admin/ScreeningRoom/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Room room, IFormFile? ImageFile)
         {
             try
             {
-                // Bỏ validation cho RoomID vì trigger sẽ tự tạo
                 ModelState.Remove("RoomID");
+                bool isDuplicate = await _context.Rooms
+                    .AnyAsync(r =>
+                        r.RoomName.ToLower() == room.RoomName.ToLower()
+                        && r.BranchID == room.BranchID);
+                if (isDuplicate)
+                {
+                    ModelState.AddModelError("RoomName", "Tên phòng này đã tồn tại trong chi nhánh.");
+                    await LoadBranchesForView();
+                    return View(room);
+                }
 
                 if (ModelState.IsValid)
                 {
-                    // ✅ TỰ ĐỘNG SET SeatCount = 250
                     if (!room.SeatCount.HasValue || room.SeatCount.Value <= 0)
                     {
                         room.SeatCount = 250;
                     }
-
-                    // Upload ảnh nếu có
                     if (ImageFile != null && ImageFile.Length > 0)
                     {
                         room.ImageUrl = await UploadImageAsync(ImageFile);
                     }
-
                     await _screeningRoomService.CreateScreeningRoom(room);
                     TempData["Success"] = "Thêm phòng chiếu thành công!";
                     return RedirectToAction(nameof(Index));
                 }
-
                 await LoadBranchesForView();
                 return View(room);
             }
@@ -78,6 +89,7 @@ namespace Web.Areas.Admin.Controllers
                 return View(room);
             }
         }
+
 
 
         // GET: Admin/ScreeningRoom/Edit/ROM-12345
@@ -98,7 +110,6 @@ namespace Web.Areas.Admin.Controllers
             return View(room);
         }
 
-        // POST: Admin/ScreeningRoom/Edit/ROM-12345
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, Room room, IFormFile? ImageFile)
@@ -110,24 +121,34 @@ namespace Web.Areas.Admin.Controllers
 
             try
             {
+                // *** TRÙNG TÊN PHÒNG TRONG CÙNG CHI NHÁNH ***
+                bool isDuplicate = await _context.Rooms
+                    .AnyAsync(r =>
+                        r.RoomName.ToLower() == room.RoomName.ToLower()
+                        && r.BranchID == room.BranchID
+                        && r.RoomID != room.RoomID);
+                if (isDuplicate)
+                {
+                    ModelState.AddModelError("RoomName", "Tên phòng này đã tồn tại trong chi nhánh.");
+                    await LoadBranchesForView();
+                    return View(room);
+                }
+                // **********************************************
+
                 if (ModelState.IsValid)
                 {
-                    // Upload ảnh mới nếu có
                     if (ImageFile != null && ImageFile.Length > 0)
                     {
-                        // Xóa ảnh cũ nếu có
                         if (!string.IsNullOrEmpty(room.ImageUrl))
                         {
                             DeleteImage(room.ImageUrl);
                         }
                         room.ImageUrl = await UploadImageAsync(ImageFile);
                     }
-
                     await _screeningRoomService.EditScreeningRoom(room);
                     TempData["Success"] = "Cập nhật phòng chiếu thành công!";
                     return RedirectToAction(nameof(Index));
                 }
-
                 await LoadBranchesForView();
                 return View(room);
             }
@@ -138,6 +159,7 @@ namespace Web.Areas.Admin.Controllers
                 return View(room);
             }
         }
+
 
         // POST: Admin/ScreeningRoom/Delete/ROM-12345
         [HttpPost]
