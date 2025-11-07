@@ -53,6 +53,8 @@ namespace Web.Areas.Admin.Controllers
                 TempData["Error"] = "Nhân viên không tồn tại!";
                 return RedirectToAction("Login", "Account", new { area = "" });
             }
+
+            //lấy loại vé của phim được chọn 
             return View(employee);
         }
     }
