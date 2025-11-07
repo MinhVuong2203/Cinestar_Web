@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Web.Models;
 
 [Table("Room")]
-[Index("RoomName", Name = "UQ__Room__6B500B553EF8042B", IsUnique = true)]
 public partial class Room
 {
     [Key]
