@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Bán vé";
     var movieId = ViewData["MovieId"] as string;
+    var showTimes = ViewData["ShowTimes"] as IEnumerable<dynamic>;
 }
 @section Styles {
     <link href="~/css/Admin/SaleTicket.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
@@ -13,22 +14,52 @@
         <p class="mb-0"><i class="fas fa-user"></i> Nhân viên: <strong>@Model.FullName</strong></p>
         <p class="mb-0"><i class="fas fa-film"></i> Mã phim: <strong>@movieId</strong></p>
     </div>
-    <!--movieId-->
+
     <!-- Bước 2: Chọn giờ xem -->
     <div class="step-card">
         <div class="step-header">
             <div class="step-number">2</div>
             <h3 class="step-title">Chọn giờ xem</h3>
         </div>
-        <div class="mb-3">
-            <label class="form-label"><i class="fas fa-calendar"></i> Chọn ngày:</label>
-            <input type="date" class="form-control" id="dateSelect" data-movie-id ="@movieId" min="">
-        </div>
         <div class="time-grid" id="timeGrid">
-            <div class="loading-message text-center py-4">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
-                <p class="mt-2">Vui lòng chọn ngày để xem suất chiếu...</p>
-            </div>
+            @if (showTimes != null && showTimes.Any())
+            {
+                <div class="row g-3">
+                    @foreach (var showTime in showTimes)
+                    {
+                        var showTimeId = showTime.ShowTimeID;
+                        var startTime = showTime.StartTime;
+                        var roomName = showTime.RoomName;
+                        var roomType = showTime.RoomType;
+                        var availableSeats = showTime.AvailableSeats ?? 0;
+                        var totalSeats = showTime.TotalSeats ?? 0;
+                        
+                        // Format time display
+                        DateTime startDateTime = startTime is DateTime dt ? dt : DateTime.Parse(startTime.ToString());
+                        string timeDisplay = startDateTime.ToString("HH:mm");
+
+                        <div class="col-md-3 col-sm-4 col-6">
+                            <div class="time-slot" 
+                                 data-showtime-id="@showTimeId" 
+                                 data-time="@timeDisplay" 
+                                 data-room="@roomName">
+                                <div class="time-slot-time">@timeDisplay</div>
+                                <div class="time-slot-room">@roomName (@roomType)</div>
+                                <div class="time-slot-seats @(availableSeats < 10 ? "text-warning" : "text-success")">
+                                    @availableSeats/@totalSeats ghế trống
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="no-showtimes text-center py-5">
+                    <i class="fas fa-film fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Không có suất chiếu nào cho ngày hôm nay. Vui lòng chọn ngày khác.</p>
+                </div>
+            }
         </div>
     </div>
 
@@ -148,6 +179,7 @@
 </div>
 
 <script>
-    const movieId = '@ViewData["MovieId"]';
+    const movieId = '@movieId';
+    const initialShowTimes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(showTimes ?? new List<dynamic>()));
 </script>
 <script src="/js/Admin/TicketSelling.js?v=@DateTime.Now.Ticks"></script>

@@ -119,6 +119,9 @@ namespace Web.Areas.Admin.Controllers
             // Pass movieId to ViewData
             ViewData["MovieId"] = movieId;
 
+            var showTime = _employeeService.GetShowTimesByMovieAndDate(movieId, employee.BranchID, DateTime.Today);
+            ViewData["ShowTimes"] = showTime;
+
             return View(employee);
         }
 
@@ -158,12 +161,12 @@ namespace Web.Areas.Admin.Controllers
 
         //Lấy danh sách suất chiếu theo movieId và ngày - FIXED VERSION
         [HttpGet]
-        public async Task<JsonResult> GetShowTimes()
+        public async Task<JsonResult> GetShowTimes([FromQuery] string movieId, [FromQuery] string date)
         {
             try
             {
-                var movieId = Request.Query["movieId"].ToString();
-                var date = Request.Query["date"].ToString();
+                //var movieId = Request.Query["movieId"].ToString();
+                //var date = Request.Query["date"].ToString();
 
                 Console.WriteLine($"=== GetShowTimes Called ===");
                 Console.WriteLine($"MovieId: '{movieId}'");
