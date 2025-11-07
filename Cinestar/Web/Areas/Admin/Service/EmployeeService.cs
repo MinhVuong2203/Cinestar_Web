@@ -151,6 +151,66 @@ namespace Web.Areas.Admin.Service
             return movies;
         }
 
+        // Lấy thông tin loại vé và giá của phim tại chi nhánh
+        public dynamic GetTicketTypesAndPrices(string movieId, string branchId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(movieId) || string.IsNullOrEmpty(branchId))
+                    return null;
+
+                // Debug: Log thông tin đầu vào
+                Console.WriteLine($"Getting ticket types for MovieId: {movieId}, BranchId: {branchId}");
+
+                // Lấy giá cơ bản từ ShowTime của phim tại chi nhánh
+                var basePrice = _context.ShowTimes
+                    .Include(st => st.Room)  // Include Room để đảm bảo có thể truy cập Room.BranchID
+                    .Where(st => st.MovieID == movieId &&
+                               !st.IsDeleted &&
+                               st.Room != null &&
+                               !st.Room.IsDeleted &&
+                               st.Room.BranchID == branchId)
+                    .Select(st => st.Price)
+                    .FirstOrDefault();
+
+                // Debug: Log base price
+                Console.WriteLine($"Base price found: {basePrice}");
+
+                // Nếu không tìm thấy, thử với giá mặc định dựa trên cấu hình rạp
+                if (basePrice == null || basePrice == 0)
+                {
+                    // Kiểm tra xem phim có tồn tại không
+                    var movieExists = _context.Movies.Any(m => m.MovieID == movieId && !m.IsDeleted);
+                    var branchExists = _context.CinemaBranches.Any(b => b.BranchID == branchId && !b.IsDeleted);
+
+                    Console.WriteLine($"Movie exists: {movieExists}, Branch exists: {branchExists}");
+
+                    if (!movieExists || !branchExists)
+                        return null;
+
+                    // Sử dụng giá mặc định
+                    basePrice = 80000;
+                    Console.WriteLine($"Using default price: {basePrice}");
+                }
+
+                // Tạo danh sách loại vé với giá tương ứng
+                var ticketTypes = new
+                {
+                    Standard = new { Name = "Vé thường", Description = "Ghế thường", Price = basePrice, Icon = "fas fa-ticket-alt" },
+                    VIP = new { Name = "Vé VIP", Description = "Ghế VIP cao cấp", Price = basePrice + 20000, Icon = "fas fa-crown" },
+                    Couple = new { Name = "Vé đôi", Description = "Ghế đôi couple", Price = (basePrice * 2) + 20000, Icon = "fas fa-heart" }
+                };
+
+                Console.WriteLine($"Returning ticket types: {Newtonsoft.Json.JsonConvert.SerializeObject(ticketTypes)}");
+
+                return ticketTypes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetTicketTypesAndPrices: {ex.Message}");
+                return null;
+            }
+        }
 
     }
 }

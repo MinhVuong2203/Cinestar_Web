@@ -128,7 +128,7 @@
         }
     });
 
-    // === HÀM TỰI DANH SÁCH RẠP ===
+    // === HÀM TẠO DANH SÁCH RẠP ===
     function loadBranches(city, movieId) {
         const container = document.getElementById('branchesContainer');
      container.innerHTML = '<p class="text-center">Đang tải...</p>';
@@ -162,7 +162,7 @@ container.innerHTML = '<p class="no-data">Không có rạp chiếu phim này t�
           html += '</ul>';
         container.innerHTML = html;
 
-                // Tải lịch chiếu cho rạp đầu tiên
+        // Tải lịch chiếu cho rạp đầu tiên
        if (branches.length > 0) {
      const selectedDate = document.querySelector('.box-time.active')?.dataset.date || 
          new Date().toISOString().split('T')[0];
@@ -175,7 +175,7 @@ container.innerHTML = '<p class="no-data">Không có rạp chiếu phim này t�
         });
     }
 
-    // === HÀM TỰI LỊCH CHIẾU ===
+    // === HÀM TẠO LỊCH CHIẾU ===
     function loadShowTimes(branchId, movieId, date) {
         const container = document.querySelector(`.showtime-container[data-branch-id="${branchId}"]`);
         if (!container) return;

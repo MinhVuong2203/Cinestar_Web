@@ -54,8 +54,41 @@ namespace Web.Areas.Admin.Controllers
                 return RedirectToAction("Login", "Account", new { area = "" });
             }
 
-            //lấy loại vé của phim được chọn 
             return View(employee);
+        }
+
+        //lấy loại vé và giá theo phim
+        [HttpGet]
+        public async Task<JsonResult> GetTicketTypes(string movieId)
+        {
+            try
+            {
+                var employeeIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(employeeIdClaim) || !Guid.TryParse(employeeIdClaim, out Guid employeeId))
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin nhân viên!" });
+                }
+
+                var employee = await _employeeService.GetEmployeeById(employeeId);
+                if (employee == null)
+                {
+                    return Json(new { success = false, message = "Nhân viên không tồn tại!" });
+                }
+
+                var ticketTypes = _employeeService.GetTicketTypesAndPrices(movieId, employee.BranchID);
+
+                if (ticketTypes == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin vé cho phim này!" });
+                }
+
+                return Json(new { success = true, data = ticketTypes });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
         }
     }
 }

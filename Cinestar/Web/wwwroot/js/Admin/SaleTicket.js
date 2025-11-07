@@ -6,10 +6,8 @@
     combos: { combo1: 0, combo2: 0, popcorn: 0, drink: 0 }
 };
 
-const prices = {
-    tickets: { standard: 80000, vip: 120000, couple: 200000 },
-    combos: { combo1: 70000, combo2: 120000, popcorn: 45000, drink: 30000 }
-};
+let ticketPrices = { standard: 80000, vip: 120000, couple: 200000 };
+const comboPrices = { combo1: 70000, combo2: 120000, popcorn: 45000, drink: 30000 };
 
 // Set min date to today
 const today = new Date().toISOString().split('T')[0];
@@ -26,15 +24,132 @@ document.querySelectorAll('.movie-card').forEach(card => {
             id: this.dataset.movie,
             name: this.dataset.name
         };
+        
+        // Reset ticket quantities
+        bookingData.tickets = { standard: 0, vip: 0, couple: 0 };
+        
+        // Load ticket types for selected movie
+        loadTicketTypes(bookingData.movie.id);
+        
         document.getElementById('step2').classList.remove('hidden');
         updateSummary();
     });
 });
 
+// Function to load ticket types dynamically
+async function loadTicketTypes(movieId) {
+    const ticketOptionsContainer = document.getElementById('ticketOptions');
+    
+    if (!ticketOptionsContainer) {
+        console.error('ticketOptions container not found');
+        return;
+    }
+    
+    // Show loading
+    ticketOptionsContainer.innerHTML = `
+        <div class="loading-message text-center py-4">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p class="mt-2">Đang tải thông tin vé...</p>
+        </div>
+    `;
+    
+    try {
+        const response = await fetch(`/Admin/EmployeeSale/GetTicketTypes?movieId=${movieId}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            const ticketTypes = result.data;
+            
+            // Update ticket prices
+            ticketPrices = {
+                standard: ticketTypes.Standard.Price,
+                vip: ticketTypes.VIP.Price,
+                couple: ticketTypes.Couple.Price
+            };
+            
+            // Generate ticket options HTML
+            generateTicketOptionsHTML(ticketTypes);
+        } else {
+            console.error('API Error:', result.message);
+        }
+    } catch (error) {
+        console.error('Error loading ticket types:', error);
+    }
+}
+
+// Function to generate ticket options HTML
+function generateTicketOptionsHTML(ticketTypes) {
+    const ticketOptionsContainer = document.getElementById('ticketOptions');
+    
+    ticketOptionsContainer.innerHTML = `
+        <div class="ticket-option" data-type="standard" data-price="${ticketTypes.Standard.Price}">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5><i class="${ticketTypes.Standard.Icon}"></i> ${ticketTypes.Standard.Name}</h5>
+                    <p class="text-muted mb-0">${ticketTypes.Standard.Description}</p>
+                </div>
+                <div class="text-end">
+                    <h4 class="text-primary mb-0">${formatPrice(ticketTypes.Standard.Price)}</h4>
+                    <div class="quantity-control mt-2">
+                        <button class="quantity-btn" onclick="changeQuantity('standard', -1)">-</button>
+                        <span class="quantity-value" id="qty-standard">0</span>
+                        <button class="quantity-btn" onclick="changeQuantity('standard', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ticket-option" data-type="vip" data-price="${ticketTypes.VIP.Price}">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5><i class="${ticketTypes.VIP.Icon}"></i> ${ticketTypes.VIP.Name}</h5>
+                    <p class="text-muted mb-0">${ticketTypes.VIP.Description}</p>
+                </div>
+                <div class="text-end">
+                    <h4 class="text-primary mb-0">${formatPrice(ticketTypes.VIP.Price)}</h4>
+                    <div class="quantity-control mt-2">
+                        <button class="quantity-btn" onclick="changeQuantity('vip', -1)">-</button>
+                        <span class="quantity-value" id="qty-vip">0</span>
+                        <button class="quantity-btn" onclick="changeQuantity('vip', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ticket-option" data-type="couple" data-price="${ticketTypes.Couple.Price}">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5><i class="${ticketTypes.Couple.Icon}"></i> ${ticketTypes.Couple.Name}</h5>
+                    <p class="text-muted mb-0">${ticketTypes.Couple.Description}</p>
+                </div>
+                <div class="text-end">
+                    <h4 class="text-primary mb-0">${formatPrice(ticketTypes.Couple.Price)}</h4>
+                    <div class="quantity-control mt-2">
+                        <button class="quantity-btn" onclick="changeQuantity('couple', -1)">-</button>
+                        <span class="quantity-value" id="qty-couple">0</span>
+                        <button class="quantity-btn" onclick="changeQuantity('couple', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Format price function
+function formatPrice(price) {
+    return new Intl.NumberFormat('vi-VN').format(price) + ' ₫';
+}
+
 // Ticket quantity
 function changeQuantity(type, delta) {
     bookingData.tickets[type] = Math.max(0, bookingData.tickets[type] + delta);
-    document.getElementById(`qty-${type}`).textContent = bookingData.tickets[type];
+    const qtyElement = document.getElementById(`qty-${type}`);
+    if (qtyElement) {
+        qtyElement.textContent = bookingData.tickets[type];
+    }
 
     const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
     if (totalTickets > 0) {
@@ -62,7 +177,10 @@ document.querySelectorAll('.time-slot').forEach(slot => {
 // Combo quantity
 function changeComboQuantity(combo, delta) {
     bookingData.combos[combo] = Math.max(0, bookingData.combos[combo] + delta);
-    document.getElementById(`combo-${combo}`).textContent = bookingData.combos[combo];
+    const comboElement = document.getElementById(`combo-${combo}`);
+    if (comboElement) {
+        comboElement.textContent = bookingData.combos[combo];
+    }
     updateSummary();
 }
 
@@ -70,12 +188,19 @@ function changeComboQuantity(combo, delta) {
 function updateSummary() {
     if (!bookingData.movie) return;
 
-    document.getElementById('summaryBox').classList.remove('hidden');
-    document.getElementById('summary-movie').textContent = bookingData.movie.name;
+    const summaryBox = document.getElementById('summaryBox');
+    const summaryMovie = document.getElementById('summary-movie');
+    const summaryDateTime = document.getElementById('summary-datetime');
+    const summaryTickets = document.getElementById('summary-tickets');
+    const summaryCombos = document.getElementById('summary-combos');
+    const summaryTotal = document.getElementById('summary-total');
+    
+    if (summaryBox) summaryBox.classList.remove('hidden');
+    if (summaryMovie) summaryMovie.textContent = bookingData.movie.name;
 
-    if (bookingData.date && bookingData.time) {
+    if (bookingData.date && bookingData.time && summaryDateTime) {
         const dateStr = new Date(bookingData.date).toLocaleDateString('vi-VN');
-        document.getElementById('summary-datetime').textContent = `${dateStr} - ${bookingData.time}`;
+        summaryDateTime.textContent = `${dateStr} - ${bookingData.time}`;
     }
 
     // Tickets summary
@@ -83,7 +208,7 @@ function updateSummary() {
     if (bookingData.tickets.standard > 0) ticketsSummary.push(`Thường x${bookingData.tickets.standard}`);
     if (bookingData.tickets.vip > 0) ticketsSummary.push(`VIP x${bookingData.tickets.vip}`);
     if (bookingData.tickets.couple > 0) ticketsSummary.push(`Đôi x${bookingData.tickets.couple}`);
-    document.getElementById('summary-tickets').textContent = ticketsSummary.join(', ') || '-';
+    if (summaryTickets) summaryTickets.textContent = ticketsSummary.join(', ') || '-';
 
     // Combos summary
     const combosSummary = [];
@@ -91,17 +216,17 @@ function updateSummary() {
     if (bookingData.combos.combo2 > 0) combosSummary.push(`Combo 2 x${bookingData.combos.combo2}`);
     if (bookingData.combos.popcorn > 0) combosSummary.push(`Bắp x${bookingData.combos.popcorn}`);
     if (bookingData.combos.drink > 0) combosSummary.push(`Nước x${bookingData.combos.drink}`);
-    document.getElementById('summary-combos').textContent = combosSummary.join(', ') || 'Không có';
+    if (summaryCombos) summaryCombos.textContent = combosSummary.join(', ') || 'Không có';
 
     // Calculate total
     let total = 0;
     for (let type in bookingData.tickets) {
-        total += bookingData.tickets[type] * prices.tickets[type];
+        total += bookingData.tickets[type] * (ticketPrices[type] || 0);
     }
     for (let combo in bookingData.combos) {
-        total += bookingData.combos[combo] * prices.combos[combo];
+        total += bookingData.combos[combo] * (comboPrices[combo] || 0);
     }
-    document.getElementById('summary-total').textContent = total.toLocaleString('vi-VN') + ' ₫';
+    if (summaryTotal) summaryTotal.textContent = formatPrice(total);
 }
 
 function confirmBooking() {
@@ -124,190 +249,4 @@ function confirmBooking() {
 
     // Reset form
     location.reload();
-}
-
-// Biến lưu trữ thông tin đặt vé
-let selectedMovie = null;
-let selectedTickets = {};
-let selectedCombos = {};
-let selectedDateTime = null;
-
-// Khởi tạo khi trang load
-document.addEventListener('DOMContentLoaded', function () {
-    initializeDatePicker();
-    initializeMovieSelection();
-    initializeStepNavigation();
-});
-
-// Khởi tạo date picker
-function initializeDatePicker() {
-    const dateSelect = document.getElementById('dateSelect');
-    if (dateSelect) {
-        // Set ngày tối thiểu là hôm nay
-        const today = new Date();
-        dateSelect.min = today.toISOString().split('T')[0];
-        dateSelect.value = today.toISOString().split('T')[0];
-    }
-}
-
-// Khởi tạo chọn phim
-function initializeMovieSelection() {
-    const movieCards = document.querySelectorAll('.movie-card');
-    movieCards.forEach(card => {
-        card.addEventListener('click', function () {
-            selectMovie(this);
-        });
-    });
-}
-
-// Xử lý chọn phim
-function selectMovie(movieCard) {
-    // Bỏ chọn tất cả phim khác
-    document.querySelectorAll('.movie-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-
-    // Chọn phim hiện tại
-    movieCard.classList.add('selected');
-
-    // Lưu thông tin phim
-    selectedMovie = {
-        id: movieCard.dataset.movie,
-        name: movieCard.dataset.name
-    };
-
-    // Hiển thị bước tiếp theo
-    showStep(2);
-    updateSummary();
-}
-
-// Hiển thị bước
-function showStep(stepNumber) {
-    // Ẩn tất cả các bước
-    document.querySelectorAll('.step-card').forEach((step, index) => {
-        if (index + 1 <= stepNumber) {
-            step.classList.remove('hidden');
-        }
-    });
-
-    // Hiển thị summary box nếu đã chọn phim
-    if (stepNumber >= 2) {
-        document.getElementById('summaryBox').classList.remove('hidden');
-    }
-}
-
-// Thay đổi số lượng vé
-function changeQuantity(type, change) {
-    const qtyElement = document.getElementById(`qty-${type}`);
-    const currentQty = parseInt(qtyElement.textContent) || 0;
-    const newQty = Math.max(0, currentQty + change);
-
-    qtyElement.textContent = newQty;
-    selectedTickets[type] = newQty;
-
-    // Kiểm tra nếu có vé được chọn thì hiển thị bước tiếp theo
-    const totalTickets = Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
-    if (totalTickets > 0) {
-        showStep(3);
-    }
-
-    updateSummary();
-}
-
-// Thay đổi số lượng combo
-function changeComboQuantity(combo, change) {
-    const qtyElement = document.getElementById(`combo-${combo}`);
-    const currentQty = parseInt(qtyElement.textContent) || 0;
-    const newQty = Math.max(0, currentQty + change);
-
-    qtyElement.textContent = newQty;
-    selectedCombos[combo] = newQty;
-
-    updateSummary();
-}
-
-// Khởi tạo navigation cho các bước
-function initializeStepNavigation() {
-    // Xử lý chọn giờ
-    document.querySelectorAll('.time-slot').forEach(slot => {
-        slot.addEventListener('click', function () {
-            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-            this.classList.add('selected');
-
-            const date = document.getElementById('dateSelect').value;
-            const time = this.dataset.time;
-            selectedDateTime = `${date} ${time}`;
-
-            showStep(4);
-            updateSummary();
-        });
-    });
-}
-
-// Cập nhật tổng kết
-function updateSummary() {
-    // Cập nhật tên phim
-    document.getElementById('summary-movie').textContent = selectedMovie ? selectedMovie.name : '-';
-
-    // Cập nhật ngày giờ
-    document.getElementById('summary-datetime').textContent = selectedDateTime || '-';
-
-    // Cập nhật vé
-    const ticketSummary = [];
-    const ticketPrices = { standard: 80000, vip: 120000, couple: 200000 };
-    const ticketNames = { standard: 'Vé thường', vip: 'Vé VIP', couple: 'Vé đôi' };
-
-    for (let [type, qty] of Object.entries(selectedTickets)) {
-        if (qty > 0) {
-            ticketSummary.push(`${ticketNames[type]}: ${qty}`);
-        }
-    }
-    document.getElementById('summary-tickets').textContent = ticketSummary.length > 0 ? ticketSummary.join(', ') : '-';
-
-    // Cập nhật combo
-    const comboSummary = [];
-    for (let [combo, qty] of Object.entries(selectedCombos)) {
-        if (qty > 0) {
-            comboSummary.push(`${combo}: ${qty}`);
-        }
-    }
-    document.getElementById('summary-combos').textContent = comboSummary.length > 0 ? comboSummary.join(', ') : 'Không có';
-
-    // Tính tổng tiền
-    let total = 0;
-
-    // Tiền vé
-    for (let [type, qty] of Object.entries(selectedTickets)) {
-        total += (ticketPrices[type] || 0) * qty;
-    }
-
-    // Tiền combo (cần định nghĩa giá combo)
-    const comboPrices = { combo1: 70000, combo2: 120000, popcorn: 45000, drink: 30000 };
-    for (let [combo, qty] of Object.entries(selectedCombos)) {
-        total += (comboPrices[combo] || 0) * qty;
-    }
-
-    document.getElementById('summary-total').textContent = total.toLocaleString('vi-VN') + ' ₫';
-}
-
-// Xác nhận đặt vé
-function confirmBooking() {
-    if (!selectedMovie) {
-        alert('Vui lòng chọn phim!');
-        return;
-    }
-
-    const totalTickets = Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
-    if (totalTickets === 0) {
-        alert('Vui lòng chọn ít nhất một vé!');
-        return;
-    }
-
-    if (!selectedDateTime) {
-        alert('Vui lòng chọn ngày giờ chiếu!');
-        return;
-    }
-
-    // Xử lý logic đặt vé ở đây
-    alert('Đang xử lý đặt vé...');
 }
