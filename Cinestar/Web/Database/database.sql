@@ -195,6 +195,72 @@ CREATE TABLE Movie (
     IsDeleted BIT DEFAULT 0 NOT NULL
 );
 GO
+CREATE OR ALTER PROCEDURE sp_GetMoviesPaged
+    @PageNumber INT = 1,
+    @PageSize INT = 10,
+    @SearchKeyword NVARCHAR(200) = NULL,
+    @IsCurrentlyShowing INT = NULL  -- NULL: all, 1: showing, 0: upcoming, -1: ended
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+    DECLARE @TotalRecords INT;
+    DECLARE @Now DATETIME = GETDATE();
+    
+    -- Đếm tổng số bản ghi
+    SELECT @TotalRecords = COUNT(*)
+    FROM Movie
+    WHERE IsDeleted = 0
+        AND (@SearchKeyword IS NULL OR Title LIKE N'%' + @SearchKeyword + '%')
+        AND (
+            @IsCurrentlyShowing IS NULL 
+            OR (@IsCurrentlyShowing = 1 AND StartTime <= @Now AND (EndTime IS NULL OR EndTime >= @Now))
+            OR (@IsCurrentlyShowing = 0 AND StartTime > @Now)
+            OR (@IsCurrentlyShowing = -1 AND EndTime < @Now)
+        );
+    
+    -- Lấy dữ liệu phân trang - ✅ THÊM Sub và Dub
+    SELECT 
+        MovieID,
+        Title,
+        DurationMinutes,
+        Genre,
+        Language,
+        Sub,              -- ✅ THÊM CỘT NÀY
+        Dub,              -- ✅ THÊM CỘT NÀY
+        AgeLimit,
+        StartTime,
+        EndTime,
+        Description,
+        ImageUrl,
+        LinkTrailer,
+        IsDeleted,
+        @TotalRecords AS TotalRecords,
+        CEILING(CAST(@TotalRecords AS FLOAT) / @PageSize) AS TotalPages
+    FROM Movie
+    WHERE IsDeleted = 0
+        AND (@SearchKeyword IS NULL OR Title LIKE N'%' + @SearchKeyword + '%')
+        AND (
+            @IsCurrentlyShowing IS NULL 
+            OR (@IsCurrentlyShowing = 1 AND StartTime <= @Now AND (EndTime IS NULL OR EndTime >= @Now))
+            OR (@IsCurrentlyShowing = 0 AND StartTime > @Now)
+            OR (@IsCurrentlyShowing = -1 AND EndTime < @Now)
+        )
+    ORDER BY 
+        CASE 
+            WHEN @IsCurrentlyShowing = 0 THEN StartTime
+        END ASC,
+        CASE 
+            WHEN @IsCurrentlyShowing IS NULL OR @IsCurrentlyShowing IN (1, -1) THEN StartTime
+        END DESC
+    OFFSET @Offset ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END;
+GO
+
+DROP PROC sp_GetMoviesPaged
+EXEC sp_GetMoviesPaged @PageNumber = 1, @PageSize = 10, @SearchKeyword = NULL, @IsCurrentlyShowing = NULL;
 
 CREATE TRIGGER trg_Movie_Insert
 ON Movie
@@ -270,18 +336,57 @@ GO
 
 DROP TRIGGER trg_ShowTime_Insert
 
-CREATE TRIGGER trg_ShowTime_Insert
-ON ShowTime
-INSTEAD OF INSERT
+CREATE OR ALTER PROCEDURE sp_GetShowTimesPaged
+    @PageNumber INT = 1,
+    @PageSize INT = 10,
+    @BranchID VARCHAR(10) = NULL,
+    @MovieID VARCHAR(10) = NULL,
+    @RoomID VARCHAR(10) = NULL
 AS
 BEGIN
-    INSERT INTO ShowTime(ShowTimeID, StartTime, Price, MovieID, RoomID, IsDeleted)
+    SET NOCOUNT ON;
+    
+    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+    DECLARE @TotalRecords INT;
+    
+    -- Đếm tổng số record
+    SELECT @TotalRecords = COUNT(*)
+    FROM ShowTime st
+    INNER JOIN Room r ON st.RoomID = r.RoomID
+    WHERE st.IsDeleted = 0
+        AND (@BranchID IS NULL OR r.BranchID = @BranchID)
+        AND (@MovieID IS NULL OR st.MovieID = @MovieID)
+        AND (@RoomID IS NULL OR st.RoomID = @RoomID);
+    
     SELECT 
-        'ST-' + UPPER(SUBSTRING(CONVERT(VARCHAR(40), NEWID()),1,5)),
-        StartTime, Price, MovieID, RoomID, IsDeleted
-    FROM inserted;
+        st.ShowTimeID,                             
+        st.StartTime,                              
+        ISNULL(st.Price, 0) AS Price,            
+        st.MovieID,                                
+        m.Title AS MovieTitle,                     
+        st.RoomID,                                  
+        r.RoomName,                                 
+        r.BranchID,                                
+        cb.BranchName,                              
+        st.IsDeleted,                              
+        @TotalRecords AS TotalRecords,              
+        CEILING(CAST(@TotalRecords AS FLOAT) / @PageSize) AS TotalPages  
+    FROM ShowTime st
+    INNER JOIN Movie m ON st.MovieID = m.MovieID
+    INNER JOIN Room r ON st.RoomID = r.RoomID
+    INNER JOIN CinemaBranch cb ON r.BranchID = cb.BranchID
+    WHERE st.IsDeleted = 0
+        AND (@BranchID IS NULL OR r.BranchID = @BranchID)
+        AND (@MovieID IS NULL OR st.MovieID = @MovieID)
+        AND (@RoomID IS NULL OR st.RoomID = @RoomID)
+    ORDER BY st.StartTime DESC
+    OFFSET @Offset ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
 END;
 GO
+
+
+DROP PROC sp_GetShowTimesPaged
 
 CREATE TABLE Ticket (
     TicketID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),

@@ -17,10 +17,13 @@ namespace Web.Areas.Admin.Controllers
         }
 
         // GET: Admin/Movies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, string? search = null, string? filter = "all")
         {
-            var movies = await _movieService.GetAllMoviesAsync();
-            return View(movies);
+            const int pageSize = 12; // Số phim mỗi trang
+
+            var result = await _movieService.GetMoviesPagedAsync(page, pageSize, search, filter);
+
+            return View(result);
         }
 
         // GET: Admin/Movies/Details/5
