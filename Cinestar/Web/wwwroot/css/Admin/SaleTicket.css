@@ -650,7 +650,162 @@
         min-width: 40px;
         text-align: center;
     }
+/*Ghế*/
+.screen {
+    height: 100px;
+    /*    border-radius: 50% 50% 0 0 / 100% 100% 0 0;*/
+    margin: 0 auto 10px;
+    width: 100%;
+    filter: brightness(0.5);
+    /*    box-shadow: 0 3px 10px rgba(255,255,255,0.3);*/
+    /*    position: relative;*/
+}
+/*.screen::after {
+    position: absolute;
+    content: '';
+    top: 20px;
+    left: 0;
+    background: #ffd700;
+    height: 90%;
+    width: 100%;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;*/
+/*    margin: 0 auto 10px;*/
+/*box-shadow: 0 3px 10px rgba(255,255,255,0.3);
+}*/
 
+.screen-label {
+    text-align: center;
+    color: black;
+    margin-bottom: 30px;
+    font-size: 26px;
+    font-weight: 600;
+    position: absolute;
+    top: 44%;
+    left: 47%;
+}
+
+.seating-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.TitleBrand {
+    color: black;
+    /*    margin: 20px auto;*/
+
+    text-align: center;
+    font-weight: 600;
+    padding: 40px 0px;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 16px;
+}
+
+.row-label {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+td.seat {
+    width: 54px;
+    height: 35px;
+    text-align: center;
+    border-radius: 6px 6px 2px 2px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+    td.seat:hover {
+        transform: scale(1.1);
+    }
+
+td.empty {
+    background: transparent;
+    cursor: default;
+}
+
+    td.empty:hover {
+        transform: none;
+    }
+
+/* Ghế Thường - Trắng */
+td.regular {
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+/* Ghế Đôi (2 Người) - Hồng nhạt */
+td.couple {
+    background: #ffc0cb;
+    color: #333;
+    border: 1px solid #ffb3c1;
+}
+
+/* Ghế chọn - Vàng */
+td.selected {
+    background: #ffd700;
+    color: #333;
+    border: 1px solid #ffcc00;
+}
+
+/* Ghế đã đặt - Xám */
+td.booked {
+    background: #6c757d;
+    color: #fff;
+    border: 1px solid #5a6268;
+    cursor: not-allowed;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: black;
+    font-size: 14px;
+}
+
+.legend-box {
+    width: 30px;
+    height: 24px;
+    border-radius: 6px 6px 2px 2px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+    .legend-box.regular {
+        background: #ffffff;
+    }
+
+    .legend-box.couple {
+        background: #ffc0cb;
+    }
+
+    .legend-box.selected {
+        background: #ffd700;
+    }
+
+    .legend-box.booked {
+        background: #6c757d;
+    }
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .ticket-container {
