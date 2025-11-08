@@ -276,19 +276,18 @@
 
             // ✅ DYNAMIC: Lấy tất cả hàng ghế có trong database
             var allRows = seats
-            .Select(s => s.SeatName[0])  // Lấy ký tự đầu (A, B, C...)
+            .Select(s => s.SeatName[0])  
             .Distinct()
-            .OrderByDescending(r => r)   // Đảo ngược: Z->A
+            .OrderBy(r => r) 
             .ToList();
 
             // ✅ Nhóm ghế theo hàng
             var groupedSeats = seats
             .GroupBy(s => s.SeatName[0])
-            .OrderByDescending(g => g.Key)  // Đảo ngược
+            .OrderBy(g => g.Key)
             .ToList();
         }
 
-        <!-- Cột Chữ Cái Bên Trái (Dynamic) -->
         <div class="row-labels">
             @foreach (var row in allRows)
             {
@@ -296,7 +295,6 @@
             }
         </div>
 
-        <!-- Grid Ghế (Dynamic) -->
         <div class="seat-grid">
             @foreach (var rowGroup in groupedSeats)
             {

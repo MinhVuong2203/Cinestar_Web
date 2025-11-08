@@ -68,67 +68,60 @@ namespace Web.Areas.Admin.Service
             var insertStatements = new List<string>();
             int totalSeats = 0;
 
-            // GHẾ ĐÔI - A,B: 15 ghế/hàng
-            for (char row = 'A'; row <= 'B' && totalSeats < seatCount; row++)
+            // Define danh sách hàng ghế (A→P, Q, R, ... tùy thực tế, hoặc tự sinh đến đủ seatCount)
+            List<char> rowList = new List<char>();
+            for (char row = 'A'; totalSeats < seatCount && row <= 'Z'; row++)
             {
-                for (int col = 1; col <= 15 && totalSeats < seatCount; col++)
-                {
-                    string seatName = $"{row}{col:D2}";
-                    insertStatements.Add($"(N'{seatName}', N'Ghế đôi', '{roomId}', 0)");
-                    totalSeats++;
-                }
+                rowList.Add(row);
+                int seatPerRow = (row >= 'G') ? 17 : 15;
+                totalSeats += seatPerRow;
             }
 
-            // C-E: thường, 15 ghế/hàng
-            for (char row = 'C'; row <= 'E' && totalSeats < seatCount; row++)
-            {
-                for (int col = 1; col <= 15 && totalSeats < seatCount; col++)
-                {
-                    string seatName = $"{row}{col:D2}";
-                    insertStatements.Add($"(N'{seatName}', N'Ghế thường', '{roomId}', 0)");
-                    totalSeats++;
-                }
-            }
+            // Xác định 2 hàng cuối cùng làm couple
+            int rowCount = rowList.Count;
+            char coupleRow1 = rowList[^1];
+            char coupleRow2 = rowList[^2];
 
-            // F: 15 ghế, VIP từ F03-F13
-            if (totalSeats < seatCount)
+            totalSeats = 0;
+
+            for (int i = 0; i < rowCount && totalSeats < seatCount; i++)
             {
-                char row = 'F';
-                for (int col = 1; col <= 15 && totalSeats < seatCount; col++)
+                char row = rowList[i];
+                int seatPerRow = (row >= 'G') ? 17 : 15;
+
+                for (int col = 1; col <= seatPerRow && totalSeats < seatCount; col++)
                 {
-                    string seatType = (col >= 3 && col <= 13) ? "Ghế VIP" : "Ghế thường";
-                    string seatName = $"{row}{col:D2}";
+                    string seatType = "Ghế thường";
+
+                    // 2 hàng cuối (xa màn hình nhất) là couple
+                    if (row == coupleRow1 || row == coupleRow2)
+                        seatType = "Ghế đôi";
+                    // VIP: L->G col 4-14, F: col 3-13
+                    else if (row >= 'G' && row <= 'L' && col >= 4 && col <= 14)
+                        seatType = "Ghế VIP";
+                    else if (row == 'F' && col >= 3 && col <= 13)
+                        seatType = "Ghế VIP";
+
+                    var seatName = $"{row}{col:D2}";
                     insertStatements.Add($"(N'{seatName}', N'{seatType}', '{roomId}', 0)");
                     totalSeats++;
                 }
             }
 
-            // G-L: 17 ghế/hàng, VIP từ col 4-14
-            for (char row = 'G'; row <= 'L' && totalSeats < seatCount; row++)
+            // Nếu chưa đủ seatCount, thêm nữa các hàng tiếp, toàn ghế thường!
+            char nextRow = (char)(rowList.Last() + 1);
+            while (totalSeats < seatCount && nextRow <= 'Z')
             {
                 for (int col = 1; col <= 17 && totalSeats < seatCount; col++)
                 {
-                    string seatType = (col >= 4 && col <= 14) ? "Ghế VIP" : "Ghế thường";
-                    string seatName = $"{row}{col:D2}";
-                    insertStatements.Add($"(N'{seatName}', N'{seatType}', '{roomId}', 0)");
-                    totalSeats++;
-                }
-            }
-
-            // Nếu vẫn chưa đủ, sinh tiếp các hàng thường (M, N... 17 ghế/hàng)
-            char addRow = 'M';
-            while (totalSeats < seatCount && addRow <= 'Z')
-            {
-                for (int col = 1; col <= 17 && totalSeats < seatCount; col++)
-                {
-                    string seatName = $"{addRow}{col:D2}";
+                    var seatName = $"{nextRow}{col:D2}";
                     insertStatements.Add($"(N'{seatName}', N'Ghế thường', '{roomId}', 0)");
                     totalSeats++;
                 }
-                addRow++;
+                nextRow++;
             }
 
-            // Batched Insert như cũ
+            // Batched insert như cũ
             var batchSize = 100;
             for (int i = 0; i < insertStatements.Count; i += batchSize)
             {
@@ -143,6 +136,8 @@ namespace Web.Areas.Admin.Service
                 await _context.Database.ExecuteSqlRawAsync(sql);
             }
         }
+
+
 
 
 
