@@ -311,14 +311,14 @@ CREATE TABLE Seat (
 );
 GO
 
-CREATE TRIGGER trg_Seat_Insert
+CREATE OR ALTER TRIGGER trg_Seat_Insert
 ON Seat
 INSTEAD OF INSERT
 AS
 BEGIN
     INSERT INTO Seat(SeatID, SeatName, SeatType, RoomID, IsDeleted)
     SELECT 
-        'ST-' + UPPER(SUBSTRING(CONVERT(VARCHAR(40), NEWID()),1,6)),
+        'ST-' + UPPER(SUBSTRING(CONVERT(VARCHAR(40), NEWID()),1,7)),
         SeatName, SeatType, RoomID, IsDeleted
     FROM inserted;
 END;
@@ -671,13 +671,14 @@ BEGIN
             WHEN s.SeatType = N'Ghế Couple' THEN 2*i.Price + 20000
             ELSE i.Price
         END,
-        'Available'  -- Trạng thái ban đầu
+        N'Trống'  -- Trạng thái ban đầu
     FROM inserted i
     JOIN Seat s ON s.RoomID = i.RoomID
     WHERE s.IsDeleted = 0;
 END;
 GO
 
+UPATE 
 
 CREATE OR ALTER TRIGGER trg_UpdateTicketPrice
 ON ShowTime
@@ -691,7 +692,7 @@ BEGIN
         SET Price =
             CASE 
                 WHEN s.SeatType = N'Ghế VIP' THEN i.Price + 20000
-                WHEN s.SeatType = N'Ghế Couple' THEN 2*i.Price + 20000
+                WHEN s.SeatType = N'Ghế đôi' THEN 2*i.Price + 20000
                 ELSE i.Price
             END
         FROM Ticket t

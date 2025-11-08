@@ -121,5 +121,22 @@ namespace Web.Service
             }
         }
 
+        public async Task<Object> GetSeatingLayoutAsync(string showTimeId)
+        {
+            var tickets = await _context.Tickets
+                .Include(t => t.Seat)
+                .Where(t => t.ShowTimeID == showTimeId && !t.IsDeleted)
+                .Select(t => new
+                {
+                    seatName = t.Seat.SeatName,
+                    seatType = t.Seat.SeatType,
+                    status = t.Status
+                }).OrderBy(t => t.seatName).ToListAsync();
+            return tickets;
+        }
+
+
+
+
     }
 }

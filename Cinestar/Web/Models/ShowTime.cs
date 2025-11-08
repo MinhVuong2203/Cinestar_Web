@@ -43,3 +43,5 @@ public partial class ShowTime
     [InverseProperty("ShowTime")]
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }
+
+

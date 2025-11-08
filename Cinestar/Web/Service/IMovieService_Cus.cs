@@ -12,5 +12,6 @@ namespace Web.Service
 
         // Lấy danh sách giờ chiếu của phim theo movieId và date
         List<string> GetMovieShowTimes(string movieId, string date);
+        public Task<Object> GetSeatingLayoutAsync(string showTimeId);
     }
 }
