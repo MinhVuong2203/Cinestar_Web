@@ -8,9 +8,11 @@ namespace Web.Areas.Admin.Controllers
     public class EmployeeSaleController : Controller
     {
         private readonly IEmployeeService _employeeService;
-        public EmployeeSaleController(IEmployeeService employeeService)
+        private readonly IProductService _productService;
+        public EmployeeSaleController(IEmployeeService employeeService, IProductService productService)
         {
             _employeeService = employeeService;
+            _productService = productService;
         }
         public async Task<IActionResult> Index()
         {
@@ -124,6 +126,10 @@ namespace Web.Areas.Admin.Controllers
             
             var ticketTypes = _employeeService.GetTicketTypesAndPrices(movieId, employee.BranchID);
             ViewData["TicketTypes"] = ticketTypes;
+
+            //lấy danh sách sản phẩm
+            var lstProducts = _productService.GetAllProduct();
+            ViewData["lstProducts"] = lstProducts;
 
             return View(employee);
         }

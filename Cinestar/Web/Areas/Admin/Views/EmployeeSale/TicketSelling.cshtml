@@ -3,7 +3,8 @@
     ViewData["Title"] = "Bán vé";
     var movieId = ViewData["MovieId"] as string;
     var showTimes = ViewData["ShowTimes"] as IEnumerable<dynamic>;
-	var ticketTypes = ViewData["TicketTypes"] as dynamic;
+    var ticketTypes = ViewData["TicketTypes"] as dynamic;
+    var lstProducts = ViewData["lstProducts"] as List<Product>;
 }
 @section Styles {
     <link href="~/css/Admin/SaleTicket.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
@@ -191,70 +192,46 @@
             <div class="step-number">4</div>
             <h3 class="step-title">Chọn bắp nước (Tùy chọn)</h3>
         </div>
-        <div class="combo-item" data-combo="combo1" data-price="70000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-box"></i> Combo 1</h5>
-                    <p class="text-muted mb-0">1 Bắp lớn + 1 Nước lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">70.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo1', -1)">-</button>
-                        <span class="quantity-value" id="combo-combo1">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo1', 1)">+</button>
+
+        @if (lstProducts != null && lstProducts.Any())
+        {
+            foreach (var product in lstProducts)
+            {
+                <div class="combo-item"
+                     data-combo-id="@product.ProductID"
+                     data-combo-name="@product.ProductName"
+                     data-combo-type="@product.ProductType"
+                     data-price="@product.Price">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="product-info">
+                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl" alt="@product.ProductName" class="product-image" />
+                            }
+                            <div>
+                                <h5><i class="fas fa-box"></i> @product.ProductName</h5>
+                                <p class="text-muted mb-0">@product.ProductType</p>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <h4 class="text-primary mb-0">@product.Price?.ToString("N0") ₫</h4>
+                            <div class="quantity-control mt-2">
+                                <button class="quantity-btn" onclick="changeComboQuantity('@product.ProductID', -1)">-</button>
+                                <span class="quantity-value" id="combo-@product.ProductID">0</span>
+                                <button class="quantity-btn" onclick="changeComboQuantity('@product.ProductID', 1)">+</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i>
+                Hiện tại không có sản phẩm nào.
             </div>
-        </div>
-        <div class="combo-item" data-combo="combo2" data-price="120000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-box"></i> Combo 2</h5>
-                    <p class="text-muted mb-0">2 Bắp lớn + 2 Nước lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">120.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo2', -1)">-</button>
-                        <span class="quantity-value" id="combo-combo2">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('combo2', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="combo-item" data-combo="popcorn" data-price="45000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-popcorn"></i> Bắp rang</h5>
-                    <p class="text-muted mb-0">1 Bắp lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">45.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('popcorn', -1)">-</button>
-                        <span class="quantity-value" id="combo-popcorn">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('popcorn', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="combo-item" data-combo="drink" data-price="30000">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="fas fa-glass-water"></i> Nước ngọt</h5>
-                    <p class="text-muted mb-0">1 Nước lớn</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">30.000 ₫</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeComboQuantity('drink', -1)">-</button>
-                        <span class="quantity-value" id="combo-drink">0</span>
-                        <button class="quantity-btn" onclick="changeComboQuantity('drink', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 
     <!-- Tổng kết đơn hàng -->

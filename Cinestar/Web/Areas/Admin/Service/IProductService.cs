@@ -14,5 +14,8 @@ namespace Web.Areas.Admin.Service
         Task<bool> RestoreProductAsync(string productId);
         Task<bool> ProductExistsAsync(string productId);
         Task<bool> IsProductInUseAsync(string productId);
+
+        //lấy danh sách loại sản phẩm
+        List<Product> GetAllProduct();
     }
 }

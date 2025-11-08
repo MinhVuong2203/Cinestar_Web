@@ -163,6 +163,22 @@ function changeComboQuantity(combo, delta) {
     updateSummary();
 }
 
+// Combo quantity (cập nhật để hỗ trợ dynamic product IDs)
+function changeComboQuantity(productId, delta) {
+    if (!bookingData.combos[productId]) {
+        bookingData.combos[productId] = 0;
+    }
+
+    bookingData.combos[productId] = Math.max(0, bookingData.combos[productId] + delta);
+
+    const comboElement = document.getElementById(`combo-${productId}`);
+    if (comboElement) {
+        comboElement.textContent = bookingData.combos[productId];
+    }
+
+    updateSummary();
+}
+
 // Update summary
 function updateSummary() {
     const summaryBox = document.getElementById('summaryBox');
@@ -190,22 +206,35 @@ function updateSummary() {
     }
     if (summaryTickets) summaryTickets.textContent = ticketsSummary.join(', ') || '-';
 
-    // Combos summary
+    // Combos summary - CẬP NHẬT
     const combosSummary = [];
-    if (bookingData.combos.combo1 > 0) combosSummary.push(`Combo 1 x${bookingData.combos.combo1}`);
-    if (bookingData.combos.combo2 > 0) combosSummary.push(`Combo 2 x${bookingData.combos.combo2}`);
-    if (bookingData.combos.popcorn > 0) combosSummary.push(`Bắp x${bookingData.combos.popcorn}`);
-    if (bookingData.combos.drink > 0) combosSummary.push(`Nước x${bookingData.combos.drink}`);
+    for (let productId in bookingData.combos) {
+        if (bookingData.combos[productId] > 0) {
+            const comboItem = document.querySelector(`[data-combo-id="${productId}"]`);
+            if (comboItem) {
+                const comboName = comboItem.dataset.comboName;
+                const quantity = bookingData.combos[productId];
+                combosSummary.push(`${comboName} x${quantity}`);
+            }
+        }
+    }
     if (summaryCombos) summaryCombos.textContent = combosSummary.join(', ') || 'Không có';
 
-    // Calculate total
+    // Calculate total - CẬP NHẬT
     let total = 0;
     for (let type in bookingData.tickets) {
         total += bookingData.tickets[type] * (ticketPrices[type] || 0);
     }
-    for (let combo in bookingData.combos) {
-        total += bookingData.combos[combo] * (comboPrices[combo] || 0);
+
+    // Tính tổng combo từ data attributes
+    for (let productId in bookingData.combos) {
+        const comboItem = document.querySelector(`[data-combo-id="${productId}"]`);
+        if (comboItem && bookingData.combos[productId] > 0) {
+            const price = parseFloat(comboItem.dataset.price || '0');
+            total += bookingData.combos[productId] * price;
+        }
     }
+
     if (summaryTotal) summaryTotal.textContent = formatPrice(total);
 }
 

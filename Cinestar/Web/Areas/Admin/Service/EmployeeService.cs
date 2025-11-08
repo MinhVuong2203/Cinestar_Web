@@ -190,7 +190,7 @@ namespace Web.Areas.Admin.Service
                     .Include(t => t.Seat)
                     .Where(t => showTimeIds.Contains(t.ShowTimeID) &&
                                 !t.IsDeleted &&
-                                t.Status == "Available" &&
+                                t.Status == "Trống" &&
                                 t.Seat != null &&
                                 !t.Seat.IsDeleted)
                     .GroupBy(t => t.Seat.SeatType)
@@ -307,7 +307,7 @@ namespace Web.Areas.Admin.Service
                         AvailableSeats = _context.Tickets.Count(t => 
                            t.ShowTimeID == st.ShowTimeID && 
                                 !t.IsDeleted && 
-                                t.Status == "Available")
+                                t.Status == "Trống")
                     })
                     .ToList();
 

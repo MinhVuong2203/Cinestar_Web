@@ -201,6 +201,11 @@ namespace Web.Areas.Admin.Service
                     File.Delete(filePath);
                 }
             }
+            //lấy danh sách loại sản phẩm
+            public List<Product> GetAllProduct()
+            {
+                return _context.Products.Where(p => !p.IsDeleted).ToList();
+            }
         }
-    
+
 }
