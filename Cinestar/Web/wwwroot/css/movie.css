@@ -304,8 +304,6 @@
 
 .TitleBrand{
     color: #fff;
-/*    margin: 20px auto;*/
-
     text-align: center;
     font-weight: 600;
     padding: 40px 0px;
@@ -364,11 +362,19 @@ td.couple {
     border: 1px solid #ffb3c1;
 }
 
-/* Ghế chọn - Vàng */
+/* Ghế VIP - màu vàng gold */
+td.seat.vip {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    font-weight: bold;
+}
+
+/* Ghế chọn - Hồng đạm */
 td.selected {
-    background: #ffd700;
+    background: #e805e0 !important;
     color: #333;
-    border: 1px solid #ffcc00;
+    border: 1px solid #e805e0;
+
 }
 
 /* Ghế đã đặt - Xám */
@@ -412,7 +418,7 @@ td.booked {
     }
 
     .legend-box.selected {
-        background: #ffd700;
+        background: #e805e0;
     }
 
     .legend-box.booked {

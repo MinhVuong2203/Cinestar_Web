@@ -105,6 +105,7 @@ namespace Web.Controllers
             return Json(showTimes);
         }
 
+
         // API: Lấy thông tin giá vé theo suất chiếu
         [HttpGet]
         public IActionResult GetTicketPrices(string showTimeId)
@@ -112,5 +113,14 @@ namespace Web.Controllers
             var ticketPrices = _showTimeService.GetTicketPricesByShowTime(showTimeId);
             return Json(ticketPrices);
         }
+
+
+        // 
+        public async Task<IActionResult> GetSeatingLayout(string showTimeId)
+        {
+            var seats = await _movieService_Cus.GetSeatingLayoutAsync(showTimeId);
+            return Json(seats);
+        }
+
     }
 }
