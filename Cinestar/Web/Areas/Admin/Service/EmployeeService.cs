@@ -151,63 +151,118 @@ namespace Web.Areas.Admin.Service
             return movies;
         }
 
-        // Lấy thông tin loại vé và giá của phim tại chi nhánh
+        // Lấy thông tin loại vé, số lượng vé available và giá của phim tại chi nhánh
         public dynamic GetTicketTypesAndPrices(string movieId, string branchId)
         {
             try
             {
                 if (string.IsNullOrEmpty(movieId) || string.IsNullOrEmpty(branchId))
+                {
+                    Console.WriteLine("ERROR: MovieId or BranchId is null/empty");
                     return null;
+                }
 
-                // Debug: Log thông tin đầu vào
-                Console.WriteLine($"Getting ticket types for MovieId: {movieId}, BranchId: {branchId}");
+                Console.WriteLine($"=== GetTicketTypesAndPrices ===");
+                Console.WriteLine($"MovieId: {movieId}, BranchId: {branchId}");
 
-                // Lấy giá cơ bản từ ShowTime của phim tại chi nhánh
-                var basePrice = _context.ShowTimes
-                    .Include(st => st.Room)  // Include Room để đảm bảo có thể truy cập Room.BranchID
+                // Lấy danh sách suất chiếu của phim tại chi nhánh (từ hôm nay trở đi)
+                var showTimeIds = _context.ShowTimes
+                    .Include(st => st.Room)
                     .Where(st => st.MovieID == movieId &&
                                !st.IsDeleted &&
                                st.Room != null &&
                                !st.Room.IsDeleted &&
-                               st.Room.BranchID == branchId)
-                    .Select(st => st.Price)
-                    .FirstOrDefault();
+                               st.Room.BranchID == branchId &&
+                               st.StartTime.Date == DateTime.Today)
+                    .Select(st => st.ShowTimeID)
+                    .ToList();
 
-                // Debug: Log base price
-                Console.WriteLine($"Base price found: {basePrice}");
-
-                // Nếu không tìm thấy, thử với giá mặc định dựa trên cấu hình rạp
-                if (basePrice == null || basePrice == 0)
+                if (!showTimeIds.Any())
                 {
-                    // Kiểm tra xem phim có tồn tại không
-                    var movieExists = _context.Movies.Any(m => m.MovieID == movieId && !m.IsDeleted);
-                    var branchExists = _context.CinemaBranches.Any(b => b.BranchID == branchId && !b.IsDeleted);
-
-                    Console.WriteLine($"Movie exists: {movieExists}, Branch exists: {branchExists}");
-
-                    if (!movieExists || !branchExists)
-                        return null;
-
-                    // Sử dụng giá mặc định
-                    basePrice = 80000;
-                    Console.WriteLine($"Using default price: {basePrice}");
+                    Console.WriteLine("WARNING: No showtimes found for this movie at this branch");
+                    return null;
                 }
 
-                // Tạo danh sách loại vé với giá tương ứng
-                var ticketTypes = new
+                Console.WriteLine($"Found {showTimeIds.Count} showtimes");
+
+                // Đếm số lượng vé available theo từng loại ghế (SeatType)
+                var ticketStats = _context.Tickets
+                    .Include(t => t.Seat)
+                    .Where(t => showTimeIds.Contains(t.ShowTimeID) &&
+                                !t.IsDeleted &&
+                                t.Status == "Available" &&
+                                t.Seat != null &&
+                                !t.Seat.IsDeleted)
+                    .GroupBy(t => t.Seat.SeatType)
+                    .Select(g => new
+                    {
+                        SeatType = g.Key,
+                        AvailableCount = g.Count(),
+                        Price = g.Min(t => t.Price ?? 0)  // ✅ THAY ĐỔI: Dùng Min thay vì Average
+                    })
+                    .ToList();
+
+                Console.WriteLine($"Ticket statistics: {Newtonsoft.Json.JsonConvert.SerializeObject(ticketStats)}");
+
+                // Nếu không có vé available nào
+                if (!ticketStats.Any())
                 {
-                    Standard = new { Name = "Vé thường", Description = "Ghế thường", Price = basePrice, Icon = "fas fa-ticket-alt" },
-                    VIP = new { Name = "Vé VIP", Description = "Ghế VIP cao cấp", Price = basePrice + 20000, Icon = "fas fa-crown" },
-                    Couple = new { Name = "Vé đôi", Description = "Ghế đôi couple", Price = (basePrice * 2) + 20000, Icon = "fas fa-heart" }
+                    Console.WriteLine("WARNING: No available tickets found");
+                    return null;
+                }
+
+                // Tạo response object với thông tin chi tiết
+                var standardTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế thường");
+                var vipTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế VIP");
+                var coupleTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế Couple");
+
+                var result = new
+                {
+                    Standard = standardTicket != null
+                        ? new
+                        {
+                            Name = "Vé thường",
+                            Description = "Ghế thường",
+                            Price = (decimal)standardTicket.Price,
+                            AvailableCount = standardTicket.AvailableCount,
+                            Icon = "fas fa-ticket-alt"
+                        }
+                        : null,
+                    VIP = vipTicket != null
+                        ? new
+                        {
+                            Name = "Vé VIP",
+                            Description = "Ghế VIP cao cấp",
+                            Price = (decimal)vipTicket.Price,
+                            AvailableCount = vipTicket.AvailableCount,
+                            Icon = "fas fa-crown"
+                        }
+                        : null,
+                    Couple = coupleTicket != null
+                        ? new
+                        {
+                            Name = "Vé đôi",
+                            Description = "Ghế đôi couple",
+                            Price = (decimal)coupleTicket.Price,
+                            AvailableCount = coupleTicket.AvailableCount,
+                            Icon = "fas fa-heart"
+                        }
+                        : null
                 };
 
-                Console.WriteLine($"Returning ticket types: {Newtonsoft.Json.JsonConvert.SerializeObject(ticketTypes)}");
+                Console.WriteLine($"Final result: {Newtonsoft.Json.JsonConvert.SerializeObject(result)}");
 
-                return ticketTypes;
+                return result;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetTicketTypesAndPrices: {ex.Message}");
+                Console.WriteLine($"EXCEPTION in GetTicketTypesAndPrices:");
+                Console.WriteLine($"  Message: {ex.Message}");
+                Console.WriteLine($"  StackTrace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"  InnerException: {ex.InnerException.Message}");
+                }
                 return null;
             }
         }

@@ -121,125 +121,12 @@ namespace Web.Areas.Admin.Controllers
 
             var showTime = _employeeService.GetShowTimesByMovieAndDate(movieId, employee.BranchID, DateTime.Today);
             ViewData["ShowTimes"] = showTime;
+            
+            var ticketTypes = _employeeService.GetTicketTypesAndPrices(movieId, employee.BranchID);
+            ViewData["TicketTypes"] = ticketTypes;
 
             return View(employee);
         }
 
-        //lấy loại vé và giá theo phim
-        [HttpGet]
-        public async Task<JsonResult> GetTicketTypes(string movieId)
-        {
-            try
-            {
-                var employeeIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (string.IsNullOrEmpty(employeeIdClaim) || !Guid.TryParse(employeeIdClaim, out Guid employeeId))
-                {
-                    return Json(new { success = false, message = "Không tìm thấy thông tin nhân viên!" });
-                }
-
-                var employee = await _employeeService.GetEmployeeById(employeeId);
-                if (employee == null)
-                {
-                    return Json(new { success = false, message = "Nhân viên không tồn tại!" });
-                }
-
-                var ticketTypes = _employeeService.GetTicketTypesAndPrices(movieId, employee.BranchID);
-
-                if (ticketTypes == null)
-                {
-                    return Json(new { success = false, message = "Không tìm thấy thông tin vé cho phim này!" });
-                }
-
-                return Json(new { success = true, data = ticketTypes });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
-            }
-        }
-
-        //Lấy danh sách suất chiếu theo movieId và ngày - FIXED VERSION
-        [HttpGet]
-        public async Task<JsonResult> GetShowTimes([FromQuery] string movieId, [FromQuery] string date)
-        {
-            try
-            {
-                //var movieId = Request.Query["movieId"].ToString();
-                //var date = Request.Query["date"].ToString();
-
-                Console.WriteLine($"=== GetShowTimes Called ===");
-                Console.WriteLine($"MovieId: '{movieId}'");
-                Console.WriteLine($"Date: '{date}'");
-                Console.WriteLine($"Full URL: {Request.Path}{Request.QueryString}");
-
-
-                // 1. Validate parameters
-                if (string.IsNullOrEmpty(movieId))
-                {
-                    Console.WriteLine("ERROR: MovieId is null or empty!");
-                    return Json(new { success = false, message = "MovieId không được để trống!" });
-                }
-
-                if (string.IsNullOrEmpty(date))
-                {
-                    Console.WriteLine("ERROR: Date is null or empty!");
-                    return Json(new { success = false, message = "Ngày không được để trống!" });
-                }
-
-                // 2. Validate Employee
-                var employeeIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(employeeIdClaim) || !Guid.TryParse(employeeIdClaim, out Guid employeeId))
-                {
-                    return Json(new { success = false, message = "Không tìm thấy thông tin nhân viên!" });
-                }
-
-                var employee = await _employeeService.GetEmployeeById(employeeId);
-                if (employee == null)
-                {
-                    return Json(new { success = false, message = "Nhân viên không tồn tại!" });
-                }
-
-                Console.WriteLine($"Employee BranchID: '{employee.BranchID}'");
-
-                // 3. Parse date
-                if (!DateTime.TryParse(date, out DateTime selectedDate))
-                {
-                    Console.WriteLine($"ERROR: Failed to parse date '{date}'");
-                    return Json(new { success = false, message = "Định dạng ngày không hợp lệ!" });
-                }
-
-                Console.WriteLine($"Parsed date: {selectedDate:yyyy-MM-dd}");
-
-                // 4. Get showtimes
-                Console.WriteLine($"Calling GetShowTimesByMovieAndDate('{movieId}', '{employee.BranchID}', '{selectedDate:yyyy-MM-dd}')");
-
-                var showTimes = _employeeService.GetShowTimesByMovieAndDate(movieId, employee.BranchID, selectedDate);
-
-                if (showTimes == null)
-                {
-                    Console.WriteLine("WARNING: Service returned null");
-                    return Json(new { success = true, data = new List<object>() });
-                }
-
-                var showTimesList = showTimes.ToList();
-                Console.WriteLine($"Found {showTimesList.Count} showtimes");
-
-                // Log chi tiết từng showtime để debug
-                foreach (var st in showTimesList)
-                {
-                    Console.WriteLine($"  - ShowTimeID: {st.ShowTimeID}, StartTime: {st.StartTime}, Room: {st.RoomName}");
-                }
-
-                return Json(new { success = true, data = showTimesList });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"EXCEPTION in GetShowTimes:");
-                Console.WriteLine($"Message: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
-                return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
-            }
-        }
     }
 }

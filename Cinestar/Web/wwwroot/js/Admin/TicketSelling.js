@@ -1,179 +1,154 @@
-﻿// Verify movieId is defined from inline script OR data-attribute
+﻿// Verify movieId is defined from inline script
 let movieIdFromScript = typeof movieId !== 'undefined' ? movieId : null;
-let movieIdFromElement = null;
 
 console.log('=== Initialization ===');
 console.log('movieId from inline script:', movieIdFromScript);
 
 const bookingData = {
-    movieId: null, // Will be set below
+    movieId: movieIdFromScript,
     showTime: null,
-    tickets: { standard: 0, vip: 0, couple: 0 },
+    tickets: {},
     date: null,
     time: null,
     roomName: null,
     combos: { combo1: 0, combo2: 0, popcorn: 0, drink: 0 }
 };
 
-let ticketPrices = { standard: 80000, vip: 120000, couple: 200000 };
+let ticketPrices = {};
 const comboPrices = { combo1: 70000, combo2: 120000, popcorn: 45000, drink: 30000 };
 
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing...');
+    
+    // Initialize ticket types from server-rendered data
+    initializeTicketTypes();
+    
+    // Setup time slot selection
+    setupTimeSlotSelection();
+});
 
-// Helper function to show error messages
-function showError(containerId, message) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle"></i>
-                ${message}
-            </div>
-        `;
-    }
-}
-
-
-
-// Function to load ticket types dynamically
-async function loadTicketTypes(movieId) {
-    const ticketOptionsContainer = document.getElementById('ticketOptions');
-
-    if (!ticketOptionsContainer) {
-        console.error('ticketOptions container not found');
-        return;
-    }
-
-    if (!movieId) {
-        console.error('Cannot load ticket types: movieId is missing');
-        showError('ticketOptions', 'Không tìm thấy thông tin phim!');
-        return;
-    }
-
-    // Show loading
-    ticketOptionsContainer.innerHTML = `
-        <div class="loading-message text-center py-4">
-            <i class="fas fa-spinner fa-spin fa-2x"></i>
-            <p class="mt-2">Đang tải thông tin vé...</p>
-        </div>
-    `;
-
-    try {
-        console.log(`Loading ticket types for movieId: ${movieId}`);
-        const response = await fetch(`/Admin/EmployeeSale/GetTicketTypes?movieId=${encodeURIComponent(movieId)}`);
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+// Initialize ticket types and prices from server data
+function initializeTicketTypes() {
+    const ticketContents = document.querySelectorAll('#ticketOptions .content');
+    
+    ticketContents.forEach(content => {
+        const ticketType = content.dataset.ticketType;
+        const price = parseFloat(content.dataset.price);
+        const available = parseInt(content.dataset.available || '0');
+        
+        if (ticketType && !isNaN(price)) {
+            ticketPrices[ticketType] = price;
+            bookingData.tickets[ticketType] = 0;
+            
+            console.log(`Initialized ${ticketType}: price=${price}, available=${available}`);
         }
+    });
+    
+    console.log('Ticket prices:', ticketPrices);
+    
+    // Setup ticket quantity controls
+    setupTicketQuantityControls();
+}
 
-        const result = await response.json();
-        console.log('Ticket types result:', result);
-
-        if (result.success) {
-            const ticketTypes = result.data;
-
-            // Update ticket prices
-            ticketPrices = {
-                standard: ticketTypes.Standard.Price,
-                vip: ticketTypes.VIP.Price,
-                couple: ticketTypes.Couple.Price
-            };
-
-            console.log('Updated ticket prices:', ticketPrices);
-
-            // Generate ticket options HTML
-            generateTicketOptionsHTML(ticketTypes);
-        } else {
-            console.error('API Error:', result.message);
-            ticketOptionsContainer.innerHTML = `
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    ${result.message}
-                </div>
-            `;
+// Setup ticket quantity controls
+function setupTicketQuantityControls() {
+    const ticketContents = document.querySelectorAll('#ticketOptions .content');
+    
+    ticketContents.forEach(content => {
+        const decreaseBtn = content.querySelector('.decrease');
+        const increaseBtn = content.querySelector('.increase');
+        const quantitySpan = content.querySelector('.quantity');
+        const ticketType = content.dataset.ticketType;
+        const maxAvailable = parseInt(content.dataset.available || '999');
+        
+        if (decreaseBtn && increaseBtn && quantitySpan && ticketType) {
+            decreaseBtn.addEventListener('click', () => {
+                changeQuantity(ticketType, -1, quantitySpan, decreaseBtn, increaseBtn, maxAvailable);
+            });
+            
+            increaseBtn.addEventListener('click', () => {
+                changeQuantity(ticketType, 1, quantitySpan, decreaseBtn, increaseBtn, maxAvailable);
+            });
         }
-    } catch (error) {
-        console.error('Error loading ticket types:', error);
-        ticketOptionsContainer.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle"></i>
-                Có lỗi xảy ra khi tải thông tin vé
-            </div>
-        `;
+    });
+}
+
+// Setup time slot selection
+function setupTimeSlotSelection() {
+    const timeSlots = document.querySelectorAll('.time-slot');
+    
+    timeSlots.forEach(slot => {
+        slot.addEventListener('click', function() {
+            // Remove selected class from all slots
+            timeSlots.forEach(s => s.classList.remove('selected'));
+            
+            // Add selected class to clicked slot
+            this.classList.add('selected');
+            
+            // Get showtime data
+            const showTimeId = this.dataset.showtimeId;
+            const time = this.dataset.time;
+            const room = this.dataset.room;
+            const date = this.dataset.date || new Date().toISOString().split('T')[0];
+            
+            // Update booking data
+            bookingData.showTime = showTimeId;
+            bookingData.time = time;
+            bookingData.roomName = room;
+            bookingData.date = date;
+            
+            console.log('Selected showtime:', { showTimeId, time, room, date });
+            
+            // Show step 3 (ticket selection)
+            showStep3();
+            
+            // Update summary
+            updateSummary();
+        });
+    });
+}
+
+// Show step 3
+function showStep3() {
+    const step3 = document.getElementById('step3');
+    if (step3) {
+        step3.classList.remove('hidden');
+        
+        // Scroll to step 3 smoothly
+        setTimeout(() => {
+            step3.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
     }
-}
-
-// Function to generate ticket options HTML
-function generateTicketOptionsHTML(ticketTypes) {
-    const ticketOptionsContainer = document.getElementById('ticketOptions');
-
-    ticketOptionsContainer.innerHTML = `
-        <div class="ticket-option" data-type="standard" data-price="${ticketTypes.Standard.Price}">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="${ticketTypes.Standard.Icon}"></i> ${ticketTypes.Standard.Name}</h5>
-                    <p class="text-muted mb-0">${ticketTypes.Standard.Description}</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">${formatPrice(ticketTypes.Standard.Price)}</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeQuantity('standard', -1)">-</button>
-                        <span class="quantity-value" id="qty-standard">0</span>
-                        <button class="quantity-btn" onclick="changeQuantity('standard', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ticket-option" data-type="vip" data-price="${ticketTypes.VIP.Price}">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="${ticketTypes.VIP.Icon}"></i> ${ticketTypes.VIP.Name}</h5>
-                    <p class="text-muted mb-0">${ticketTypes.VIP.Description}</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">${formatPrice(ticketTypes.VIP.Price)}</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeQuantity('vip', -1)">-</button>
-                        <span class="quantity-value" id="qty-vip">0</span>
-                        <button class="quantity-btn" onclick="changeQuantity('vip', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ticket-option" data-type="couple" data-price="${ticketTypes.Couple.Price}">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5><i class="${ticketTypes.Couple.Icon}"></i> ${ticketTypes.Couple.Name}</h5>
-                    <p class="text-muted mb-0">${ticketTypes.Couple.Description}</p>
-                </div>
-                <div class="text-end">
-                    <h4 class="text-primary mb-0">${formatPrice(ticketTypes.Couple.Price)}</h4>
-                    <div class="quantity-control mt-2">
-                        <button class="quantity-btn" onclick="changeQuantity('couple', -1)">-</button>
-                        <span class="quantity-value" id="qty-couple">0</span>
-                        <button class="quantity-btn" onclick="changeQuantity('couple', 1)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// Format price function
-function formatPrice(price) {
-    return new Intl.NumberFormat('vi-VN').format(price) + ' ₫';
 }
 
 // Ticket quantity
-function changeQuantity(type, delta) {
-    bookingData.tickets[type] = Math.max(0, bookingData.tickets[type] + delta);
-    const qtyElement = document.getElementById(`qty-${type}`);
-    if (qtyElement) {
-        qtyElement.textContent = bookingData.tickets[type];
+function changeQuantity(type, delta, quantityElement, decreaseBtn, increaseBtn, maxAvailable) {
+    if (!bookingData.tickets.hasOwnProperty(type)) {
+        bookingData.tickets[type] = 0;
+    }
+    
+    const newQuantity = Math.max(0, Math.min(bookingData.tickets[type] + delta, maxAvailable));
+    bookingData.tickets[type] = newQuantity;
+    
+    if (quantityElement) {
+        quantityElement.textContent = newQuantity;
+    }
+    
+    // Update button states
+    if (decreaseBtn) {
+        decreaseBtn.disabled = newQuantity <= 0;
+    }
+    if (increaseBtn) {
+        increaseBtn.disabled = newQuantity >= maxAvailable;
     }
 
     const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
     if (totalTickets > 0) {
-        document.getElementById('step4').classList.remove('hidden');
+        const step4 = document.getElementById('step4');
+        if (step4) {
+            step4.classList.remove('hidden');
+        }
     }
     updateSummary();
 }
@@ -198,7 +173,7 @@ function updateSummary() {
     const summaryTotal = document.getElementById('summary-total');
 
     if (summaryBox) summaryBox.classList.remove('hidden');
-    if (summaryMovie) summaryMovie.textContent = bookingData.movieId;
+    if (summaryMovie) summaryMovie.textContent = bookingData.movieId || '-';
 
     if (bookingData.date && bookingData.time && summaryDateTime) {
         const dateStr = new Date(bookingData.date).toLocaleDateString('vi-VN');
@@ -207,9 +182,12 @@ function updateSummary() {
 
     // Tickets summary
     const ticketsSummary = [];
-    if (bookingData.tickets.standard > 0) ticketsSummary.push(`Thường x${bookingData.tickets.standard}`);
-    if (bookingData.tickets.vip > 0) ticketsSummary.push(`VIP x${bookingData.tickets.vip}`);
-    if (bookingData.tickets.couple > 0) ticketsSummary.push(`Đôi x${bookingData.tickets.couple}`);
+    for (let type in bookingData.tickets) {
+        if (bookingData.tickets[type] > 0) {
+            const typeName = type === 'standard' ? 'Thường' : type === 'vip' ? 'VIP' : 'Đôi';
+            ticketsSummary.push(`${typeName} x${bookingData.tickets[type]}`);
+        }
+    }
     if (summaryTickets) summaryTickets.textContent = ticketsSummary.join(', ') || '-';
 
     // Combos summary
@@ -229,6 +207,11 @@ function updateSummary() {
         total += bookingData.combos[combo] * (comboPrices[combo] || 0);
     }
     if (summaryTotal) summaryTotal.textContent = formatPrice(total);
+}
+
+// Format price function
+function formatPrice(price) {
+    return new Intl.NumberFormat('vi-VN').format(price) + ' ₫';
 }
 
 function confirmBooking() {

@@ -3,6 +3,7 @@
     ViewData["Title"] = "Bán vé";
     var movieId = ViewData["MovieId"] as string;
     var showTimes = ViewData["ShowTimes"] as IEnumerable<dynamic>;
+	var ticketTypes = ViewData["TicketTypes"] as dynamic;
 }
 @section Styles {
     <link href="~/css/Admin/SaleTicket.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
@@ -63,6 +64,7 @@
         </div>
     </div>
 
+
     <!-- Bước 3: Chọn loại vé -->
     <div class="step-card hidden" id="step3">
         <div class="step-header">
@@ -70,10 +72,116 @@
             <h3 class="step-title">Chọn loại vé</h3>
         </div>
         <div id="ticketOptions">
-            <div class="loading-message text-center py-4">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
-                <p class="mt-2">Đang tải thông tin vé...</p>
-            </div>
+            @if (ticketTypes != null)
+            {
+                <div class="ticket-wr">
+                    <h2 class="heading">CHỌN LOẠI VÉ</h2>
+                    <div class="ticket-container">
+                        @* Vé Thường *@
+                        @if (ticketTypes.Standard != null)
+                        {
+                            <div class="content"
+                                 data-ticket-type="standard"
+                                 data-price="@ticketTypes.Standard.Price"
+                                 data-available="@ticketTypes.Standard.AvailableCount">
+                                <div class="content-top">
+                                    <p class="name">
+                                        <i class="@ticketTypes.Standard.Icon"></i>
+                                        @ticketTypes.Standard.Name
+                                    </p>
+                                    <div class="desc">
+                                        <p>@ticketTypes.Standard.Description</p>
+                                        <p class="text-muted small">Còn lại: @ticketTypes.Standard.AvailableCount vé</p>
+                                    </div>
+                                    <div class="price">
+                                        <p>@ticketTypes.Standard.Price.ToString("N0") VNĐ</p>
+                                    </div>
+                                </div>
+                                <div class="content-bottom">
+                                    <div class="count">
+                                        <div class="count-btn">
+                                            <button class="decrease">-</button>
+                                            <span class="quantity">0</span>
+                                            <button class="increase">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @* Vé VIP *@
+                        @if (ticketTypes.VIP != null)
+                        {
+                            <div class="content"
+                                 data-ticket-type="vip"
+                                 data-price="@ticketTypes.VIP.Price"
+                                 data-available="@ticketTypes.VIP.AvailableCount">
+                                <div class="content-top">
+                                    <p class="name">
+                                        <i class="@ticketTypes.VIP.Icon"></i>
+                                        @ticketTypes.VIP.Name
+                                    </p>
+                                    <div class="desc">
+                                        <p>@ticketTypes.VIP.Description</p>
+                                        <p class="text-muted small">Còn lại: @ticketTypes.VIP.AvailableCount vé</p>
+                                    </div>
+                                    <div class="price">
+                                        <p>@ticketTypes.VIP.Price.ToString("N0") VNĐ</p>
+                                    </div>
+                                </div>
+                                <div class="content-bottom">
+                                    <div class="count">
+                                        <div class="count-btn">
+                                            <button class="decrease">-</button>
+                                            <span class="quantity">0</span>
+                                            <button class="increase">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @* Vé Đôi *@
+                        @if (ticketTypes.Couple != null)
+                        {
+                            <div class="content"
+                                 data-ticket-type="couple"
+                                 data-price="@ticketTypes.Couple.Price"
+                                 data-available="@ticketTypes.Couple.AvailableCount">
+                                <div class="content-top">
+                                    <p class="name">
+                                        <i class="@ticketTypes.Couple.Icon"></i>
+                                        @ticketTypes.Couple.Name
+                                    </p>
+                                    <div class="desc">
+                                        <p>@ticketTypes.Couple.Description</p>
+                                        <p class="text-muted small">Còn lại: @ticketTypes.Couple.AvailableCount vé</p>
+                                    </div>
+                                    <div class="price">
+                                        <p>@ticketTypes.Couple.Price.ToString("N0") VNĐ</p>
+                                    </div>
+                                </div>
+                                <div class="content-bottom">
+                                    <div class="count">
+                                        <div class="count-btn">
+                                            <button class="decrease">-</button>
+                                            <span class="quantity">0</span>
+                                            <button class="increase">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Không có thông tin loại vé. Vui lòng liên hệ quản trị viên.
+                </div>
+            }
         </div>
     </div>
 
