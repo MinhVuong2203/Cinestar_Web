@@ -39,6 +39,9 @@
                     <select class="showtime-form-control" asp-items="ViewBag.Branches" id="branchSelect">
                         <option value="">-- Chọn Chi Nhánh --</option>
                     </select>
+                    <small class="showtime-form-text" id="branchHoursInfo" style="display:none; color: #B30C15; font-weight: 600;">
+                        <i class="fas fa-clock"></i> Giờ mở cửa: <span id="branchHours"></span>
+                    </small>
                 </div>
             </div>
 
@@ -61,14 +64,16 @@
             <div class="showtime-form-row">
                 <div class="showtime-form-group">
                     <label asp-for="StartTime" class="showtime-control-label">Giờ Bắt Đầu</label>
-                    <input asp-for="StartTime" class="showtime-form-control" type="datetime-local" id="startTime" />
+                    <input asp-for="StartTime" class="showtime-form-control" type="datetime-local" id="startTime" step="1" lang="en-GB" />
                     <span asp-validation-for="StartTime" class="text-danger"></span>
+                    <span class="text-danger" id="startTimeError" style="display:none;"></span>
                 </div>
 
                 <div class="showtime-form-group">
                     <label class="showtime-control-label">Giờ Kết Thúc (Dự Kiến)</label>
                     <input type="text" class="showtime-form-control showtime-readonly" id="endTime" readonly />
                     <small class="showtime-form-text">Tự động tính dựa trên thời lượng phim</small>
+                    <span class="text-danger" id="endTimeError" style="display:none;"></span>
                 </div>
             </div>
 
@@ -132,13 +137,30 @@
             let movieDuration = 0;
             let currentRoomId = '';
             let currentDate = '';
+            let branchOpenHour = '';
+            let branchCloseHour = '';
+            let currentBranchId = '';
 
-            // Load rooms khi chọn chi nhánh
+            // Force 24-hour format for datetime-local input
+            const startTimeInput = document.getElementById('startTime');
+            if (startTimeInput) {
+                // Set lang attribute to force 24-hour format
+                startTimeInput.setAttribute('lang', 'en-GB');
+
+                // Additional enforcement
+                startTimeInput.addEventListener('focus', function() {
+                    this.setAttribute('lang', 'en-GB');
+                });
+            }
+
+            // Load rooms và giờ mở cửa khi chọn chi nhánh
             $('#branchSelect').change(function() {
                 const branchId = $(this).val();
                 const roomSelect = $('#roomSelect');
+                currentBranchId = branchId;
 
                 if (branchId) {
+                    // Load rooms
                     $.get('@Url.Action("GetRoomsByBranch", "ShowTime")', { branchId: branchId }, function(data) {
                         roomSelect.empty();
                         roomSelect.append('<option value="">-- Chọn Phòng --</option>');
@@ -147,10 +169,28 @@
                         });
                         roomSelect.prop('disabled', false);
                     });
+
+                    // Load giờ mở cửa
+                    $.get('@Url.Action("GetBranchHours", "ShowTime")', { branchId: branchId }, function(data) {
+                        if (data.success) {
+                            branchOpenHour = data.openHour;
+                            branchCloseHour = data.closeHour;
+                            $('#branchHours').text(branchOpenHour + ' - ' + branchCloseHour);
+                            $('#branchHoursInfo').show();
+
+                            // Validate lại thời gian nếu đã chọn
+                            if ($('#startTime').val()) {
+                                validateBranchHours();
+                            }
+                        }
+                    });
                 } else {
                     roomSelect.empty();
                     roomSelect.append('<option value="">-- Chọn Chi Nhánh Trước --</option>');
                     roomSelect.prop('disabled', true);
+                    $('#branchHoursInfo').hide();
+                    branchOpenHour = '';
+                    branchCloseHour = '';
                     hideTimeline();
                 }
             });
@@ -178,11 +218,140 @@
             });
 
             // Khi thay đổi giờ bắt đầu
-            $('#startTime').change(function() {
+            $('#startTime').on('change input blur', function() {
+                validateStartTime();
                 calculateEndTime();
+                validateBranchHours();
                 loadTimeline();
                 checkConflict();
             });
+
+            function validateStartTime() {
+                const startTime = $('#startTime').val();
+
+                if (!startTime) {
+                    $('#startTimeError').hide();
+                    return true;
+                }
+
+                const selectedTime = new Date(startTime);
+                const now = new Date();
+
+                // So sánh với thời gian hiện tại
+                if (selectedTime <= now) {
+                    $('#startTimeError')
+                        .text('Giờ bắt đầu phải lớn hơn giờ hiện tại!')
+                        .css('display', 'block')
+                        .css('color', '#dc3545')
+                        .css('font-weight', '500')
+                        .css('margin-top', '5px');
+                    $('#submitBtn').prop('disabled', true);
+                    return false;
+                } else {
+                    // Chỉ ẩn error của thời gian quá khứ, không ảnh hưởng đến error giờ mở cửa
+                    const currentError = $('#startTimeError').text();
+                    if (currentError.includes('giờ hiện tại')) {
+                        $('#startTimeError').hide();
+                    }
+
+                    // Kiểm tra nếu không có lỗi khác thì enable button
+                    if ($('#startTimeError:visible').length === 0 &&
+                        $('#endTimeError:visible').length === 0 &&
+                        !$('#conflictWarning').hasClass('show')) {
+                        $('#submitBtn').prop('disabled', false);
+                    }
+                    return true;
+                }
+            }
+
+            function validateBranchHours() {
+                const startTime = $('#startTime').val();
+
+                if (!startTime || !branchOpenHour || !branchCloseHour) {
+                    return true;
+                }
+
+                // Validate thời gian quá khứ trước
+                const isValidTime = validateStartTime();
+                if (!isValidTime) {
+                    return false;
+                }
+
+                const start = new Date(startTime);
+                const startHour = start.getHours();
+                const startMinute = start.getMinutes();
+                const startTimeStr = String(startHour).padStart(2, '0') + ':' + String(startMinute).padStart(2, '0');
+
+                // Parse giờ mở cửa và thêm 15 phút
+                const [openH, openM] = branchOpenHour.split(':').map(Number);
+                let minStartMinutes = openH * 60 + openM + 15; // Thêm 15 phút buffer
+                const minStartHour = Math.floor(minStartMinutes / 60);
+                const minStartMinute = minStartMinutes % 60;
+                const minStartTimeStr = String(minStartHour).padStart(2, '0') + ':' + String(minStartMinute).padStart(2, '0');
+
+                // Parse giờ đóng cửa
+                const [closeH, closeM] = branchCloseHour.split(':').map(Number);
+
+                // Convert to minutes for comparison
+                const startMinutes = startHour * 60 + startMinute;
+                const closeMinutes = closeH * 60 + closeM;
+
+                let isValid = true;
+                let errorMsg = '';
+
+                // Kiểm tra giờ bắt đầu
+                if (startMinutes < minStartMinutes) {
+                    isValid = false;
+                    errorMsg = `Giờ bắt đầu phải từ ${minStartTimeStr} trở đi (giờ mở cửa + 15 phút)`;
+                    $('#startTimeError')
+                        .text(errorMsg)
+                        .css('display', 'block')
+                        .css('color', '#dc3545')
+                        .css('font-weight', '500')
+                        .css('margin-top', '5px');
+                } else {
+                    // Chỉ ẩn nếu không có lỗi thời gian quá khứ
+                    const currentError = $('#startTimeError').text();
+                    if (!currentError.includes('giờ hiện tại')) {
+                        $('#startTimeError').hide();
+                    }
+                }
+
+                // Kiểm tra giờ kết thúc
+                if (movieDuration > 0) {
+                    const endMinutes = startMinutes + movieDuration;
+                    const endHour = Math.floor(endMinutes / 60);
+                    const endMinute = endMinutes % 60;
+
+                    if (endMinutes > closeMinutes) {
+                        isValid = false;
+                        const endTimeStr = String(endHour).padStart(2, '0') + ':' + String(endMinute).padStart(2, '0');
+                        errorMsg = `Giờ kết thúc (${endTimeStr}) vượt quá giờ đóng cửa (${branchCloseHour})`;
+                        $('#endTimeError')
+                            .text(errorMsg)
+                            .css('display', 'block')
+                            .css('color', '#dc3545')
+                            .css('font-weight', '500')
+                            .css('margin-top', '5px');
+                    } else {
+                        $('#endTimeError').hide();
+                    }
+                }
+
+                // Disable/enable submit button
+                if (!isValid) {
+                    $('#submitBtn').prop('disabled', true);
+                } else {
+                    // Chỉ enable khi không có lỗi nào
+                    if ($('#startTimeError:visible').length === 0 &&
+                        $('#endTimeError:visible').length === 0 &&
+                        !$('#conflictWarning').hasClass('show')) {
+                        $('#submitBtn').prop('disabled', false);
+                    }
+                }
+
+                return isValid;
+            }
 
             function calculateEndTime() {
                 const startTime = $('#startTime').val();
@@ -191,20 +360,28 @@
                     const start = new Date(startTime);
                     const end = new Date(start.getTime() + movieDuration * 60000);
 
+                    // Format với AM/PM (SA/CH)
                     const day = String(end.getDate()).padStart(2, '0');
                     const month = String(end.getMonth() + 1).padStart(2, '0');
                     const year = end.getFullYear();
                     let hours = end.getHours();
                     const minutes = String(end.getMinutes()).padStart(2, '0');
-                    const period = hours >= 12 ? 'CH' : 'SA';
 
-                    hours = hours % 12;
-                    hours = hours ? hours : 12;
+                    // Convert to 12-hour format with SA/CH
+                    const period = hours >= 12 ? 'CH' : 'SA';
+                    if (hours > 12) {
+                        hours = hours - 12;
+                    } else if (hours === 0) {
+                        hours = 12;
+                    }
                     hours = String(hours).padStart(2, '0');
 
                     const formattedEnd = `${day}/${month}/${year} ${hours}:${minutes} ${period}`;
 
                     $('#endTime').val(formattedEnd);
+
+                    // Validate giờ sau khi tính
+                    validateBranchHours();
                 } else {
                     $('#endTime').val('');
                 }
@@ -246,7 +423,7 @@
 
                 for (let hour = 0; hour < 24; hour++) {
                     const hourDiv = $('<div class="timeline-hour"></div>');
-                    const label = $('<span class="timeline-hour-label"></span>').text(hour + ':00');
+                    const label = $('<span class="timeline-hour-label"></span>').text(String(hour).padStart(2, '0') + ':00');
                     hourDiv.append(label);
                     grid.append(hourDiv);
                 }
@@ -308,6 +485,12 @@
                 const startTime = $('#startTime').val();
 
                 if (!roomId || !startTime || movieDuration === 0) {
+                    $('#conflictWarning').removeClass('show');
+                    return;
+                }
+
+                // Kiểm tra thời gian quá khứ trước
+                if (!validateStartTime()) {
                     return;
                 }
 
@@ -321,7 +504,11 @@
                         $('#submitBtn').prop('disabled', true);
                     } else {
                         $('#conflictWarning').removeClass('show');
-                        $('#submitBtn').prop('disabled', false);
+                        // Chỉ enable nếu không có lỗi khác
+                        if ($('#startTimeError:visible').length === 0 &&
+                            $('#endTimeError:visible').length === 0) {
+                            $('#submitBtn').prop('disabled', false);
+                        }
                     }
                 });
             }
@@ -339,6 +526,23 @@
                 const dayNames = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
                 return dayNames[date.getDay()] + ', ' + day + '/' + month + '/' + year;
             }
+
+            // Validate form khi submit
+            $('#showtimeForm').submit(function(e) {
+                // Kiểm tra thời gian quá khứ
+                if (!validateStartTime()) {
+                    e.preventDefault();
+                    alert('Giờ bắt đầu phải lớn hơn hoặc bằng giờ hiện tại!');
+                    return false;
+                }
+
+                // Kiểm tra giờ hoạt động chi nhánh
+                if (!validateBranchHours()) {
+                    e.preventDefault();
+                    alert('Vui lòng kiểm tra lại giờ chiếu phải nằm trong khung giờ hoạt động của chi nhánh!');
+                    return false;
+                }
+            });
         });
     </script>
 }

@@ -363,14 +363,15 @@ BEGIN
         st.StartTime,                              
         ISNULL(st.Price, 0) AS Price,            
         st.MovieID,                                
-        m.Title AS MovieTitle,                     
+        m.Title AS MovieTitle,
+        ISNULL(m.DurationMinutes, 0) AS DurationMinutes,
         st.RoomID,                                  
         r.RoomName,                                 
         r.BranchID,                                
         cb.BranchName,                              
         st.IsDeleted,                              
         @TotalRecords AS TotalRecords,              
-        CEILING(CAST(@TotalRecords AS FLOAT) / @PageSize) AS TotalPages  
+        CAST(CEILING(CAST(@TotalRecords AS FLOAT) / @PageSize) AS INT) AS TotalPages  
     FROM ShowTime st
     INNER JOIN Movie m ON st.MovieID = m.MovieID
     INNER JOIN Room r ON st.RoomID = r.RoomID

@@ -15,10 +15,27 @@ namespace Web.Areas.Admin.Controllers
             _service = service;
         }
 
-        public async Task<IActionResult> Index()
+        // UPDATED: Index with pagination
+        public async Task<IActionResult> Index(
+            int pageNumber = 1,
+            int pageSize = 10,
+            string? branchId = null,
+            string? movieId = null,
+            string? roomId = null)
         {
-            var data = await _service.GetAllAsync();
-            return View(data);
+            var pagedResult = await _service.GetShowTimesPagedAsync(pageNumber, pageSize, branchId, movieId, roomId);
+
+            // Load filter dropdowns
+            ViewBag.Movies = new SelectList(await _service.GetAllMoviesAsync(), "MovieID", "Title", movieId);
+            ViewBag.Branches = new SelectList(await _service.GetAllBranchesAsync(), "BranchID", "BranchName", branchId);
+
+            // Pass filter values to view
+            ViewBag.CurrentBranchId = branchId;
+            ViewBag.CurrentMovieId = movieId;
+            ViewBag.CurrentRoomId = roomId;
+            ViewBag.CurrentPageSize = pageSize;
+
+            return View(pagedResult);
         }
 
         public async Task<IActionResult> Details(string id)
@@ -42,9 +59,15 @@ namespace Web.Areas.Admin.Controllers
             System.Diagnostics.Debug.WriteLine($"ShowTimeID: '{model.ShowTimeID}'");
             System.Diagnostics.Debug.WriteLine($"MovieID: '{model.MovieID}'");
             System.Diagnostics.Debug.WriteLine($"RoomID: '{model.RoomID}'");
-            System.Diagnostics.Debug.WriteLine($"StartTime: {model.StartTime}");
+            System.Diagnostics.Debug.WriteLine($"StartTime: {model.StartTime:yyyy-MM-dd HH:mm:ss}");
             System.Diagnostics.Debug.WriteLine($"Price: {model.Price}");
             System.Diagnostics.Debug.WriteLine($"IsDeleted: {model.IsDeleted}");
+
+            // Validate: Giờ bắt đầu phải >= giờ hiện tại
+            if (model.StartTime < DateTime.Now)
+            {
+                ModelState.AddModelError("StartTime", "Giờ bắt đầu phải lớn hơn hoặc bằng giờ hiện tại!");
+            }
 
             model.IsDeleted = false;
 
@@ -109,6 +132,12 @@ namespace Web.Areas.Admin.Controllers
         {
             if (id != model.ShowTimeID) return BadRequest();
 
+            // Validate: Giờ bắt đầu phải >= giờ hiện tại
+            if (model.StartTime <= DateTime.Now)
+            {
+                ModelState.AddModelError("StartTime", "Giờ bắt đầu phải lớn hơn giờ hiện tại!");
+            }
+
             ModelState.Remove("Movie");
             ModelState.Remove("Room");
             ModelState.Remove("Tickets");
@@ -164,6 +193,21 @@ namespace Web.Areas.Admin.Controllers
         {
             var movie = await _service.GetMovieByIdAsync(movieId);
             return Json(new { duration = movie?.DurationMinutes ?? 0 });
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetBranchHours(string branchId)
+        {
+            var branch = await _service.GetBranchByIdAsync(branchId);
+            if (branch == null)
+                return Json(new { success = false });
+
+            return Json(new
+            {
+                success = true,
+                openHour = branch.OpenHour.ToString("HH:mm"),
+                closeHour = branch.CloseHour.ToString("HH:mm")
+            });
         }
 
         [HttpGet]

@@ -1,10 +1,9 @@
-﻿﻿
-@model List<Web.Models.ShowTime>
+﻿@model Web.Areas.Admin.Service.PagedResult<Web.Areas.Admin.Service.ShowTimeDto>
 
 @{
     ViewData["Title"] = "Quản Lý Suất Chiếu";
 }
-@section Styles{
+@section Styles {
     <link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
 }
 
@@ -28,6 +27,62 @@
         </div>
     }
 
+    <!-- Filter Section -->
+    <div class="filter-section" style="margin-bottom: 20px; padding: 20px; background: #fff; border-radius: 8px;">
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-md-3">
+                    <label>Chi Nhánh</label>
+                    <select name="branchId" class="form-control" id="filterBranch">
+                        <option value="">-- Tất cả chi nhánh --</option>
+                        @foreach (var item in ViewBag.Branches as SelectList)
+                        {
+                            <option value="@item.Value" selected="@(item.Value == ViewBag.CurrentBranchId)">@item.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Phim</label>
+                    <select name="movieId" class="form-control">
+                        <option value="">-- Tất cả phim --</option>
+                        @foreach (var item in ViewBag.Movies as SelectList)
+                        {
+                            <option value="@item.Value" selected="@(item.Value == ViewBag.CurrentMovieId)">@item.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Số dòng/trang</label>
+                    <select name="pageSize" class="form-control">
+                        <option value="10" selected="@(ViewBag.CurrentPageSize == 10)">10</option>
+                        <option value="20" selected="@(ViewBag.CurrentPageSize == 20)">20</option>
+                        <option value="50" selected="@(ViewBag.CurrentPageSize == 50)">50</option>
+                        <option value="100" selected="@(ViewBag.CurrentPageSize == 100)">100</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-primary" style="display: block; width: 100%;">
+                        <i class="fas fa-filter"></i> Lọc
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <label>&nbsp;</label>
+                    <a asp-action="Index" class="btn btn-secondary" style="display: block; width: 100%;">
+                        <i class="fas fa-redo"></i> Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Info Bar -->
+    <div style="margin-bottom: 15px;">
+        <i class="fas fa-info-circle"></i>
+        Hiển thị <strong>@Model.Items.Count</strong> trong tổng số <strong>@Model.TotalRecords</strong> suất chiếu
+        | Trang <strong>@Model.CurrentPage</strong> / <strong>@Model.TotalPages</strong>
+    </div>
+
     <!-- Table -->
     <div class="table-container">
         <table class="data-table">
@@ -45,60 +100,167 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @if (Model.Items.Any())
                 {
-                    var endTime = item.StartTime.AddMinutes(item.Movie.DurationMinutes ?? 0);
-                    <tr class="@(item.IsDeleted ? "row-deleted" : "")">
-                        <td>@item.ShowTimeID</td>
-                        <td>@item.Movie.Title</td>
-                        <td>@item.Room.Branch?.BranchName</td>
-                        <td>@item.Room.RoomName</td>
-                        <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@endTime.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@(item.Price?.ToString("N0")) VNĐ</td>
-                        <td>
-                            @if (item.IsDeleted)
-                            {
-                                <span class="badge badge-deleted">Đã Xóa</span>
-                            }
-                            else if (item.StartTime < DateTime.Now)
-                            {
-                                <span class="badge badge-inactive">Đã Chiếu</span>
-                            }
-                            else
-                            {
-                                <span class="badge badge-active">Sắp Chiếu</span>
-                            }
-                        </td>
-                        <td>
-                            <div class="action-btns">
-                                <a asp-action="Details" asp-route-id="@item.ShowTimeID" class="btn-action btn-info" title="Chi tiết">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @if (!item.IsDeleted)
+                    @foreach (var item in Model.Items)
+                    {
+                        var endTime = item.StartTime.AddMinutes(item.DurationMinutes);
+                        <tr class="@(item.IsDeleted ? "row-deleted" : "")">
+                            <td>@item.ShowTimeID</td>
+                            <td>@item.MovieTitle</td>
+                            <td>@item.BranchName</td>
+                            <td>@item.RoomName</td>
+                            <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@endTime.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@item.Price.ToString("N0") VNĐ</td>
+                            <td>
+                                @if (item.IsDeleted)
                                 {
-                                    <a asp-action="Edit" asp-route-id="@item.ShowTimeID" class="btn-action btn-warning" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.ShowTimeID" class="btn-action btn-danger" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                    <span class="badge badge-deleted">Đã Xóa</span>
+                                }
+                                else if (item.StartTime < DateTime.Now)
+                                {
+                                    <span class="badge badge-inactive">Đã Chiếu</span>
                                 }
                                 else
                                 {
-                                    <form asp-action="Restore" method="post" style="display:inline;">
-                                        <input type="hidden" name="id" value="@item.ShowTimeID" />
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn-action btn-success" title="Khôi phục">
-                                            <i class="fas fa-undo"></i>
-                                        </button>
-                                    </form>
+                                    <span class="badge badge-active">Sắp Chiếu</span>
                                 }
-                            </div>
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    <a asp-action="Details" asp-route-id="@item.ShowTimeID" class="btn-action btn-info" title="Chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    @if (!item.IsDeleted)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.ShowTimeID" class="btn-action btn-warning" title="Sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.ShowTimeID" class="btn-action btn-danger" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Restore" method="post" style="display:inline;">
+                                            <input type="hidden" name="id" value="@item.ShowTimeID" />
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-action btn-success" title="Khôi phục">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 30px; color: #999;">
+                            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+                            Không có dữ liệu
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="pagination-container" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 5px;">
+            @{
+                var currentPage = Model.CurrentPage;
+                var totalPages = Model.TotalPages;
+                var pageSize = ViewBag.CurrentPageSize ?? 10;
+                var branchId = ViewBag.CurrentBranchId;
+                var movieId = ViewBag.CurrentMovieId;
+                var roomId = ViewBag.CurrentRoomId;
+            }
+
+            <!-- First Page -->
+            @if (Model.HasPreviousPage)
+            {
+                <a asp-action="Index"
+                   asp-route-pageNumber="1"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-branchId="@branchId"
+                   asp-route-movieId="@movieId"
+                   asp-route-roomId="@roomId"
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(currentPage - 1)"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-branchId="@branchId"
+                   asp-route-movieId="@movieId"
+                   asp-route-roomId="@roomId"
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            }
+
+            <!-- Page Numbers -->
+            @{
+                var startPage = Math.Max(1, currentPage - 2);
+                var endPage = Math.Min(totalPages, currentPage + 2);
+
+                if (startPage > 1)
+                {
+                    <span class="btn btn-sm disabled">...</span>
+                }
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    if (i == currentPage)
+                    {
+                        <span class="btn btn-sm btn-primary">@i</span>
+                    }
+                    else
+                    {
+                        <a asp-action="Index"
+                           asp-route-pageNumber="@i"
+                           asp-route-pageSize="@pageSize"
+                           asp-route-branchId="@branchId"
+                           asp-route-movieId="@movieId"
+                           asp-route-roomId="@roomId"
+                           class="btn btn-sm btn-outline-primary">@i</a>
+                    }
+                }
+
+                if (endPage < totalPages)
+                {
+                    <span class="btn btn-sm disabled">...</span>
+                }
+            }
+
+            <!-- Last Page -->
+            @if (Model.HasNextPage)
+            {
+                <a asp-action="Index"
+                   asp-route-pageNumber="@(currentPage + 1)"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-branchId="@branchId"
+                   asp-route-movieId="@movieId"
+                   asp-route-roomId="@roomId"
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+                <a asp-action="Index"
+                   asp-route-pageNumber="@totalPages"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-branchId="@branchId"
+                   asp-route-movieId="@movieId"
+                   asp-route-roomId="@roomId"
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+            }
+        </div>
+    }
 </div>

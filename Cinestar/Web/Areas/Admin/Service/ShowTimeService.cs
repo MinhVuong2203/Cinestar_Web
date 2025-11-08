@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using Web.Data;
 using Web.Models;
 
@@ -11,6 +12,45 @@ namespace Web.Areas.Admin.Service
         public ShowTimeService(CineStarContext db)
         {
             _db = db;
+        }
+
+        // NEW: Pagination method using stored procedure
+        public async Task<PagedResult<ShowTimeDto>> GetShowTimesPagedAsync(
+            int pageNumber = 1,
+            int pageSize = 10,
+            string? branchId = null,
+            string? movieId = null,
+            string? roomId = null)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("@PageNumber", pageNumber),
+                new SqlParameter("@PageSize", pageSize),
+                new SqlParameter("@BranchID", (object?)branchId ?? DBNull.Value),
+                new SqlParameter("@MovieID", (object?)movieId ?? DBNull.Value),
+                new SqlParameter("@RoomID", (object?)roomId ?? DBNull.Value)
+            };
+
+            var result = await _db.Database
+                .SqlQueryRaw<ShowTimeDto>(
+                    "EXEC sp_GetShowTimesPaged @PageNumber, @PageSize, @BranchID, @MovieID, @RoomID",
+                    parameters)
+                .ToListAsync();
+
+            var pagedResult = new PagedResult<ShowTimeDto>
+            {
+                Items = result,
+                CurrentPage = pageNumber,
+                PageSize = pageSize
+            };
+
+            if (result.Any())
+            {
+                pagedResult.TotalRecords = result.First().TotalRecords;
+                pagedResult.TotalPages = result.First().TotalPages;
+            }
+
+            return pagedResult;
         }
 
         public async Task<List<ShowTime>> GetAllAsync()
@@ -129,6 +169,9 @@ namespace Web.Areas.Admin.Service
 
         public async Task<Movie?> GetMovieByIdAsync(string movieId)
             => await _db.Movies.FindAsync(movieId);
+
+        public async Task<CinemaBranch?> GetBranchByIdAsync(string branchId)
+            => await _db.CinemaBranches.FindAsync(branchId);
 
         public async Task<List<ShowTime>> GetShowTimesByRoomAndDateAsync(string roomId, DateTime date)
         {
