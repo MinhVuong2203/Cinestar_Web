@@ -323,5 +323,47 @@ namespace Web.Areas.Admin.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckCustomerByPhone(string phone)
+        {
+            try
+            {
+                var customer = await _context.Customers
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Phone == phone && !c.IsDeleted);
+
+                if (customer == null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Không tìm thấy khách hàng với số điện thoại này"
+                    });
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    customer = new
+                    {
+                        customerId = customer.CustomerID,
+                        fullName = customer.FullName,
+                        email = customer.Email,
+                        phone = customer.Phone,
+                        point = customer.Point ?? 0,
+                        vipLevel = customer.VipLevel ?? 0
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Có lỗi xảy ra: " + ex.Message
+                });
+            }
+        }
     }
 }

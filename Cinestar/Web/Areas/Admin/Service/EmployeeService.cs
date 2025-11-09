@@ -222,7 +222,9 @@ namespace Web.Areas.Admin.Service
                     {
                         SeatType = g.Key,
                         AvailableCount = g.Count(),
-                        Price = g.Min(t => t.Price ?? 0)
+                        //Price = g.Min(t => t.Price ?? 0)
+                        Price = showTime.Price ?? 0
+
                     })
                     .ToList();
 
@@ -237,6 +239,10 @@ namespace Web.Areas.Admin.Service
                 var vipTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế VIP");
                 var coupleTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế Couple" || t.SeatType == "Ghế đôi");
 
+                decimal basePrice = showTime.Price ?? 0;
+                decimal vipPrice = basePrice * 1.2m; // VIP đắt hơn 20%
+                decimal couplePrice = basePrice * 2m; // Couple = 2 ghế
+
                 var result = new
                 {
                     Standard = standardTicket != null
@@ -244,7 +250,7 @@ namespace Web.Areas.Admin.Service
                         {
                             Name = "Vé thường",
                             Description = "Ghế thường",
-                            Price = (decimal)standardTicket.Price,
+                            Price = basePrice,
                             AvailableCount = standardTicket.AvailableCount,
                             Icon = "fas fa-ticket-alt"
                         }
@@ -254,7 +260,7 @@ namespace Web.Areas.Admin.Service
                         {
                             Name = "Vé VIP",
                             Description = "Ghế VIP cao cấp",
-                            Price = (decimal)vipTicket.Price,
+                            Price = vipPrice,
                             AvailableCount = vipTicket.AvailableCount,
                             Icon = "fas fa-crown"
                         }
@@ -264,7 +270,7 @@ namespace Web.Areas.Admin.Service
                         {
                             Name = "Vé đôi",
                             Description = "Ghế đôi couple",
-                            Price = (decimal)coupleTicket.Price,
+                            Price = couplePrice,
                             AvailableCount = coupleTicket.AvailableCount,
                             Icon = "fas fa-heart"
                         }

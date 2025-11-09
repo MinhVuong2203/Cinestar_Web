@@ -14,19 +14,232 @@ const bookingData = {
     time: null,
     roomName: null,
     roomType: null,
-    combos: {}
+    combos: {},
+    // ✅ Customer info
+    customerPhone: null,
+    customerId: null,
+    customerName: null,
+    isGuest: true
 };
 
 let ticketPrices = {};
 let selectedSeats = [];
+let customerData = null;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM loaded, initializing...');
-    initializeTicketTypes();
-    setupTimeSlotSelection();
-    // Không gọi setupSeatSelection ở đây vì ghế sẽ được load động
+
+    // ✅ Đợi DOM render xong rồi mới setup
+    setTimeout(() => {
+        setupCustomerInput();
+        initializeTicketTypes();
+        setupTimeSlotSelection();
+        console.log('✅ All handlers initialized');
+    }, 100);
 });
+
+// ✅ Setup customer input handlers
+function setupCustomerInput() {
+    const customerPhone = document.getElementById('customerPhone');
+    const checkCustomerBtn = document.getElementById('checkCustomerBtn');
+    const skipCustomerBtn = document.getElementById('skipCustomerBtn');
+
+    console.log('Setting up customer input...');
+    console.log('customerPhone element:', customerPhone);
+    console.log('checkCustomerBtn element:', checkCustomerBtn);
+    console.log('skipCustomerBtn element:', skipCustomerBtn);
+
+    // Kiểm tra khách hàng
+    if (checkCustomerBtn) {
+        checkCustomerBtn.addEventListener('click', function () {
+            const phone = customerPhone.value.trim();
+
+            if (!phone) {
+                alert('Vui lòng nhập số điện thoại!');
+                return;
+            }
+
+            // Validate phone number
+            const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
+            if (!phoneRegex.test(phone)) {
+                alert('Số điện thoại không hợp lệ! (VD: 0912345678)');
+                return;
+            }
+
+            checkCustomerBtn.disabled = true;
+            checkCustomerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...';
+
+            console.log('Checking customer with phone:', phone);
+
+            // Call API to check customer
+            fetch(`/Admin/EmployeeSale/CheckCustomerByPhone?phone=${phone}`)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API Response:', data);
+
+                    if (data.success) {
+                        // Customer found
+                        customerData = data.customer;
+                        bookingData.customerId = data.customer.customerId;
+                        bookingData.customerPhone = phone;
+                        bookingData.customerName = data.customer.fullName;
+                        bookingData.isGuest = false;
+
+                        console.log('Customer found:', data.customer);
+                        displayCustomerInfo(data.customer);
+                        showStep2();
+                    } else {
+                        // Customer not found
+                        console.log('Customer not found');
+                        if (confirm('Không tìm thấy khách hàng. Tiếp tục với khách vãng lai?')) {
+                            proceedAsGuest();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking customer:', error);
+                    alert('Có lỗi xảy ra khi kiểm tra khách hàng. Vui lòng thử lại.');
+                })
+                .finally(() => {
+                    checkCustomerBtn.disabled = false;
+                    checkCustomerBtn.innerHTML = '<i class="fas fa-search"></i> Kiểm tra';
+                });
+        });
+    } else {
+        console.error('❌ checkCustomerBtn not found!');
+    }
+
+    // Skip customer - proceed as guest
+    if (skipCustomerBtn) {
+        skipCustomerBtn.addEventListener('click', function () {
+            console.log('Skip customer - proceed as guest');
+            proceedAsGuest();
+        });
+    } else {
+        console.error('❌ skipCustomerBtn not found!');
+    }
+
+    // Enter key to check
+    if (customerPhone) {
+        customerPhone.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkCustomerBtn.click();
+            }
+        });
+    } else {
+        console.error('❌ customerPhone input not found!');
+    }
+
+    console.log('✅ Customer input setup completed');
+}
+
+// ✅ Display customer info - KIỂM TRA KỸ TỪNG ELEMENT
+function displayCustomerInfo(customer) {
+    console.log('=== displayCustomerInfo called ===');
+    console.log('Customer data:', customer);
+
+    // ✅ Kiểm tra từng element
+    const nameEl = document.getElementById('displayCustomerName');
+    const emailEl = document.getElementById('displayCustomerEmail');
+    const pointEl = document.getElementById('displayCustomerPoint');
+    const vipEl = document.getElementById('displayCustomerVip');
+    const infoDisplay = document.getElementById('customerInfoDisplay');
+    const guestDisplay = document.getElementById('guestCustomerDisplay');
+
+    console.log('Elements check:');
+    console.log('- nameEl:', nameEl);
+    console.log('- emailEl:', emailEl);
+    console.log('- pointEl:', pointEl);
+    console.log('- vipEl:', vipEl);
+    console.log('- infoDisplay:', infoDisplay);
+    console.log('- guestDisplay:', guestDisplay);
+
+    if (!nameEl || !emailEl || !pointEl || !vipEl) {
+        console.error('❌ Không tìm thấy các element customer info!');
+        console.error('Missing elements:', {
+            name: !nameEl,
+            email: !emailEl,
+            point: !pointEl,
+            vip: !vipEl
+        });
+
+        alert('Có lỗi xảy ra khi hiển thị thông tin khách hàng. Vui lòng tải lại trang.');
+        return;
+    }
+
+    // Set values
+    nameEl.textContent = customer.fullName || '-';
+    emailEl.textContent = customer.email || '-';
+    pointEl.textContent = customer.point || 0;
+
+    const vipLevel = customer.vipLevel || 0;
+    vipEl.textContent = `VIP ${vipLevel}`;
+    vipEl.className = `badge ${vipLevel > 0 ? 'bg-warning' : 'bg-secondary'}`;
+
+    if (infoDisplay) {
+        infoDisplay.style.display = 'block';
+        console.log('✅ Customer info displayed');
+    }
+    if (guestDisplay) {
+        guestDisplay.style.display = 'none';
+    }
+
+    // Update summary
+    const summaryCustomer = document.getElementById('summary-customer');
+    if (summaryCustomer) {
+        summaryCustomer.textContent = customer.fullName;
+        console.log('✅ Summary updated with customer name');
+    }
+
+    console.log('✅ displayCustomerInfo completed successfully');
+}
+
+// ✅ Proceed as guest
+function proceedAsGuest() {
+    console.log('=== proceedAsGuest called ===');
+
+    bookingData.isGuest = true;
+    bookingData.customerId = null;
+    bookingData.customerPhone = null;
+    bookingData.customerName = 'Khách vãng lai';
+
+    const infoDisplay = document.getElementById('customerInfoDisplay');
+    const guestDisplay = document.getElementById('guestCustomerDisplay');
+    const summaryCustomer = document.getElementById('summary-customer');
+
+    if (infoDisplay) infoDisplay.style.display = 'none';
+    if (guestDisplay) {
+        guestDisplay.style.display = 'block';
+        console.log('✅ Guest display shown');
+    }
+    if (summaryCustomer) {
+        summaryCustomer.textContent = 'Khách vãng lai';
+        console.log('✅ Summary updated for guest');
+    }
+
+    showStep2();
+    console.log('✅ proceedAsGuest completed');
+}
+
+// ✅ Show step 2
+function showStep2() {
+    console.log('=== showStep2 called ===');
+    const step2 = document.getElementById('step2');
+    if (step2) {
+        step2.classList.remove('hidden');
+        console.log('✅ Step 2 shown');
+        setTimeout(() => {
+            step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    } else {
+        console.error('❌ step2 element not found!');
+    }
+}
 
 // Initialize ticket types and prices from server data
 function initializeTicketTypes() {
@@ -96,32 +309,19 @@ function setupTimeSlotSelection() {
 
             console.log('Selected showtime:', { showTimeId, movieId, time, room, roomType, date });
 
-            // Cập nhật TitleBrand
             updateRoomTitle(room, roomType);
-
-            // ✅ Load ticket types theo showTimeId
             loadTicketTypes(showTimeId, movieId, branchId);
-
-            // ✅ Load ghế ngồi từ server
             loadSeatingLayout(showTimeId);
-
-            // Show step 3 (ticket selection)
             showStep3();
-
-            // Update summary
             updateSummary();
         });
     });
 }
 
-// ✅ THÊM: Load ticket types theo showTimeId
+// Load ticket types
 function loadTicketTypes(showTimeId, movieId, branchId) {
     const ticketOptions = document.getElementById('ticketOptions');
 
-    console.log('=== loadTicketTypes called ===');
-    console.log('Parameters:', { showTimeId, movieId, branchId });
-
-    // Show loading
     ticketOptions.innerHTML = `
         <div class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
@@ -132,31 +332,19 @@ function loadTicketTypes(showTimeId, movieId, branchId) {
     `;
 
     const url = `/Admin/EmployeeSale/GetTicketTypesByShowTime?showTimeId=${showTimeId}&movieId=${movieId}&branchId=${branchId}`;
-    console.log('Fetching URL:', url);
 
     fetch(url)
         .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
         })
         .then(data => {
-            console.log('=== Response data ===');
-            console.log('Full response:', data);
-            console.log('data.success:', data.success);
-            console.log('data.ticketTypes:', data.ticketTypes);
-
-            if (data.success) {
-                console.log('SUCCESS: Rendering ticket types');
-                console.log('Ticket types:', JSON.stringify(data.ticketTypes, null, 2));
-
-                // ✅ SỬA: Từ data.ticketType thành data.ticketTypes (có 's')
+            if (data.success && data.ticketTypes) {
                 renderTicketTypes(data.ticketTypes);
-
-                // Re-initialize after rendering
                 initializeTicketTypes();
             } else {
-                console.error('FAILED: Error loading ticket types:', data.message);
                 ticketOptions.innerHTML = `
                     <div class="alert alert-warning text-center">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -166,7 +354,7 @@ function loadTicketTypes(showTimeId, movieId, branchId) {
             }
         })
         .catch(error => {
-            console.error('EXCEPTION: Error fetching ticket types:', error);
+            console.error('Error fetching ticket types:', error);
             ticketOptions.innerHTML = `
                 <div class="alert alert-danger text-center">
                     <i class="fas fa-exclamation-circle"></i>
@@ -176,16 +364,11 @@ function loadTicketTypes(showTimeId, movieId, branchId) {
         });
 }
 
-// ✅ THÊM: Render ticket types HTML
+// Render ticket types HTML
 function renderTicketTypes(ticketTypes) {
     const ticketOptions = document.getElementById('ticketOptions');
 
-    console.log('=== renderTicketTypes called ===');
-    console.log('Received ticketTypes:', ticketTypes);
-
-    // ✅ SỬA: Kiểm tra với key viết thường
     if (!ticketTypes || (!ticketTypes.standard && !ticketTypes.vip && !ticketTypes.couple)) {
-        console.log('No ticket types available');
         ticketOptions.innerHTML = `
             <div class="alert alert-warning text-center">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -201,7 +384,6 @@ function renderTicketTypes(ticketTypes) {
             <div class="ticket-container">
     `;
 
-    // ✅ SỬA: Truy cập với key viết thường
     // Standard ticket
     if (ticketTypes.standard) {
         const standard = ticketTypes.standard;
@@ -298,19 +480,17 @@ function renderTicketTypes(ticketTypes) {
                     </div>
                 </div>
             </div>
-            </div>
-        </div>
         `;
     }
 
-    //html += `
-    //`;
+    html += `
+            </div>
+        </div>
+    `;
 
     ticketOptions.innerHTML = html;
-    console.log('Ticket types rendered successfully');
 }
 
-// Hàm cập nhật TitleBrand
 function updateRoomTitle(roomName, roomType) {
     const roomTitle = document.getElementById('roomTitle');
     if (roomTitle) {
@@ -318,11 +498,9 @@ function updateRoomTitle(roomName, roomType) {
         if (roomType) {
             roomTitle.textContent += ` (${roomType})`;
         }
-        console.log('Updated room title:', roomTitle.textContent);
     }
 }
 
-// Show step 3
 function showStep3() {
     const step3 = document.getElementById('step3');
     if (step3) {
@@ -333,7 +511,6 @@ function showStep3() {
     }
 }
 
-// Ticket quantity change
 function changeQuantity(type, delta, quantityElement, decreaseBtn, increaseBtn, maxAvailable) {
     if (!bookingData.tickets.hasOwnProperty(type)) {
         bookingData.tickets[type] = 0;
@@ -367,7 +544,6 @@ function changeQuantity(type, delta, quantityElement, decreaseBtn, increaseBtn, 
     updateSummary();
 }
 
-// Show step 5
 function showStep5() {
     const step5 = document.getElementById('step5');
     if (step5) {
@@ -378,18 +554,13 @@ function showStep5() {
     }
 }
 
-// ================== LOAD SEATING LAYOUT ==================
 function loadSeatingLayout(showTimeId) {
-    console.log('Loading seating layout for showTimeId:', showTimeId);
-
     fetch(`/Admin/EmployeeSale/GetSeatingLayout?showTimeId=${showTimeId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('Seats loaded:', data.seats);
                 renderSeats(data.seats);
             } else {
-                console.error('Error loading seats:', data.message);
                 alert('Không thể tải danh sách ghế. Vui lòng thử lại.');
             }
         })
@@ -399,50 +570,40 @@ function loadSeatingLayout(showTimeId) {
         });
 }
 
-// Render ghế ra bảng
 function renderSeats(seats) {
     const table = document.getElementById('seatingTable');
-
-    // Nhóm ghế theo hàng (A, B, C...)
     const rows = {};
+
     seats.forEach(seat => {
         const row = seat.seatName[0];
         if (!rows[row]) rows[row] = [];
         rows[row].push(seat);
     });
 
-    // Xóa table cũ
     table.innerHTML = '';
 
-    // Tạo từng hàng
     for (let rowName in rows) {
         const tr = document.createElement('tr');
-
-        // Label hàng (A, B, C...)
         const tdLabel = document.createElement('td');
         tdLabel.className = 'row-label';
         tdLabel.textContent = rowName;
         tr.appendChild(tdLabel);
 
-        // Tính toán số cột và căn giữa
-        const totalCols = 21; // Tổng số cột (có thể điều chỉnh)
+        const totalCols = 21;
         const seatCount = rows[rowName].length;
         const emptyBefore = Math.floor((totalCols - seatCount) / 2);
 
-        // Thêm ô trống bên trái
         for (let i = 0; i < emptyBefore; i++) {
             const tdEmpty = document.createElement('td');
             tdEmpty.className = 'empty';
             tr.appendChild(tdEmpty);
         }
 
-        // Vẽ ghế
         rows[rowName].forEach(seat => {
             const td = document.createElement('td');
             td.textContent = seat.seatName;
             td.dataset.seatId = seat.seatId;
 
-            // Xác định class dựa trên Status và SeatType
             let seatClass = 'seat';
             if (seat.status === 'Đã đặt') {
                 seatClass += ' booked';
@@ -460,7 +621,6 @@ function renderSeats(seats) {
             tr.appendChild(td);
         });
 
-        // Thêm ô trống bên phải
         const emptyAfter = totalCols - seatCount - emptyBefore;
         for (let i = 0; i < emptyAfter; i++) {
             const tdEmpty = document.createElement('td');
@@ -471,23 +631,17 @@ function renderSeats(seats) {
         table.appendChild(tr);
     }
 
-    // Reset selected seats khi load ghế mới
     selectedSeats = [];
     bookingData.seats = [];
-
-    // Thêm sự kiện click cho ghế sau khi render
     setupSeatClickEvents();
 }
 
-// Setup seat click events
 function setupSeatClickEvents() {
     const seats = document.querySelectorAll('td.seat:not(.booked)');
 
     seats.forEach(seat => {
         seat.addEventListener('click', function () {
-            if (this.classList.contains('booked')) {
-                return;
-            }
+            if (this.classList.contains('booked')) return;
 
             const seatName = this.textContent.trim();
             const seatId = this.dataset.seatId;
@@ -495,11 +649,9 @@ function setupSeatClickEvents() {
                 this.classList.contains('vip') ? 'vip' : 'regular';
 
             if (this.classList.contains('selected')) {
-                // Bỏ chọn ghế
                 this.classList.remove('selected');
                 removeSeat(seatName);
             } else {
-                // Chọn ghế
                 const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
                 const totalSeatsSelected = selectedSeats.length;
 
@@ -508,7 +660,6 @@ function setupSeatClickEvents() {
                     return;
                 }
 
-                // Validate ghế đôi
                 if (seatType === 'couple') {
                     if (!isValidCoupleSelection(seatName)) {
                         alert('Ghế đôi phải được chọn theo cặp');
@@ -520,7 +671,6 @@ function setupSeatClickEvents() {
                 addSeat(seatName, seatType, seatId);
             }
 
-            // Show step 4 khi đã chọn đủ ghế
             const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
             if (selectedSeats.length === totalTickets && totalTickets > 0) {
                 showStep4();
@@ -531,7 +681,6 @@ function setupSeatClickEvents() {
     });
 }
 
-// Validate ghế đôi
 function isValidCoupleSelection(seatName) {
     const row = seatName.charAt(0);
     const num = parseInt(seatName.substring(1));
@@ -554,7 +703,6 @@ function isValidCoupleSelection(seatName) {
     return isPairSelected;
 }
 
-// Add seat to selection
 function addSeat(seatName, seatType, seatId) {
     if (!selectedSeats.find(s => s.seatName === seatName)) {
         selectedSeats.push({
@@ -563,19 +711,15 @@ function addSeat(seatName, seatType, seatId) {
             seatType: seatType
         });
         bookingData.seats = selectedSeats.map(s => s.seatName);
-        console.log('Seat added:', seatName, '| Total seats:', selectedSeats.length);
     }
 }
 
-// Remove seat from selection
 function removeSeat(seatName) {
     const index = selectedSeats.findIndex(s => s.seatName === seatName);
     if (index > -1) {
         selectedSeats.splice(index, 1);
         bookingData.seats = selectedSeats.map(s => s.seatName);
-        console.log('Seat removed:', seatName, '| Total seats:', selectedSeats.length);
 
-        // Nếu là ghế đôi, tự động bỏ chọn ghế cặp
         const row = seatName.charAt(0);
         const num = parseInt(seatName.substring(1));
         const pairSeatNum = num % 2 === 0 ? num - 1 : num + 1;
@@ -595,7 +739,6 @@ function removeSeat(seatName) {
     }
 }
 
-// Show step 4
 function showStep4() {
     const step4 = document.getElementById('step4');
     if (step4) {
@@ -606,7 +749,6 @@ function showStep4() {
     }
 }
 
-// Combo quantity
 function changeComboQuantity(productId, delta) {
     if (!bookingData.combos[productId]) {
         bookingData.combos[productId] = 0;
@@ -622,7 +764,7 @@ function changeComboQuantity(productId, delta) {
     updateSummary();
 }
 
-// Update summary
+// ✅ Update summary với customer info và điểm tích lũy
 function updateSummary() {
     const summaryBox = document.getElementById('summaryBox');
     const summaryMovie = document.getElementById('summary-movie');
@@ -681,14 +823,25 @@ function updateSummary() {
     }
 
     if (summaryTotal) summaryTotal.textContent = formatPrice(total);
+
+    // ✅ Hiển thị điểm tích lũy nếu không phải khách vãng lai
+    const pointEarnedRow = document.getElementById('pointEarnedRow');
+    const summaryPointEarned = document.getElementById('summary-point-earned');
+
+    if (pointEarnedRow && summaryPointEarned && !bookingData.isGuest && total > 0) {
+        const pointsEarned = Math.floor(total / 10000);
+        summaryPointEarned.textContent = `+${pointsEarned} điểm`;
+        pointEarnedRow.style.display = 'flex';
+    } else if (pointEarnedRow) {
+        pointEarnedRow.style.display = 'none';
+    }
 }
 
-// Format price
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN').format(price) + ' ₫';
 }
 
-// Confirm booking
+// ✅ Confirm booking với customer info
 function confirmBooking() {
     const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
 
@@ -710,11 +863,13 @@ function confirmBooking() {
     }
 
     console.log('=== BOOKING DATA ===');
+    console.log('Customer:', bookingData.isGuest ? 'Guest' : bookingData.customerName);
+    console.log('Customer ID:', bookingData.customerId);
     console.log('Movie:', bookingData.movieId);
     console.log('ShowTime:', bookingData.showTime);
     console.log('Tickets:', bookingData.tickets);
     console.log('Seats:', bookingData.seats);
     console.log('Combos:', bookingData.combos);
 
-    alert(`Đặt vé thành công!\nGhế: ${bookingData.seats.join(', ')}\nTổng tiền: ${document.getElementById('summary-total').textContent}`);
+    alert(`Đặt vé thành công!\nKhách hàng: ${bookingData.customerName}\nGhế: ${bookingData.seats.join(', ')}\nTổng tiền: ${document.getElementById('summary-total').textContent}`);
 }

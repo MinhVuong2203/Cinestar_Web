@@ -66,6 +66,70 @@
         display: none;
     }
 
+/* Customer Input Section */
+.customer-input-section {
+    padding: 20px;
+}
+    .customer-input-section #skipCustomerBtn {
+        margin-top: 35px;
+    }
+
+    .customer-input-section .input-group {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .customer-input-section input[type="tel"] {
+        border-radius: 8px 0 0 8px;
+        border-right: none;
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+
+    .customer-input-section .btn-primary {
+        border-radius: 0 8px 8px 0;
+        padding: 12px 24px;
+        font-weight: 600;
+    }
+
+    .customer-input-section .btn-outline-secondary {
+        border-radius: 8px;
+        padding: 12px;
+        font-weight: 600;
+    }
+
+
+.customer-info-box .alert {
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.customer-info-box .alert-success {
+    background-color: #d1f2eb;
+    border-color: #7dcea0;
+    color: #155724;
+}
+
+.customer-info-box .alert-info {
+    background-color: #d6eaf8;
+    border-color: #85c1e9;
+    color: #004085;
+}
+
+/* ✅ Summary Updates */
+#pointEarnedRow {
+    border-top: 1px dashed #dee2e6;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+    #pointEarnedRow span {
+        font-weight: 600;
+    }
+
+/* ✅ Step cards */
+.step-card.hidden {
+    display: none;
+}
 /* ===== STEP HEADER ===== */
 .step-header {
     display: flex;

@@ -3,7 +3,6 @@
     ViewData["Title"] = "Bán vé";
     var movieId = ViewData["MovieId"] as string;
     var showTimes = ViewData["ShowTimes"] as IEnumerable<dynamic>;
-    // var ticketTypes = ViewData["TicketTypes"] as dynamic;
     var lstProducts = ViewData["lstProducts"] as List<Product>;
 }
 @section Styles {
@@ -17,59 +16,142 @@
         <p class="mb-0"><i class="fas fa-film"></i> Mã phim: <strong>@movieId</strong></p>
     </div>
 
-    <!-- Bước 2: Chọn giờ xem -->
+    <!-- ✅ Bước 1: Nhập số điện thoại khách hàng -->
     <div class="step-card">
+        <div class="step-header">
+            <div class="step-number">1</div>
+            <h3 class="step-title">Thông tin khách hàng</h3>
+        </div>
+        <div class="customer-input-section">
+            <div class="row">
+                <div class="col-md-8">
+                    <label for="customerPhone" class="form-label">
+                        <i class="fas fa-phone"></i> Số điện thoại khách hàng
+                    </label>
+                    <div class="input-group">
+                        <input type="tel" 
+                               class="form-control" 
+                               id="customerPhone" 
+                               placeholder="Nhập số điện thoại (VD: 0912345678)" 
+                               pattern="[0-9]{10,11}"
+                               maxlength="11">
+                        <button class="btn btn-primary" type="button" id="checkCustomerBtn">
+                            <i class="fas fa-search"></i> Kiểm tra
+                        </button>
+                    </div>
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i> 
+                        Nhập số điện thoại để kiểm tra thông tin khách hàng. Để trống nếu là khách vãng lai.
+                    </small>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-secondary w-100" type="button" id="skipCustomerBtn">
+                        <i class="fas fa-user-times"></i> Khách vãng lai
+                    </button>
+                </div>
+            </div>
+
+            <!-- ✅ Customer Info Display -->
+            <!-- ✅ Customer Info Display - Custom Design -->
+            <div id="customerInfoDisplay" class="customer-info-card mt-4" style="display: none;">
+                <div class="customer-info-header">
+                    <i class="fas fa-user-check"></i>
+                    <h6>Thông tin khách hàng</h6>
+                </div>
+                <div class="customer-info-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <i class="fas fa-user"></i> Họ tên:
+                                </span>
+                                <span class="info-value" id="displayCustomerName">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <i class="fas fa-envelope"></i> Email:
+                                </span>
+                                <span class="info-value" id="displayCustomerEmail">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <i class="fas fa-star"></i> Điểm tích lũy:
+                                </span>
+                                <span class="info-value text-warning fw-bold" id="displayCustomerPoint">0</span>
+                                <span class="text-muted"> điểm</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <i class="fas fa-crown"></i> Hạng thành viên:
+                                </span>
+                                <span class="customer-vip-badge" id="displayCustomerVip">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ Guest Customer Display - Custom Design -->
+            <div id="guestCustomerDisplay" class="guest-info-card mt-4" style="display: none;">
+                <div class="guest-info-content">
+                    <i class="fas fa-user-times"></i>
+                    <span>Khách vãng lai (không tích điểm)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bước 2: Chọn giờ xem -->
+    <div class="step-card hidden" id="step2">
         <div class="step-header">
             <div class="step-number">2</div>
             <h3 class="step-title">Chọn giờ xem</h3>
         </div>
         <div class="time-grid" id="timeGrid">
-            @* <form action="/EmployeeSale/GetRoomNameByMovieShowTimeDate" method="post"> *@
-                @if (showTimes != null && showTimes.Any())
-                {
-                    <div class="row g-3">
-                        @foreach (var showTime in showTimes)
-                        {
-                            var showTimeId = showTime.ShowTimeID;
-                            var startTime = showTime.StartTime;
-                            var roomName = showTime.RoomName;
-                            var roomType = showTime.RoomType;
-                            var availableSeats = showTime.AvailableSeats ?? 0;
-                            var totalSeats = showTime.TotalSeats ?? 0;
-                        
-                            // Format time display
-                            DateTime startDateTime = startTime is DateTime dt ? dt : DateTime.Parse(startTime.ToString());
-                            string timeDisplay = startDateTime.ToString("HH:mm");
+            @if (showTimes != null && showTimes.Any())
+            {
+                <div class="row g-3">
+                    @foreach (var showTime in showTimes)
+                    {
+                        var showTimeId = showTime.ShowTimeID;
+                        var startTime = showTime.StartTime;
+                        var roomName = showTime.RoomName;
+                        var roomType = showTime.RoomType;
+                        var availableSeats = showTime.AvailableSeats ?? 0;
+                        var totalSeats = showTime.TotalSeats ?? 0;
+                    
+                        DateTime startDateTime = startTime is DateTime dt ? dt : DateTime.Parse(startTime.ToString());
+                        string timeDisplay = startDateTime.ToString("HH:mm");
 
-                            <div class="col-md-3 col-sm-4 col-6">
-                                <div class="time-slot"
-                                     data-showtime-id="@showTimeId"
-                                     data-time="@timeDisplay"
-                                     data-room="@roomName"
-                                     data-room-type="@roomType"
-                                     data-movie-id="@movieId"
-                                     data-branch-id="@Model.BranchID">
-                                    <div class="time-slot-time">@timeDisplay</div>
-                                    <div class="time-slot-room">@roomName (@roomType)</div>
-                                    <div class="time-slot-seats @(availableSeats < 10 ? "text-warning" : "text-success")">
-                                        @availableSeats/@totalSeats ghế trống
-                                    </div>
+                        <div class="col-md-3 col-sm-4 col-6">
+                            <div class="time-slot"
+                                 data-showtime-id="@showTimeId"
+                                 data-time="@timeDisplay"
+                                 data-room="@roomName"
+                                 data-room-type="@roomType"
+                                 data-movie-id="@movieId"
+                                 data-branch-id="@Model.BranchID">
+                                <div class="time-slot-time">@timeDisplay</div>
+                                <div class="time-slot-room">@roomName (@roomType)</div>
+                                <div class="time-slot-seats @(availableSeats < 10 ? "text-warning" : "text-success")">
+                                    @availableSeats/@totalSeats ghế trống
                                 </div>
                             </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="no-showtimes text-center py-5">
-                        <i class="fas fa-film fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">Không có suất chiếu nào cho ngày hôm nay. Vui lòng chọn ngày khác.</p>
-                    </div>
-                }
-            @* </form> *@
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="no-showtimes text-center py-5">
+                    <i class="fas fa-film fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Không có suất chiếu nào cho ngày hôm nay.</p>
+                </div>
+            }
         </div>
     </div>
-
 
     <!-- Bước 3: Chọn loại vé -->
     <div class="step-card hidden" id="step3">
@@ -78,7 +160,6 @@
             <h3 class="step-title">Chọn loại vé</h3>
         </div>
         <div id="ticketOptions">
-            <!-- Ticket types sẽ được load động từ JavaScript -->
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
@@ -88,40 +169,36 @@
         </div>
     </div>
 
-    <!--Bước 4: chọn ghế-->
-    <div class="step-card" id="step5">
-
+    <!-- Bước 4: Chọn ghế -->
+    <div class="step-card hidden" id="step5">
         <h1 class="TitleBrand" id="roomTitle">Chọn ghế - </h1>
-    <div style="position: relative;">
-        <img src="~/image/img-screen.png" class="screen">
-        <div class="screen-label">Màn hình</div>
+        <div style="position: relative;">
+            <img src="~/image/img-screen.png" class="screen">
+            <div class="screen-label">Màn hình</div>
+        </div>
 
-    </div>
+        <div class="seating-area">
+            <table id="seatingTable"></table>
+        </div>
 
-    <div class="seating-area">
-        <table id="seatingTable">
-            
-        </table>
-    </div>
-
-    <div class="legend">
-        <div class="legend-item">
-            <div class="legend-box regular"></div>
-            <span>Ghế Thường</span>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box regular"></div>
+                <span>Ghế Thường</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box couple"></div>
+                <span>Ghế Đôi (2 Người)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box selected"></div>
+                <span>Ghế chọn</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box booked"></div>
+                <span>Ghế đã đặt</span>
+            </div>
         </div>
-        <div class="legend-item">
-            <div class="legend-box couple"></div>
-            <span>Ghế Đôi (2 Người)</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-box selected"></div>
-            <span>Ghế chọn</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-box booked"></div>
-            <span>Ghế đã đặt</span>
-        </div>
-    </div>
     </div>
 
     <!-- Bước 5: Chọn bắp nước -->
@@ -166,17 +243,18 @@
         else
         {
             <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle"></i>
-                Hiện tại không có sản phẩm nào.
+                <i class="fas fa-info-circle"></i> Hiện tại không có sản phẩm nào.
             </div>
         }
     </div>
 
-    
-
     <!-- Tổng kết đơn hàng -->
     <div class="summary-box hidden" id="summaryBox">
         <h4><i class="fas fa-receipt"></i> Tổng kết đơn hàng</h4>
+        <div class="summary-row">
+            <span>Khách hàng:</span>
+            <span id="summary-customer">Khách vãng lai</span>
+        </div>
         <div class="summary-row">
             <span>Phim:</span>
             <span id="summary-movie">-</span>
@@ -196,6 +274,10 @@
         <div class="summary-row total-row">
             <span>TỔNG CỘNG:</span>
             <span id="summary-total">0 ₫</span>
+        </div>
+        <div class="summary-row" id="pointEarnedRow" style="display: none;">
+            <span class="text-success">Điểm tích lũy:</span>
+            <span class="text-success" id="summary-point-earned">+0 điểm</span>
         </div>
         <button class="btn-book" onclick="confirmBooking()">
             <i class="fas fa-check-circle"></i> XÁC NHẬN ĐẶT VÉ
