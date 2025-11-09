@@ -57,7 +57,10 @@
                                 <div class="user-dropdown">
                                     <button class="user-profile">
                                         <i class="fa-solid fa-user"></i>
+
                                         <span>@User.Identity.Name</span>
+                                        <br>
+                                        <span id="CustomerId" hidden >@User.FindFirst("CustomerID")?.Value</span>
                                         @* <i class="fa-solid fa-chevron-down"></i> *@
                                     </button>
                                     <div class="user-dropdown-menu">
@@ -294,12 +297,13 @@
         </footer>
 
         </div>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @* login js - FORCE RELOAD WITH VERSION *@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

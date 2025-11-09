@@ -5,6 +5,7 @@ using Web.Data;
 using Web.Filters;
 using Web.Service;
 using Web.Models.Configuration;
+using Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,7 @@ builder.Services.AddScoped<IShowTimeService, ShowTimeService>();
 builder.Services.AddScoped<ILogin, Login>();
 builder.Services.AddScoped<IPayOsService, PayOsService>();
 builder.Services.AddHostedService<WorkShiftStatusUpdater>();
+builder.Services.AddHostedService<SeatCleanupBackgroundService>();
 
 // Đăng ký tất cả service trong namespace Web.Areas.Admin.Services
 var adminAssembly = typeof(Web.Areas.Admin.Controllers.HomeController).Assembly;
@@ -61,6 +63,10 @@ builder.Services.AddControllersWithViews(option =>
     option.Filters.Add<AreaPrefixFilter>(); // THÊM FILTER MỚI
 });
 
+// Đăng ký SignalR 
+builder.Services.AddSignalR();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,6 +76,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapHub<SeatHub>("/seatHub");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

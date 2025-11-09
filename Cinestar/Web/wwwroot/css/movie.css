@@ -385,6 +385,13 @@ td.booked {
     cursor: not-allowed;
 }
 
+/* Ghế có người khác đặt*/
+td.choosing {
+    background: linear-gradient(135deg, #2ccf17, #105e06);
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
 /* Legend */
 .legend {
     display: flex;
@@ -423,6 +430,12 @@ td.booked {
 
     .legend-box.booked {
         background: #6c757d;
+    }
+    .legend-box.choosing {
+        background: linear-gradient(135deg, #2ccf17, #105e06);
+    }
+    .legend-box.vip {
+        background: linear-gradient(135deg, #FFD700, #FFA500);  
     }
 
 /*food section*/

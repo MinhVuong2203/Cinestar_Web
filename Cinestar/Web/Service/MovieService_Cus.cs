@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Web.Data;
+using Web.Hubs;
 using Web.Models;
 
 namespace Web.Service
@@ -9,9 +12,12 @@ namespace Web.Service
     {
         private readonly CineStarContext _context;
 
-        public MovieService_Cus(CineStarContext context)
+        private readonly IHubContext<SeatHub> _hubContext;
+
+        public MovieService_Cus(CineStarContext context, IHubContext<SeatHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         public async Task<List<Movie>> GetNowShowingMoviesAsync(int pageSize = 12)
@@ -121,22 +127,81 @@ namespace Web.Service
             }
         }
 
-        public async Task<Object> GetSeatingLayoutAsync(string showTimeId)
+        public async Task<Object> GetSeatingLayoutAsync(string showTimeId, Guid currentCustomerId)
         {
             var tickets = await _context.Tickets
                 .Include(t => t.Seat)
                 .Where(t => t.ShowTimeID == showTimeId && !t.IsDeleted)
                 .Select(t => new
                 {
+                    seatID = t.SeatID,
                     seatName = t.Seat.SeatName,
                     seatType = t.Seat.SeatType,
-                    status = t.Status
+                    status = t.Status,
+                    isMyChoice = t.LockedBy == currentCustomerId
                 }).OrderBy(t => t.seatName).ToListAsync();
             return tickets;
         }
 
 
+        public async Task<bool> TrySelectSeatAsync(string showTimeId, string seatId, Guid CustomerId)
+        {
+            var ticket = await _context.Tickets
+            .FirstOrDefaultAsync(t => t.ShowTimeID == showTimeId && t.SeatID == seatId && !t.IsDeleted);
+            if (ticket == null) return false;
+            // Kiểm tra ghế có trống HOẶC do chính user này đang giữ
+            if (ticket.Status == "Trống" || ticket.LockedBy == CustomerId)
+            {
+                // Lock ghế cho user này
+                ticket.Status = "Đang được chọn";
+                ticket.LockedBy = CustomerId;
+                ticket.LockedAt = DateTime.Now;
+                await _context.SaveChangesAsync();
+                await _hubContext.Clients.Group(showTimeId).SendAsync("SeatSelected", new
+                {
+                    seatId = seatId,
+                    CustomerId = CustomerId,
+                    status = "Đang được chọn"
+                });
+                return true;
+            }
+            // OPTIONAL: Double-check nếu ghế hết hạn (phòng trường hợp Background Service bị delay)
+            if (ticket.Status == "Đang được chọn" &&
+                ticket.LockedAt.HasValue &&
+                (DateTime.Now - ticket.LockedAt.Value).TotalMinutes >= 5)
+            {
+                // Giải phóng ngay lập tức
+                ticket.Status = "Đang được chọn";
+                ticket.LockedBy = CustomerId;
+                ticket.LockedAt = DateTime.Now;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false; // Ghế đang bị người khác giữ
+        }
+        public async Task<bool> DeselectSeatAsync(string showTimeId, string seatId, Guid customerId)
+        {
+            var ticket = await _context.Tickets
+                .FirstOrDefaultAsync(t =>
+                    t.ShowTimeID == showTimeId &&
+                    t.SeatID == seatId &&
+                    t.LockedBy == customerId); // ← QUAN TRỌNG: Chỉ cho phép bỏ chọn ghế của chính mình
+            if (ticket != null)
+            {
+                ticket.Status = "Trống";
+                ticket.LockedBy = null;
+                ticket.LockedAt = null;
 
+                await _context.SaveChangesAsync();
+                await _hubContext.Clients.Group(showTimeId).SendAsync("SeatDeselected", new
+                {
+                    seatId = seatId,
+                    status = "Trống"
+                });
+                return true;
+            }
+            return false;
+        }
 
     }
 }

@@ -29,6 +29,8 @@ public partial class Ticket
 
     [StringLength(20)]
     public string? Status { get; set; }
+    public Guid? LockedBy { get; set; }  // ID người đang giữ ghế
+    public DateTime? LockedAt { get; set; }  // Thời gian lock
 
     public bool IsDeleted { get; set; }
 

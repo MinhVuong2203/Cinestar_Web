@@ -55,6 +55,7 @@ namespace Web.Controllers
                         new Claim(ClaimTypes.Name, customer.FullName ?? ""),
                         new Claim(ClaimTypes.Email, customer.Email ?? ""),
                         new Claim(ClaimTypes.NameIdentifier, customer.CustomerID.ToString()),
+                        new Claim("CustomerID", customer.CustomerID.ToString()),
                         new Claim("Username", customer.Username ?? ""),
                         new Claim(ClaimTypes.Role, "Customer"),
                         new Claim("UserType", "Customer")
@@ -75,6 +76,7 @@ namespace Web.Controllers
                         status = webconstain.success,
                         message = "Đăng nhập thành công",
                         customerName = customer.FullName ?? "Khách hàng",
+                        customerId = customer.CustomerID,
                         redirectUrl = "/",
                         userType = "Customer"
                     });

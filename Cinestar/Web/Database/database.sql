@@ -396,6 +396,8 @@ CREATE TABLE Ticket (
     TicketType NVARCHAR(50),
     Price DECIMAL(18,2) CHECK (Price >= 0),
     Status NVARCHAR(20),
+	LockedBy UNIQUEIDENTIFIER NULL,  -- CustomerID
+    LockedAt DATETIME NULL,
     IsDeleted BIT DEFAULT 0 NOT NULL,
     CONSTRAINT UQ_Ticket UNIQUE (ShowTimeID, SeatID)
 );
@@ -474,6 +476,8 @@ CREATE TABLE InvoiceTicket (
     CONSTRAINT UQ_Invoice_Ticket UNIQUE (InvoiceID, TicketID)
 );
 GO
+
+
 
 CREATE TRIGGER trg_InvoiceTicket_Insert
 ON InvoiceTicket

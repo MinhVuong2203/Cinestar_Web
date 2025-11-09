@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Web.Filters;
 using Web.Service;
 
@@ -9,6 +10,7 @@ namespace Web.Controllers
         private readonly ICinemaBranchService _cinemaBranchService;
         private readonly IMovieService_Cus _movieService_Cus;
         private readonly IShowTimeService _showTimeService; // THÊM
+
 
         public MovieController(
             ICinemaBranchService cinemaBranchService,
@@ -114,12 +116,29 @@ namespace Web.Controllers
             return Json(ticketPrices);
         }
 
-
         // 
-        public async Task<IActionResult> GetSeatingLayout(string showTimeId)
+        public async Task<IActionResult> GetSeatingLayout(string showTimeId, Guid currentCustomerId)
         {
-            var seats = await _movieService_Cus.GetSeatingLayoutAsync(showTimeId);
+            var seats = await _movieService_Cus.GetSeatingLayoutAsync(showTimeId, currentCustomerId);
             return Json(seats);
+        }
+
+        // Xử lý click đặt ghế
+        [HttpPost]
+        public async Task<IActionResult> SelectSeats(string showTimeId, string seatId)
+        {
+            var customerId = User.FindFirstValue("CustomerID");
+            Console.WriteLine(" ------------ " + showTimeId + " " + seatId + " " + customerId);
+            var success = await _movieService_Cus.TrySelectSeatAsync(showTimeId, seatId, Guid.Parse(customerId));
+            return Json(new { success });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeselectSeat(string showTimeId, string seatId)
+        {
+            var customerId = User.FindFirstValue("CustomerID");
+            var success = await _movieService_Cus.DeselectSeatAsync(showTimeId, seatId, Guid.Parse(customerId));
+            return Json(new { success });
         }
 
     }
