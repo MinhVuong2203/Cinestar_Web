@@ -24,44 +24,46 @@
             <h3 class="step-title">Chọn giờ xem</h3>
         </div>
         <div class="time-grid" id="timeGrid">
-            @if (showTimes != null && showTimes.Any())
-            {
-                <div class="row g-3">
-                    @foreach (var showTime in showTimes)
-                    {
-                        var showTimeId = showTime.ShowTimeID;
-                        var startTime = showTime.StartTime;
-                        var roomName = showTime.RoomName;
-                        var roomType = showTime.RoomType;
-                        var availableSeats = showTime.AvailableSeats ?? 0;
-                        var totalSeats = showTime.TotalSeats ?? 0;
+            @* <form action="/EmployeeSale/GetRoomNameByMovieShowTimeDate" method="post"> *@
+                @if (showTimes != null && showTimes.Any())
+                {
+                    <div class="row g-3">
+                        @foreach (var showTime in showTimes)
+                        {
+                            var showTimeId = showTime.ShowTimeID;
+                            var startTime = showTime.StartTime;
+                            var roomName = showTime.RoomName;
+                            var roomType = showTime.RoomType;
+                            var availableSeats = showTime.AvailableSeats ?? 0;
+                            var totalSeats = showTime.TotalSeats ?? 0;
                         
-                        // Format time display
-                        DateTime startDateTime = startTime is DateTime dt ? dt : DateTime.Parse(startTime.ToString());
-                        string timeDisplay = startDateTime.ToString("HH:mm");
+                            // Format time display
+                            DateTime startDateTime = startTime is DateTime dt ? dt : DateTime.Parse(startTime.ToString());
+                            string timeDisplay = startDateTime.ToString("HH:mm");
 
-                        <div class="col-md-3 col-sm-4 col-6">
-                            <div class="time-slot" 
-                                 data-showtime-id="@showTimeId" 
-                                 data-time="@timeDisplay" 
-                                 data-room="@roomName">
-                                <div class="time-slot-time">@timeDisplay</div>
-                                <div class="time-slot-room">@roomName (@roomType)</div>
-                                <div class="time-slot-seats @(availableSeats < 10 ? "text-warning" : "text-success")">
-                                    @availableSeats/@totalSeats ghế trống
+                            <div class="col-md-3 col-sm-4 col-6">
+                                <div class="time-slot" 
+                                     data-showtime-id="@showTimeId" 
+                                     data-time="@timeDisplay" 
+                                     data-room="@roomName">
+                                    <div class="time-slot-time">@timeDisplay</div>
+                                    <div class="time-slot-room">@roomName (@roomType)</div>
+                                    <div class="time-slot-seats @(availableSeats < 10 ? "text-warning" : "text-success")">
+                                        @availableSeats/@totalSeats ghế trống
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="no-showtimes text-center py-5">
-                    <i class="fas fa-film fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">Không có suất chiếu nào cho ngày hôm nay. Vui lòng chọn ngày khác.</p>
-                </div>
-            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="no-showtimes text-center py-5">
+                        <i class="fas fa-film fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Không có suất chiếu nào cho ngày hôm nay. Vui lòng chọn ngày khác.</p>
+                    </div>
+                }
+            @* </form> *@
         </div>
     </div>
 
@@ -189,7 +191,7 @@
     <!--Bước 4: chọn ghế-->
     <div class="step-card" id="step5">
 
-    <h1 class="TitleBrand">Chọn ghế - Rạp 03</h1>
+        <h1 class="TitleBrand" id="roomTitle">Chọn ghế - </h1>
     <div style="position: relative;">
         <img src="~/image/img-screen.png" class="screen">
         <div class="screen-label">Màn hình</div>

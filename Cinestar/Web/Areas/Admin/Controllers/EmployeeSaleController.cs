@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Web.Areas.Admin.Service;
+using Web.Data;
 
 namespace Web.Areas.Admin.Controllers
 {
@@ -9,10 +11,12 @@ namespace Web.Areas.Admin.Controllers
     {
         private readonly IEmployeeService _employeeService;
         private readonly IProductService _productService;
-        public EmployeeSaleController(IEmployeeService employeeService, IProductService productService)
+        private readonly CineStarContext _context;
+        public EmployeeSaleController(IEmployeeService employeeService, IProductService productService, CineStarContext context)
         {
             _employeeService = employeeService;
             _productService = productService;
+            _context = context;
         }
         public async Task<IActionResult> Index()
         {
@@ -131,7 +135,60 @@ namespace Web.Areas.Admin.Controllers
             var lstProducts = _productService.GetAllProduct();
             ViewData["lstProducts"] = lstProducts;
 
+
             return View(employee);
+        }
+        //Hàm lấy tên phòng chiếu
+        [HttpPost]
+        public IActionResult GetRoomNameByMovieShowTimeDate(string movieId, string showTimeId)
+        {
+            try
+            {
+                var employeeIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(employeeIdClaim) || !Guid.TryParse(employeeIdClaim, out Guid employeeId))
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin nhân viên" });
+                }
+
+                var employee = _employeeService.GetEmployeeById(employeeId).Result;
+                if (employee == null)
+                {
+                    return Json(new { success = false, message = "Nhân viên không tồn tại" });
+                }
+
+                // Lấy thông tin showtime để có StartTime
+                var showTime = _context.ShowTimes
+                    .Include(st => st.Room)
+                    .FirstOrDefault(st => st.ShowTimeID == showTimeId && !st.IsDeleted);
+
+                if (showTime == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy suất chiếu" });
+                }
+
+                var roomInfo = _employeeService.GetRoomNameByMovieShowTimeDate(
+                    movieId,
+                    employee.BranchID,
+                    showTime.StartTime,
+                    showTime.StartTime.ToString("HH:mm")
+                );
+
+                if (roomInfo != null)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        roomName = roomInfo.RoomName,
+                        roomType = roomInfo.RoomType
+                    });
+                }
+
+                return Json(new { success = false, message = "Không tìm thấy phòng chiếu" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
     }

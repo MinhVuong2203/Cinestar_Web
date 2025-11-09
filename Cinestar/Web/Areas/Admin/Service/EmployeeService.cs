@@ -66,7 +66,7 @@ namespace Web.Areas.Admin.Service
             if (birthDate == null)
                 return false;
             var today = DateOnly.FromDateTime(DateTime.Today);
-            int age = today.Year - birthDate.Value.Year; 
+            int age = today.Year - birthDate.Value.Year;
             if (birthDate.Value > today.AddYears(-age))
                 age--;
             return age >= 18;
@@ -87,7 +87,7 @@ namespace Web.Areas.Admin.Service
             catch
             {
                 return false;
-            }         
+            }
         }
 
         public async Task<bool> UpdateEmployee(Employee employee)
@@ -304,9 +304,9 @@ namespace Web.Areas.Admin.Service
                         MovieDuration = st.Movie.DurationMinutes ?? 120,
                         // Tính số ghế trống
                         TotalSeats = _context.Seats.Count(s => s.RoomID == st.RoomID && !s.IsDeleted),
-                        AvailableSeats = _context.Tickets.Count(t => 
-                           t.ShowTimeID == st.ShowTimeID && 
-                                !t.IsDeleted && 
+                        AvailableSeats = _context.Tickets.Count(t =>
+                           t.ShowTimeID == st.ShowTimeID &&
+                                !t.IsDeleted &&
                                 t.Status == "Trống")
                     })
                     .ToList();
@@ -342,6 +342,62 @@ namespace Web.Areas.Admin.Service
                     Console.WriteLine($"  InnerException: {ex.InnerException.Message}");
                 }
                 return new List<object>();
+            }
+        }
+
+        // Lấy tên phòng chiếu theo movieId, branchId, ngày và suất chiếu
+        public dynamic GetRoomNameByMovieShowTimeDate(string movieId, string branchId, DateTime date, string showTime)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(movieId) || string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(showTime))
+                {
+                    Console.WriteLine("ERROR: One or more parameters are empty");
+                    return null;
+                }
+                Console.WriteLine($"=== GetRoomNameByMovieShowTimeDate Service Method ===");
+                Console.WriteLine($"MovieId: '{movieId}'");
+                Console.WriteLine($"BranchId: '{branchId}'");
+                Console.WriteLine($"Date: {date:yyyy-MM-dd}");
+                Console.WriteLine($"ShowTime: '{showTime}'");
+                if (!TimeSpan.TryParse(showTime, out TimeSpan showTimeSpan))
+                {
+                    Console.WriteLine("ERROR: Invalid showTime format");
+                    return null;
+                }
+                var targetDateTime = date.Date + showTimeSpan;
+                var showTimeEntry = _context.ShowTimes
+                    .Include(st => st.Room)
+                    .Where(st => st.MovieID == movieId &&
+                                !st.IsDeleted &&
+                                st.Room != null &&
+                                !st.Room.IsDeleted &&
+                                st.Room.BranchID == branchId &&
+                                st.StartTime == targetDateTime)
+                    .Select(st => new
+                    {
+                        st.Room.RoomName,
+                        st.Room.RoomType
+                    })
+                    .FirstOrDefault();
+                if (showTimeEntry == null)
+                {
+                    Console.WriteLine("WARNING: No matching showtime found");
+                    return null;
+                }
+                Console.WriteLine($"Found Room: {showTimeEntry.RoomName}, Type: {showTimeEntry.RoomType}");
+                return showTimeEntry;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"EXCEPTION in GetRoomNameByMovieShowTimeDate:");
+                Console.WriteLine($"  Message: {ex.Message}");
+                Console.WriteLine($"  StackTrace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"  InnerException: {ex.InnerException.Message}");
+                }
+                return null;
             }
         }
     }

@@ -25,5 +25,8 @@ namespace Web.Areas.Admin.Service
 
         // Lấy danh sách suất chiếu theo movieId, branchId và ngày
         public dynamic GetShowTimesByMovieAndDate(string movieId, string branchId, DateTime date);
+
+        //lấy tên phòng chiếu theo movieId, branchId, ngày và suất chiếu
+        public dynamic GetRoomNameByMovieShowTimeDate(string movieId, string branchId, DateTime date, string showTime);
     }
 }
