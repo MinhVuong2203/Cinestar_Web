@@ -1,0 +1,205 @@
+﻿@model Web.Models.Invoice
+
+@{
+    ViewData["Title"] = "Chọn phương thức thanh toán";
+    var movieTitle = Model.InvoiceTickets?.FirstOrDefault()?.Ticket?.ShowTime?.Movie?.Title ?? "Vé xem phim";
+    var showTime = Model.InvoiceTickets?.FirstOrDefault()?.Ticket?.ShowTime;
+    var seats = Model.InvoiceTickets?.Select(it => it.Ticket?.Seat?.SeatName).ToList();
+}
+
+@section Styles {
+    <style>
+        .payment-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method-btn {
+            width: 100%;
+            padding: 20px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .payment-method-btn:hover {
+                border-color: #007bff;
+                background: #f8f9fa;
+                transform: translateY(-2px);
+            }
+
+            .payment-method-btn i {
+                font-size: 2rem;
+                margin-right: 15px;
+            }
+
+        .invoice-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .total-amount {
+            font-size: 2rem;
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+}
+
+<div class="payment-container">
+    <div class="payment-card">
+        <h2 class="text-center mb-4">
+            <i class="fas fa-credit-card"></i>
+            Chọn phương thức thanh toán
+        </h2>
+
+        <!-- Invoice Summary -->
+        <div class="invoice-summary">
+            <h5><i class="fas fa-receipt"></i> Thông tin đơn hàng</h5>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Khách hàng:</strong> @(Model.Customer?.FullName ?? "Khách vãng lai")</p>
+                    <p><strong>Phim:</strong> @movieTitle</p>
+                    <p><strong>Suất chiếu:</strong> @showTime?.StartTime.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Ghế:</strong> @string.Join(", ", seats ?? new List<string>())</p>
+                    <p><strong>Số lượng vé:</strong> @Model.InvoiceTickets?.Count() vé</p>
+                    @if (Model.InvoiceProducts?.Any() == true)
+                    {
+                        <p><strong>Combo:</strong> @Model.InvoiceProducts.Count() món</p>
+                    }
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">Tổng thanh toán:</p>
+                <p class="total-amount">@Model.TotalAmount.ToString() ₫</p>
+            </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <h5 class="mb-3">Chọn phương thức:</h5>
+
+            <!-- Cash Payment -->
+            <button type="button" class="payment-method-btn" onclick="processCashPayment()">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-money-bill-wave text-success"></i>
+                    <div class="text-start">
+                        <h5 class="mb-0">Tiền mặt</h5>
+                        <small class="text-muted">Thanh toán trực tiếp tại quầy</small>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <!-- PayOS Payment -->
+            <button type="button" class="payment-method-btn" onclick="processPayOsPayment()">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-qrcode text-primary"></i>
+                    <div class="text-start">
+                        <h5 class="mb-0">PayOS (QR Code)</h5>
+                        <small class="text-muted">Quét mã QR để thanh toán qua ngân hàng</small>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Cancel Button -->
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "EmployeeSale")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Hủy và quay lại
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const invoiceId = '@Model.InvoiceID';
+
+        // ✅ Thanh toán tiền mặt
+        function processCashPayment() {
+            if (!confirm('Xác nhận thanh toán bằng tiền mặt?')) return;
+
+            const btn = event.target.closest('.payment-method-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+            fetch('/Admin/EmployeeSale/ProcessCashPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `invoiceId=${invoiceId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thanh toán thành công!');
+                    window.location.href = `/Admin/EmployeeSale/PaymentSuccess?invoiceId=${invoiceId}`;
+                } else {
+                    alert('Lỗi: ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = 'Tiền mặt';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                btn.disabled = false;
+            });
+        }
+
+        // ✅ Thanh toán PayOS
+        function processPayOsPayment() {
+            const btn = event.target.closest('.payment-method-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo mã QR...';
+
+            fetch('/Admin/EmployeeSale/ProcessPayOsPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `invoiceId=${invoiceId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // ✅ Chuyển hướng đến trang thanh toán PayOS
+                    window.location.href = data.paymentUrl;
+                } else {
+                    alert('Lỗi: ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = 'PayOS (QR Code)';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại!');
+                btn.disabled = false;
+            });
+        }
+    </script>
+}

@@ -845,6 +845,7 @@ function formatPrice(price) {
 function confirmBooking() {
     const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
 
+    // Validation
     if (!bookingData.movieId) {
         alert('Vui lòng chọn phim!');
         return;
@@ -862,14 +863,103 @@ function confirmBooking() {
         return;
     }
 
-    console.log('=== BOOKING DATA ===');
-    console.log('Customer:', bookingData.isGuest ? 'Guest' : bookingData.customerName);
-    console.log('Customer ID:', bookingData.customerId);
-    console.log('Movie:', bookingData.movieId);
-    console.log('ShowTime:', bookingData.showTime);
-    console.log('Tickets:', bookingData.tickets);
-    console.log('Seats:', bookingData.seats);
-    console.log('Combos:', bookingData.combos);
+    // ✅ Tính tổng tiền
+    let totalAmount = 0;
 
-    alert(`Đặt vé thành công!\nKhách hàng: ${bookingData.customerName}\nGhế: ${bookingData.seats.join(', ')}\nTổng tiền: ${document.getElementById('summary-total').textContent}`);
+    for (let type in bookingData.tickets) {
+        totalAmount += bookingData.tickets[type] * (ticketPrices[type] || 0);
+    }
+
+    for (let productId in bookingData.combos) {
+        const comboItem = document.querySelector(`[data-combo-id="${productId}"]`);
+        if (comboItem && bookingData.combos[productId] > 0) {
+            const price = parseFloat(comboItem.dataset.price || '0');
+            totalAmount += bookingData.combos[productId] * price;
+        }
+    }
+
+    // ✅ Chuẩn bị request data
+    const bookingRequest = {
+        customerId: bookingData.customerId,
+        customerPhone: bookingData.customerPhone,
+        customerName: bookingData.customerName || 'Khách vãng lai',
+        isGuest: bookingData.isGuest,
+        movieId: bookingData.movieId,
+        showTimeId: bookingData.showTime,
+        branchId: bookingData.branchId,
+        roomName: bookingData.roomName,
+        roomType: bookingData.roomType,
+        showDate: bookingData.date,
+        showTime: bookingData.time,
+        tickets: Object.entries(bookingData.tickets)
+            .filter(([type, quantity]) => quantity > 0)
+            .map(([type, quantity]) => ({
+                ticketType: type,
+                quantity: quantity,
+                price: ticketPrices[type]
+            })),
+        seats: selectedSeats.map(s => ({
+            seatId: s.seatId,
+            seatName: s.seatName,
+            seatType: s.seatType
+        })),
+        products: Object.entries(bookingData.combos)
+            .filter(([productId, quantity]) => quantity > 0)
+            .map(([productId, quantity]) => {
+                const comboItem = document.querySelector(`[data-combo-id="${productId}"]`);
+                return {
+                    productId: productId,
+                    productName: comboItem?.dataset.comboName || '',
+                    quantity: quantity,
+                    price: parseFloat(comboItem?.dataset.price || '0')
+                };
+            }),
+        totalAmount: totalAmount,
+        pointsToEarn: bookingData.isGuest ? 0 : Math.floor(totalAmount / 10000)
+    };
+
+    console.log('=== BOOKING REQUEST ===');
+    console.log(JSON.stringify(bookingRequest, null, 2));
+
+    // Show loading
+    const confirmBtn = document.querySelector('.btn-book');
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+    }
+
+    // ✅ Gửi request tạo invoice
+    fetch('/Admin/EmployeeSale/CreateBooking', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingRequest)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('✅ Booking created:', data);
+
+                // ✅ Chuyển sang trang payment
+                window.location.href = `/Admin/EmployeeSale/PaymentMethod?invoiceId=${data.invoiceId}`;
+            } else {
+                console.error('❌ Booking failed:', data.message);
+                alert('Đặt vé thất bại: ' + data.message);
+
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<i class="fas fa-check-circle"></i> XÁC NHẬN ĐẶT VÉ';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại!');
+
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="fas fa-check-circle"></i> XÁC NHẬN ĐẶT VÉ';
+            }
+        });
 }

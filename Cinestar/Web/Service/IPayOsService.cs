@@ -66,11 +66,20 @@ namespace Web.Service
         /// <param name="description">Mô tả</param>
         /// <returns>Kết quả tạo link thanh toán</returns>
         Task<CreatePaymentResult?> CreateTicketPaymentLink(
-                Guid invoiceId,
+        Guid invoiceId,
         decimal amount,
         string buyerName,
-                string buyerEmail,
+        string buyerEmail,
         string buyerPhone,
         string description);
+
+        Task<CreatePaymentResult?> CreateTicketPaymentLink(
+        Guid invoiceId,
+        decimal amount,
+        string buyerName,
+        string buyerEmail,
+        string buyerPhone,
+        string description,
+        bool isAdminSale = false);
     }
 }

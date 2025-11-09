@@ -1,0 +1,67 @@
+﻿@model Web.Models.Invoice
+
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+    var movieTitle = Model.InvoiceTickets?.FirstOrDefault()?.Ticket?.ShowTime?.Movie?.Title ?? "Vé xem phim";
+    var showTime = Model.InvoiceTickets?.FirstOrDefault()?.Ticket?.ShowTime;
+    var seats = Model.InvoiceTickets?.Select(it => it.Ticket?.Seat?.SeatName).ToList();
+}
+
+@section Styles {
+    <style>
+        .success-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .ticket-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+    </style>
+}
+
+<div class="success-container">
+    <div class="success-card">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h2 class="text-success mb-3">Thanh toán thành công!</h2>
+        <p class="text-muted">Mã hóa đơn: <strong>@Model.InvoiceID.ToString().Substring(0, 8)</strong></p>
+
+        <div class="ticket-info">
+            <h5><i class="fas fa-ticket-alt"></i> Thông tin vé</h5>
+            <hr>
+            <p><strong>Khách hàng:</strong> @(Model.Customer?.FullName ?? "Khách vãng lai")</p>
+            <p><strong>Phim:</strong> @movieTitle</p>
+            <p><strong>Suất chiếu:</strong> @showTime?.StartTime.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Ghế:</strong> @string.Join(", ", seats ?? new List<string>())</p>
+            <p><strong>Tổng tiền:</strong> <span class="text-danger fw-bold">@Model.TotalAmount.ToString() ₫</span></p>
+        </div>
+
+        <div class="mt-4">
+            <a href="@Url.Action("Index", "EmployeeSale")" class="btn btn-primary btn-lg">
+                <i class="fas fa-home"></i> Quay lại trang chủ
+            </a>
+            <button class="btn btn-outline-primary btn-lg" onclick="window.print()">
+                <i class="fas fa-print"></i> In vé
+            </button>
+        </div>
+    </div>
+</div>
