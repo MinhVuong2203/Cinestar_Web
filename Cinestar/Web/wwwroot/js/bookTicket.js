@@ -285,39 +285,34 @@
     let connection = null;
     let currentShowTimeId = null;
     let currentCustomerId = null;
-    function initSignalR() {
+
+    async function initSignalR() {
         connection = new signalR.HubConnectionBuilder()
             .withUrl("/seatHub")
+            .configureLogging(signalR.LogLevel.Information) 
             .withAutomaticReconnect()
             .build();
 
-        // Lắng nghe sự kiện: Người khác CHỌN ghế
         connection.on("SeatSelected", function (data) {
-            console.log("Ghế được chọn:", data);
-
-            // Tìm ghế trong DOM
             const seatElement = document.querySelector(`td.seat[data-seat-id="${data.seatId}"]`);
             if (seatElement) {
-                // Kiểm tra: Ghế do mình chọn hay người khác?
-                if (data.customerId === currentCustomerId) {
-                    // Ghế của mình → màu xanh dương
-                    seatElement.className = 'seat selected';
+                console.log("Tìm thấy ghế:", data.seatId);
+                if (data.customerId.toString() === currentCustomerId.toString()) {
+                    seatElement.className = 'seat selected'; 
                 } else {
-                    // Ghế người khác → màu cam, không cho click
-                    seatElement.className = 'seat choosing';
+                    seatElement.className = 'seat choosing';                  
                 }
+            } else {
+                console.log("Không tìm thấy ghế:", data.seatId);
             }
         });
 
         // Lắng nghe sự kiện: Người khác BỎ CHỌN ghế
         connection.on("SeatDeselected", function (data) {
-            console.log("Ghế bị bỏ chọn:", data);
-
             const seatElement = document.querySelector(`td.seat[data-seat-id="${data.seatId}"]`);
             if (seatElement) {
                 const seatType = seatElement.dataset.seatType;
 
-                // Trả về màu gốc
                 if (seatType === 'Ghế đôi') {
                     seatElement.className = 'seat couple';
                 } else if (seatType === 'VIP') {
@@ -329,27 +324,24 @@
         });
 
         // Kết nối
-        connection.start()
-            .then(() => console.log("SignalR connected"))
-            .catch(err => console.error("SignalR error:", err));
+        try {
+            await connection.start();
+            console.log("SignalR connected successfully!");
+        } catch (err) {
+            console.error("SignalR connection error:", err);
+        }
     }
         
-
-
     // Click vào li để load ghế
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('item-time')) {
-            // Bỏ active cũ
             document.querySelectorAll('.item-time').forEach(item => {
                 item.classList.remove('active');
             });
 
-            // Thêm active vào item được click
             e.target.classList.add('active');
-
             const showTimeId = e.target.dataset.showtimeId;
             currentCustomerId = document.getElementById("CustomerId").innerHTML;
-
             console.log("ShowTimeID: " + showTimeId);
             console.log("CustomerID: " + currentCustomerId);
 
@@ -357,8 +349,7 @@
             if (currentShowTimeId && connection) {
                 connection.invoke("LeaveShowTime", currentShowTimeId);
             }
-
-            // Join vào nhóm suất chiếu mới
+      
             currentShowTimeId = showTimeId;
             if (connection) {
                 connection.invoke("JoinShowTime", showTimeId);
@@ -368,10 +359,8 @@
         }
     });
 
-    // Khởi tạo SignalR khi trang load
-    document.addEventListener('DOMContentLoaded', function () {
-        initSignalR();
-    });
+    console.log("Khởi động SignalR...");
+    initSignalR();
 
     // Load danh sách ghế từ server
     function loadSeatingLayout(showTimeId, currentCustomerId) {
@@ -431,7 +420,7 @@
             rows[rowName].forEach(seat => {
                 const td = document.createElement('td');
                 td.textContent = seat.seatName;
-                td.dataset.seatId = seat.seatID; // ← SỬA: Dùng seat.seatID thay vì seatId
+                td.dataset.seatId = seat.seatID;
                 td.dataset.seatType = seat.seatType;
 
                 // Xác định class theo trạng thái
@@ -488,7 +477,7 @@
 
         seats.forEach(seat => {
             seat.addEventListener('click', async function () {
-                const seatId = this.dataset.seatId; // ← Lấy seatId từ element được click
+                const seatId = this.dataset.seatId; 
                 const seatType = this.dataset.seatType;
 
                 if (this.classList.contains('selected')) {
@@ -506,7 +495,7 @@
                             // Trả về class gốc
                             if (seatType === 'Ghế đôi') {
                                 this.classList.add('couple');
-                            } else if (seatType === 'VIP') {
+                            } else if (seatType === 'Ghế VIP') {
                                 this.classList.add('vip');
                             } else {
                                 this.classList.add('regular');
@@ -527,7 +516,7 @@
 
                         const result = await response.json();
 
-                        if (result.success) { // ← Chú ý: Controller trả về {result}, không phải {success}
+                        if (result.success) { 
                             this.classList.add('selected');
                             this.classList.remove('regular', 'couple', 'vip');
                         } else {

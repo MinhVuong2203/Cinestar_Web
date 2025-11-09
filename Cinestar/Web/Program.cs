@@ -76,12 +76,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapHub<SeatHub>("/seatHub");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<SeatHub>("/seatHub");
 
 // Cấu hình router - THÊM ROUTE CHO CÁC ROLE
 app.MapControllerRoute(

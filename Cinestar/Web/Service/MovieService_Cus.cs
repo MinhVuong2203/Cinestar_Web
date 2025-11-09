@@ -144,23 +144,26 @@ namespace Web.Service
         }
 
 
-        public async Task<bool> TrySelectSeatAsync(string showTimeId, string seatId, Guid CustomerId)
+        public async Task<bool> TrySelectSeatAsync(string showTimeId, string seatId, Guid customerId)
         {
             var ticket = await _context.Tickets
             .FirstOrDefaultAsync(t => t.ShowTimeID == showTimeId && t.SeatID == seatId && !t.IsDeleted);
             if (ticket == null) return false;
             // Kiểm tra ghế có trống HOẶC do chính user này đang giữ
-            if (ticket.Status == "Trống" || ticket.LockedBy == CustomerId)
+            if (ticket.Status == "Trống" || ticket.LockedBy == customerId)
             {
                 // Lock ghế cho user này
                 ticket.Status = "Đang được chọn";
-                ticket.LockedBy = CustomerId;
+                ticket.LockedBy = customerId;
                 ticket.LockedAt = DateTime.Now;
                 await _context.SaveChangesAsync();
+
+                Console.WriteLine($"📡 Broadcasting SeatSelected: ShowTime={showTimeId}, Seat={seatId}, Customer={customerId}");
+
                 await _hubContext.Clients.Group(showTimeId).SendAsync("SeatSelected", new
                 {
                     seatId = seatId,
-                    CustomerId = CustomerId,
+                    customerId = customerId.ToString(),
                     status = "Đang được chọn"
                 });
                 return true;
@@ -172,7 +175,7 @@ namespace Web.Service
             {
                 // Giải phóng ngay lập tức
                 ticket.Status = "Đang được chọn";
-                ticket.LockedBy = CustomerId;
+                ticket.LockedBy = customerId;
                 ticket.LockedAt = DateTime.Now;
                 await _context.SaveChangesAsync();
                 return true;
