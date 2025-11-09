@@ -42,7 +42,12 @@
         color: #212529;
         font-weight: 600;
     }
-
+.movie-poster img{
+    width: 360px;
+    height: 500px;
+    margin-top: 10px;
+/*    scale: 0.6;*/
+}
 /* ===== STEP CARD ===== */
 .step-card {
     background: white;

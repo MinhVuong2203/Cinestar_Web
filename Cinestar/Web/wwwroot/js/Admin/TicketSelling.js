@@ -298,13 +298,13 @@ function renderTicketTypes(ticketTypes) {
                     </div>
                 </div>
             </div>
+            </div>
+        </div>
         `;
     }
 
-    html += `
-            </div>
-        </div>
-    `;
+    //html += `
+    //`;
 
     ticketOptions.innerHTML = html;
     console.log('Ticket types rendered successfully');
