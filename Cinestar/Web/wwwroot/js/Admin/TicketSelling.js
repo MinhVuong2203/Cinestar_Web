@@ -6,6 +6,7 @@ console.log('movieId from inline script:', movieIdFromScript);
 
 const bookingData = {
     movieId: movieIdFromScript,
+    branchId: null,
     showTime: null,
     tickets: {},
     seats: [],
@@ -81,6 +82,7 @@ function setupTimeSlotSelection() {
 
             const showTimeId = this.dataset.showtimeId;
             const movieId = this.dataset.movieId;
+            const branchId = this.dataset.branchId;
             const time = this.dataset.time;
             const room = this.dataset.room;
             const roomType = this.dataset.roomType;
@@ -97,6 +99,9 @@ function setupTimeSlotSelection() {
             // Cập nhật TitleBrand
             updateRoomTitle(room, roomType);
 
+            // ✅ Load ticket types theo showTimeId
+            loadTicketTypes(showTimeId, movieId, branchId);
+
             // ✅ Load ghế ngồi từ server
             loadSeatingLayout(showTimeId);
 
@@ -107,6 +112,202 @@ function setupTimeSlotSelection() {
             updateSummary();
         });
     });
+}
+
+// ✅ THÊM: Load ticket types theo showTimeId
+function loadTicketTypes(showTimeId, movieId, branchId) {
+    const ticketOptions = document.getElementById('ticketOptions');
+
+    console.log('=== loadTicketTypes called ===');
+    console.log('Parameters:', { showTimeId, movieId, branchId });
+
+    // Show loading
+    ticketOptions.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Đang tải thông tin vé...</p>
+        </div>
+    `;
+
+    const url = `/Admin/EmployeeSale/GetTicketTypesByShowTime?showTimeId=${showTimeId}&movieId=${movieId}&branchId=${branchId}`;
+    console.log('Fetching URL:', url);
+
+    fetch(url)
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            return response.json();
+        })
+        .then(data => {
+            console.log('=== Response data ===');
+            console.log('Full response:', data);
+            console.log('data.success:', data.success);
+            console.log('data.ticketTypes:', data.ticketTypes);
+
+            if (data.success) {
+                console.log('SUCCESS: Rendering ticket types');
+                console.log('Ticket types:', JSON.stringify(data.ticketTypes, null, 2));
+
+                // ✅ SỬA: Từ data.ticketType thành data.ticketTypes (có 's')
+                renderTicketTypes(data.ticketTypes);
+
+                // Re-initialize after rendering
+                initializeTicketTypes();
+            } else {
+                console.error('FAILED: Error loading ticket types:', data.message);
+                ticketOptions.innerHTML = `
+                    <div class="alert alert-warning text-center">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        ${data.message || 'Không thể tải thông tin vé'}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('EXCEPTION: Error fetching ticket types:', error);
+            ticketOptions.innerHTML = `
+                <div class="alert alert-danger text-center">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Có lỗi xảy ra khi tải thông tin vé: ${error.message}
+                </div>
+            `;
+        });
+}
+
+// ✅ THÊM: Render ticket types HTML
+function renderTicketTypes(ticketTypes) {
+    const ticketOptions = document.getElementById('ticketOptions');
+
+    console.log('=== renderTicketTypes called ===');
+    console.log('Received ticketTypes:', ticketTypes);
+
+    // ✅ SỬA: Kiểm tra với key viết thường
+    if (!ticketTypes || (!ticketTypes.standard && !ticketTypes.vip && !ticketTypes.couple)) {
+        console.log('No ticket types available');
+        ticketOptions.innerHTML = `
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle"></i>
+                Không có vé nào còn trống cho suất chiếu này
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <div class="ticket-wr">
+            <h2 class="heading">CHỌN LOẠI VÉ</h2>
+            <div class="ticket-container">
+    `;
+
+    // ✅ SỬA: Truy cập với key viết thường
+    // Standard ticket
+    if (ticketTypes.standard) {
+        const standard = ticketTypes.standard;
+        html += `
+            <div class="content" data-ticket-type="standard" 
+                 data-price="${standard.price}" 
+                 data-available="${standard.availableCount}">
+                <div class="content-top">
+                    <p class="name">
+                        <i class="${standard.icon}"></i>
+                        ${standard.name}
+                    </p>
+                    <div class="desc">
+                        <p>${standard.description}</p>
+                        <p class="text-muted small">Còn lại: ${standard.availableCount} vé</p>
+                    </div>
+                    <div class="price">
+                        <p>${standard.price.toLocaleString('vi-VN')} VNĐ</p>
+                    </div>
+                </div>
+                <div class="content-bottom">
+                    <div class="count">
+                        <div class="count-btn">
+                            <button class="decrease" disabled>-</button>
+                            <span class="quantity">0</span>
+                            <button class="increase">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // VIP ticket
+    if (ticketTypes.vip) {
+        const vip = ticketTypes.vip;
+        html += `
+            <div class="content" data-ticket-type="vip" 
+                 data-price="${vip.price}" 
+                 data-available="${vip.availableCount}">
+                <div class="content-top">
+                    <p class="name">
+                        <i class="${vip.icon}"></i>
+                        ${vip.name}
+                    </p>
+                    <div class="desc">
+                        <p>${vip.description}</p>
+                        <p class="text-muted small">Còn lại: ${vip.availableCount} vé</p>
+                    </div>
+                    <div class="price">
+                        <p>${vip.price.toLocaleString('vi-VN')} VNĐ</p>
+                    </div>
+                </div>
+                <div class="content-bottom">
+                    <div class="count">
+                        <div class="count-btn">
+                            <button class="decrease" disabled>-</button>
+                            <span class="quantity">0</span>
+                            <button class="increase">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Couple ticket
+    if (ticketTypes.couple) {
+        const couple = ticketTypes.couple;
+        html += `
+            <div class="content" data-ticket-type="couple" 
+                 data-price="${couple.price}" 
+                 data-available="${couple.availableCount}">
+                <div class="content-top">
+                    <p class="name">
+                        <i class="${couple.icon}"></i>
+                        ${couple.name}
+                    </p>
+                    <div class="desc">
+                        <p>${couple.description}</p>
+                        <p class="text-muted small">Còn lại: ${couple.availableCount} vé</p>
+                    </div>
+                    <div class="price">
+                        <p>${couple.price.toLocaleString('vi-VN')} VNĐ</p>
+                    </div>
+                </div>
+                <div class="content-bottom">
+                    <div class="count">
+                        <div class="count-btn">
+                            <button class="decrease" disabled>-</button>
+                            <span class="quantity">0</span>
+                            <button class="increase">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    html += `
+            </div>
+        </div>
+    `;
+
+    ticketOptions.innerHTML = html;
+    console.log('Ticket types rendered successfully');
 }
 
 // Hàm cập nhật TitleBrand

@@ -132,8 +132,8 @@ namespace Web.Areas.Admin.Controllers
             var showTime = _employeeService.GetShowTimesByMovieAndDate(movieId, employee.BranchID, DateTime.Today);
             ViewData["ShowTimes"] = showTime;
             
-            var ticketTypes = _employeeService.GetTicketTypesAndPrices(movieId, employee.BranchID);
-            ViewData["TicketTypes"] = ticketTypes;
+            //var ticketTypes = _employeeService.GetTicketTypesAndPrices(movieId, employee.BranchID);
+            //ViewData["TicketTypes"] = ticketTypes;
 
             //lấy danh sách sản phẩm
             var lstProducts = _productService.GetAllProduct();
@@ -142,6 +142,76 @@ namespace Web.Areas.Admin.Controllers
 
             return View(employee);
         }
+
+        //Hàm để lấy ticket types theo showTimeId
+        [HttpGet]
+        public IActionResult GetTicketTypesByShowTime(string showTimeId, string movieId, string branchId)
+        {
+            try
+            {
+                Console.WriteLine($"=== GetTicketTypesByShowTime Controller ===");
+                Console.WriteLine($"showTimeId: {showTimeId}, movieId: {movieId}, branchId: {branchId}");
+
+                if (string.IsNullOrEmpty(showTimeId) || string.IsNullOrEmpty(movieId) || string.IsNullOrEmpty(branchId))
+                {
+                    Console.WriteLine("ERROR: Missing parameters");
+                    return Json(new { success = false, message = "Missing required parameters" });
+                }
+
+                var ticketTypes = _employeeService.GetTicketTypesAndPrices(movieId, branchId, showTimeId);
+
+                if (ticketTypes == null)
+                {
+                    Console.WriteLine("ERROR: ticketTypes is null from service");
+                    return Json(new { success = false, message = "Không tìm thấy thông tin vé" });
+                }
+
+                // ✅ Convert dynamic to concrete object để serialize đúng
+                var response = new
+                {
+                    success = true,
+                    ticketTypes = new
+                    {
+                        Standard = ticketTypes.Standard != null ? new
+                        {
+                            Name = (string)ticketTypes.Standard.Name,
+                            Description = (string)ticketTypes.Standard.Description,
+                            Price = (decimal)ticketTypes.Standard.Price,
+                            AvailableCount = (int)ticketTypes.Standard.AvailableCount,
+                            Icon = (string)ticketTypes.Standard.Icon
+                        } : null,
+                        VIP = ticketTypes.VIP != null ? new
+                        {
+                            Name = (string)ticketTypes.VIP.Name,
+                            Description = (string)ticketTypes.VIP.Description,
+                            Price = (decimal)ticketTypes.VIP.Price,
+                            AvailableCount = (int)ticketTypes.VIP.AvailableCount,
+                            Icon = (string)ticketTypes.VIP.Icon
+                        } : null,
+                        Couple = ticketTypes.Couple != null ? new
+                        {
+                            Name = (string)ticketTypes.Couple.Name,
+                            Description = (string)ticketTypes.Couple.Description,
+                            Price = (decimal)ticketTypes.Couple.Price,
+                            AvailableCount = (int)ticketTypes.Couple.AvailableCount,
+                            Icon = (string)ticketTypes.Couple.Icon
+                        } : null
+                    }
+                };
+
+                Console.WriteLine($"SUCCESS: Returning ticket types to client");
+                Console.WriteLine($"Response JSON: {System.Text.Json.JsonSerializer.Serialize(response)}");
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"EXCEPTION in GetTicketTypesByShowTime: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         //Hàm lấy tên phòng chiếu
         [HttpPost]
         public IActionResult GetRoomNameByMovieShowTimeDate(string movieId, string showTimeId)

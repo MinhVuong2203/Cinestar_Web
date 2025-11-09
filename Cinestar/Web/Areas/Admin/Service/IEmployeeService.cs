@@ -21,7 +21,7 @@ namespace Web.Areas.Admin.Service
         //lấy danh sách phim theo chi nhánh của nhân viên
         public List<Movie> GetMoviesByEmployeeBranchId(string branchId);
         // Lấy thông tin loại vé, số lượng vé và giá của vé phim tại chi nhánh
-        public dynamic GetTicketTypesAndPrices(string movieId, string branchId);
+        public dynamic GetTicketTypesAndPrices(string movieId, string branchId, string showTimeId);
 
         // Lấy danh sách suất chiếu theo movieId, branchId và ngày
         public dynamic GetShowTimesByMovieAndDate(string movieId, string branchId, DateTime date);

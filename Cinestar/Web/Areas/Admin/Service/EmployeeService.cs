@@ -152,69 +152,90 @@ namespace Web.Areas.Admin.Service
         }
 
         // Lấy thông tin loại vé, số lượng vé available và giá của phim tại chi nhánh
-        public dynamic GetTicketTypesAndPrices(string movieId, string branchId)
+        public dynamic GetTicketTypesAndPrices(string movieId, string branchId, string showTimeId)
         {
             try
             {
-                if (string.IsNullOrEmpty(movieId) || string.IsNullOrEmpty(branchId))
+                if (string.IsNullOrEmpty(movieId) || string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(showTimeId))
                 {
-                    Console.WriteLine("ERROR: MovieId or BranchId is null/empty");
+                    Console.WriteLine("ERROR: MovieId, BranchId or ShowTimeId is null/empty");
                     return null;
                 }
 
                 Console.WriteLine($"=== GetTicketTypesAndPrices ===");
-                Console.WriteLine($"MovieId: {movieId}, BranchId: {branchId}");
+                Console.WriteLine($"MovieId: {movieId}, BranchId: {branchId}, ShowTimeId: {showTimeId}");
 
-                // Lấy danh sách suất chiếu của phim tại chi nhánh (từ hôm nay trở đi)
-                var showTimeIds = _context.ShowTimes
+                // Lấy thông tin suất chiếu
+                var showTime = _context.ShowTimes
                     .Include(st => st.Room)
-                    .Where(st => st.MovieID == movieId &&
-                               !st.IsDeleted &&
-                               st.Room != null &&
-                               !st.Room.IsDeleted &&
-                               st.Room.BranchID == branchId &&
-                               st.StartTime.Date == DateTime.Today)
-                    .Select(st => st.ShowTimeID)
-                    .ToList();
+                    .FirstOrDefault(st => st.ShowTimeID == showTimeId &&
+                                         !st.IsDeleted &&
+                                         st.MovieID == movieId &&
+                                         st.Room != null &&
+                                         !st.Room.IsDeleted &&
+                                         st.Room.BranchID == branchId);
 
-                if (!showTimeIds.Any())
+                if (showTime == null)
                 {
-                    Console.WriteLine("WARNING: No showtimes found for this movie at this branch");
+                    Console.WriteLine("WARNING: ShowTime not found");
                     return null;
                 }
 
-                Console.WriteLine($"Found {showTimeIds.Count} showtimes");
+                Console.WriteLine($"Found ShowTime: {showTime.ShowTimeID}, Room: {showTime.Room.RoomName}");
 
-                // Đếm số lượng vé available theo từng loại ghế (SeatType)
-                var ticketStats = _context.Tickets
+                // ✅ SỬA: Lấy tất cả tickets trước, sau đó filter trong memory
+                var allTickets = _context.Tickets
                     .Include(t => t.Seat)
-                    .Where(t => showTimeIds.Contains(t.ShowTimeID) &&
-                                !t.IsDeleted &&
-                                t.Status == "Trống" &&
-                                t.Seat != null &&
-                                !t.Seat.IsDeleted)
-                    .GroupBy(t => t.Seat.SeatType)
-                    .Select(g => new
-                    {
-                        SeatType = g.Key,
-                        AvailableCount = g.Count(),
-                        Price = g.Min(t => t.Price ?? 0)  // ✅ THAY ĐỔI: Dùng Min thay vì Average
-                    })
+                    .Where(t => t.ShowTimeID == showTimeId &&
+                               !t.IsDeleted &&
+                               t.Seat != null &&
+                               !t.Seat.IsDeleted)
+                    .ToList(); // ✅ Load vào memory trước
+
+                Console.WriteLine($"Total tickets for showtime: {allTickets.Count}");
+
+                // ✅ Filter trong memory để tránh lỗi encoding
+                var availableTickets = allTickets
+                    .Where(t => !string.IsNullOrEmpty(t.Status) && t.Status.Trim() == "Trống")
                     .ToList();
 
-                Console.WriteLine($"Ticket statistics: {Newtonsoft.Json.JsonConvert.SerializeObject(ticketStats)}");
+                Console.WriteLine($"Available tickets (Status='Trống'): {availableTickets.Count}");
 
-                // Nếu không có vé available nào
-                if (!ticketStats.Any())
+                // Debug: In ra các status khác nhau
+                var statusGroups = allTickets.GroupBy(t => t.Status).Select(g => new { Status = g.Key, Count = g.Count() }).ToList();
+                Console.WriteLine($"Status breakdown:");
+                foreach (var sg in statusGroups)
+                {
+                    Console.WriteLine($"  - '{sg.Status}': {sg.Count} tickets");
+                }
+
+                if (!availableTickets.Any())
                 {
                     Console.WriteLine("WARNING: No available tickets found");
                     return null;
                 }
 
-                // Tạo response object với thông tin chi tiết
+                // Group by seat type
+                var ticketStats = availableTickets
+                    .GroupBy(t => t.Seat.SeatType)
+                    .Select(g => new
+                    {
+                        SeatType = g.Key,
+                        AvailableCount = g.Count(),
+                        Price = g.Min(t => t.Price ?? 0)
+                    })
+                    .ToList();
+
+                Console.WriteLine($"Ticket statistics by seat type:");
+                foreach (var stat in ticketStats)
+                {
+                    Console.WriteLine($"  - {stat.SeatType}: {stat.AvailableCount} available, price: {stat.Price}");
+                }
+
+                // Tạo response object
                 var standardTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế thường");
                 var vipTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế VIP");
-                var coupleTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế Couple");
+                var coupleTicket = ticketStats.FirstOrDefault(t => t.SeatType == "Ghế Couple" || t.SeatType == "Ghế đôi");
 
                 var result = new
                 {
