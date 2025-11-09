@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Areas.Admin.Service;
 using Web.Data;
+using Web.Service;
 
 namespace Web.Areas.Admin.Controllers
 {
@@ -12,11 +13,14 @@ namespace Web.Areas.Admin.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly IProductService _productService;
         private readonly CineStarContext _context;
-        public EmployeeSaleController(IEmployeeService employeeService, IProductService productService, CineStarContext context)
+        private readonly IMovieService_Cus _movieService_Cus;
+        public EmployeeSaleController(IEmployeeService employeeService, IProductService productService, 
+            CineStarContext context, IMovieService_Cus movieService_Cus)
         {
             _employeeService = employeeService;
             _productService = productService;
             _context = context;
+            _movieService_Cus = movieService_Cus;
         }
         public async Task<IActionResult> Index()
         {
@@ -191,5 +195,63 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
+        //lấy sơ đồ chỗ ngồi
+        public async Task<IActionResult> GetSeatingLayout(string showTimeId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(showTimeId))
+                {
+                    return Json(new { success = false, message = "ShowTimeId is required" });
+                }
+
+                // Lấy thông tin showtime
+                var showTime = _context.ShowTimes
+                    .Include(st => st.Room)
+                    .FirstOrDefault(st => st.ShowTimeID == showTimeId && !st.IsDeleted);
+
+                if (showTime == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy suất chiếu" });
+                }
+
+                // Lấy danh sách ghế của phòng
+                var seats = _context.Seats
+                    .Where(s => s.RoomID == showTime.RoomID && !s.IsDeleted)
+                    .OrderBy(s => s.SeatName)
+                    .Select(s => new
+                    {
+                        seatId = s.SeatID,
+                        seatName = s.SeatName,
+                        seatType = s.SeatType,
+                        status = "Trống" // Mặc định
+                    })
+                    .ToList();
+
+                // Lấy danh sách vé đã đặt cho suất chiếu này
+                var bookedTickets = _context.Tickets
+                    .Where(t => t.ShowTimeID == showTimeId &&
+                               !t.IsDeleted &&
+                               (t.Status == "Đã đặt" || t.Status == "Đã thanh toán"))
+                    .Select(t => t.SeatID)
+                    .ToList();
+
+                // Cập nhật status cho ghế đã đặt
+                var seatsWithStatus = seats.Select(s => new
+                {
+                    s.seatId,
+                    s.seatName,
+                    s.seatType,
+                    status = bookedTickets.Contains(s.seatId) ? "Đã đặt" : "Trống"
+                }).ToList();
+
+                return Json(new { success = true, seats = seatsWithStatus });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetSeatingLayout: {ex.Message}");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }
