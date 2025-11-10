@@ -144,20 +144,21 @@
                 let html = '<ul class="cinestar-list">';
                 branches.forEach((branch, index) => {
                     html += `
-      <li class="cinestar-item ${index === 0 ? 'open' : ''}" data-branch-id="${branch.branchId}">
-              <div class="cinestar-heading">
-      <h4 class="title">${branch.branchName}</h4>
-      <span class="chevron">
-        <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
-    </span>
-           </div>
-      <div class="cinestar-body">
-     <p class="address">${branch.address}, ${branch.district}</p>
-        <div class="showtime-container" data-branch-id="${branch.branchId}">
-         <p class="loading">Đang tải lịch chiếu...</p>
-     </div>
-</div>
-           </li>`;
+                        <li class="cinestar-item ${index === 0 ? 'open' : ''}"
+                            data-branch-id="${branch.branchId}">
+                            <div class="cinestar-heading">
+                                <h4 class="title">${branch.branchName}</h4>
+                                <span class="chevron">
+                                    <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
+                                </span>
+                            </div>
+                            <div class="cinestar-body">
+                                <p class="address">${branch.address}, ${branch.district}</p>
+                                <div class="showtime-container" data-branch-id="${branch.branchId}">
+                                    <p class="loading">Đang tải lịch chiếu...</p>
+                                </div>
+                            </div>
+                        </li>`;
                 });
                 html += '</ul>';
                 container.innerHTML = html;
@@ -193,18 +194,18 @@
                 let html = '<ul class="list-infor">';
                 showTimeGroups.forEach(group => {
                     html += `
-            <li class="item-infor">
- <div class="tt">${group.roomType}</div>
-           <ul class="list-time">`;
+                        <li class="item-infor">
+                            <div class="tt">${group.roomType}</div>
+                            <ul class="list-time">`;
 
-                    group.showTimes.forEach(st => {
-                        html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}">
- ${st.timeDisplay}
-     </li>`;
+                            group.showTimes.forEach(st => {
+                            html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}">
+                            ${st.timeDisplay}
+                        </li>`;
                     });
 
                     html += `</ul>
-       </li>`;
+                        </li>`;
                 });
                 html += '</ul>';
                 container.innerHTML = html;

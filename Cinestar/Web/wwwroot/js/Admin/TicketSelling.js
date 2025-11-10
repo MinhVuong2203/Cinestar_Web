@@ -72,7 +72,7 @@ function setupCustomerInput() {
 
             console.log('Checking customer with phone:', phone);
 
-            // Call API to check customer
+            //check customer
             fetch(`/Admin/EmployeeSale/CheckCustomerByPhone?phone=${phone}`)
                 .then(response => {
                     console.log('Response status:', response.status);
@@ -138,7 +138,7 @@ function setupCustomerInput() {
     console.log('✅ Customer input setup completed');
 }
 
-// ✅ Display customer info - KIỂM TRA KỸ TỪNG ELEMENT
+// ✅ Display customer info
 function displayCustomerInfo(customer) {
     console.log('=== displayCustomerInfo called ===');
     console.log('Customer data:', customer);
@@ -204,7 +204,7 @@ function proceedAsGuest() {
     console.log('=== proceedAsGuest called ===');
 
     bookingData.isGuest = true;
-    bookingData.customerId = null;
+    bookingData.customerId = "VL-" + Date.now();
     bookingData.customerPhone = null;
     bookingData.customerName = 'Khách vãng lai';
 
@@ -313,6 +313,7 @@ function setupTimeSlotSelection() {
             loadTicketTypes(showTimeId, movieId, branchId);
             loadSeatingLayout(showTimeId);
             showStep3();
+            showStep5();
             updateSummary();
         });
     });
@@ -532,14 +533,14 @@ function changeQuantity(type, delta, quantityElement, decreaseBtn, increaseBtn, 
 
     const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
 
-    if (totalTickets > 0) {
-        showStep5();
-    } else {
-        const step5 = document.getElementById('step5');
-        if (step5) {
-            step5.classList.add('hidden');
-        }
-    }
+    //if (totalTickets > 0) {
+    //    showStep5();
+    //} else {
+    //    const step5 = document.getElementById('step5');
+    //    if (step5) {
+    //        step5.classList.add('hidden');
+    //    }
+    //}
 
     updateSummary();
 }
@@ -645,21 +646,31 @@ function setupSeatClickEvents() {
 
             const seatName = this.textContent.trim();
             const seatId = this.dataset.seatId;
-            const seatType = this.classList.contains('couple') ? 'couple' :
-                this.classList.contains('vip') ? 'vip' : 'regular';
 
+            // Xác định loại ghế và map sang loại vé
+            let seatType, ticketType;
+            if (this.classList.contains('couple')) {
+                seatType = 'couple';
+                ticketType = 'couple';
+            } else if (this.classList.contains('vip')) {
+                seatType = 'vip';
+                ticketType = 'vip';
+            } else {
+                seatType = 'regular';
+                ticketType = 'standard';
+            }
+
+            // BỎ CHỌN ghế
             if (this.classList.contains('selected')) {
                 this.classList.remove('selected');
                 removeSeat(seatName);
-            } else {
-                const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
-                const totalSeatsSelected = selectedSeats.length;
 
-                if (totalSeatsSelected >= totalTickets) {
-                    alert(`Bạn chỉ có thể chọn tối đa ${totalTickets} ghế (theo số vé đã chọn)`);
-                    return;
-                }
-
+                // ✅ Tự động GIẢM số lượng vé tương ứng
+                decreaseTicketType(ticketType);
+            }
+            // CHỌN ghế mới
+            else {
+                // Kiểm tra ghế đôi
                 if (seatType === 'couple') {
                     if (!isValidCoupleSelection(seatName)) {
                         alert('Ghế đôi phải được chọn theo cặp');
@@ -669,8 +680,12 @@ function setupSeatClickEvents() {
 
                 this.classList.add('selected');
                 addSeat(seatName, seatType, seatId);
+
+                // ✅ Tự động TĂNG số lượng vé tương ứng
+                increaseTicketType(ticketType);
             }
 
+            // Hiển thị step 4 khi chọn đủ ghế
             const totalTickets = Object.values(bookingData.tickets).reduce((a, b) => a + b, 0);
             if (selectedSeats.length === totalTickets && totalTickets > 0) {
                 showStep4();
@@ -679,6 +694,80 @@ function setupSeatClickEvents() {
             updateSummary();
         });
     });
+}
+
+// ✅ Hàm tự động TĂNG loại vé
+function increaseTicketType(ticketType) {
+    const content = document.querySelector(`#ticketOptions .content[data-ticket-type="${ticketType}"]`);
+
+    if (!content) {
+        console.warn(`Không tìm thấy loại vé: ${ticketType}`);
+        return;
+    }
+
+    const quantitySpan = content.querySelector('.quantity');
+    const decreaseBtn = content.querySelector('.decrease');
+    const increaseBtn = content.querySelector('.increase');
+    const maxAvailable = parseInt(content.dataset.available || '999');
+
+    // Tăng số lượng vé
+    if (!bookingData.tickets.hasOwnProperty(ticketType)) {
+        bookingData.tickets[ticketType] = 0;
+    }
+
+    const newQuantity = Math.min(bookingData.tickets[ticketType] + 1, maxAvailable);
+    bookingData.tickets[ticketType] = newQuantity;
+
+    // Cập nhật UI
+    if (quantitySpan) {
+        quantitySpan.textContent = newQuantity;
+    }
+
+    if (decreaseBtn) {
+        decreaseBtn.disabled = newQuantity <= 0;
+    }
+    if (increaseBtn) {
+        increaseBtn.disabled = newQuantity >= maxAvailable;
+    }
+
+    console.log(`✅ Tự động tăng ${ticketType}: ${newQuantity}`);
+}
+
+// ✅ Hàm tự động GIẢM loại vé
+function decreaseTicketType(ticketType) {
+    const content = document.querySelector(`#ticketOptions .content[data-ticket-type="${ticketType}"]`);
+
+    if (!content) {
+        console.warn(`Không tìm thấy loại vé: ${ticketType}`);
+        return;
+    }
+
+    const quantitySpan = content.querySelector('.quantity');
+    const decreaseBtn = content.querySelector('.decrease');
+    const increaseBtn = content.querySelector('.increase');
+    const maxAvailable = parseInt(content.dataset.available || '999');
+
+    // Giảm số lượng vé
+    if (!bookingData.tickets.hasOwnProperty(ticketType)) {
+        bookingData.tickets[ticketType] = 0;
+    }
+
+    const newQuantity = Math.max(bookingData.tickets[ticketType] - 1, 0);
+    bookingData.tickets[ticketType] = newQuantity;
+
+    // Cập nhật UI
+    if (quantitySpan) {
+        quantitySpan.textContent = newQuantity;
+    }
+
+    if (decreaseBtn) {
+        decreaseBtn.disabled = newQuantity <= 0;
+    }
+    if (increaseBtn) {
+        increaseBtn.disabled = newQuantity >= maxAvailable;
+    }
+
+    console.log(`✅ Tự động giảm ${ticketType}: ${newQuantity}`);
 }
 
 function isValidCoupleSelection(seatName) {
@@ -717,23 +806,27 @@ function addSeat(seatName, seatType, seatId) {
 function removeSeat(seatName) {
     const index = selectedSeats.findIndex(s => s.seatName === seatName);
     if (index > -1) {
+        const removedSeat = selectedSeats[index];
         selectedSeats.splice(index, 1);
         bookingData.seats = selectedSeats.map(s => s.seatName);
 
-        const row = seatName.charAt(0);
-        const num = parseInt(seatName.substring(1));
-        const pairSeatNum = num % 2 === 0 ? num - 1 : num + 1;
-        const pairSeatName = row + String(pairSeatNum).padStart(2, '0');
+        // Nếu là ghế đôi, tự động bỏ chọn ghế còn lại
+        if (removedSeat.seatType === 'couple') {
+            const row = seatName.charAt(0);
+            const num = parseInt(seatName.substring(1));
+            const pairSeatNum = num % 2 === 0 ? num - 1 : num + 1;
+            const pairSeatName = row + String(pairSeatNum).padStart(2, '0');
 
-        const pairIndex = selectedSeats.findIndex(s => s.seatName === pairSeatName);
-        if (pairIndex > -1) {
-            selectedSeats.splice(pairIndex, 1);
-            bookingData.seats = selectedSeats.map(s => s.seatName);
+            const pairIndex = selectedSeats.findIndex(s => s.seatName === pairSeatName);
+            if (pairIndex > -1) {
+                selectedSeats.splice(pairIndex, 1);
+                bookingData.seats = selectedSeats.map(s => s.seatName);
 
-            const pairElement = Array.from(document.querySelectorAll('.seat'))
-                .find(el => el.textContent.trim() === pairSeatName);
-            if (pairElement) {
-                pairElement.classList.remove('selected');
+                const pairElement = Array.from(document.querySelectorAll('.seat'))
+                    .find(el => el.textContent.trim() === pairSeatName);
+                if (pairElement) {
+                    pairElement.classList.remove('selected');
+                }
             }
         }
     }
@@ -743,9 +836,6 @@ function showStep4() {
     const step4 = document.getElementById('step4');
     if (step4) {
         step4.classList.remove('hidden');
-        setTimeout(() => {
-            step4.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
     }
 }
 

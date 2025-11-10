@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Thanh toán đã bị hủy";
+}
+
+@section Styles {
+    <style>
+        .cancel-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .cancel-icon {
+            font-size: 5rem;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+    </style>
+}
+
+<div class="cancel-container">
+    <div class="card shadow">
+        <div class="card-body">
+            <i class="fas fa-times-circle cancel-icon"></i>
+            <h2 class="text-danger mb-3">Thanh toán đã bị hủy</h2>
+            <p class="text-muted">Bạn đã hủy giao dịch thanh toán.</p>
+            <p class="text-muted">Đơn hàng đã được hủy và ghế đã được mở lại.</p>
+
+            <div class="mt-4">
+                <a href="@Url.Action("Index", "EmployeeSale", new { area = "Admin" })" class="btn btn-primary btn-lg">
+                    <i class="fas fa-home"></i> Quay lại trang chủ
+                </a>
+                <a href="@Url.Action("SaleTicket", "EmployeeSale", new { area = "Admin" })" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-ticket-alt"></i> Đặt vé mới
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

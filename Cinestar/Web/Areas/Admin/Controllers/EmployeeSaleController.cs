@@ -404,12 +404,30 @@ namespace Web.Areas.Admin.Controllers
                     return Json(new { success = false, message = "Suất chiếu không tồn tại" });
                 }
 
+                // ✅ XỬ LÝ CustomerId: Convert string sang Guid? hoặc để null
+                Guid? customerGuid = null;
+
+                if (!request.IsGuest && !string.IsNullOrEmpty(request.CustomerId))
+                {
+                    // Nếu không phải guest và có customerId
+                    if (Guid.TryParse(request.CustomerId, out Guid parsedGuid))
+                    {
+                        customerGuid = parsedGuid;
+                    }
+                    else
+                    {
+                        // Nếu không parse được thành Guid (VD: "VL-..."), coi như guest
+                        request.IsGuest = true;
+                        customerGuid = null;
+                    }
+                }
+
                 // ✅ 1. Tạo Invoice
                 var invoice = new Invoice
                 {
                     InvoiceID = Guid.NewGuid(),
                     EmployeeID = employeeId,
-                    CustomerID = request.IsGuest ? null : request.CustomerId,
+                    CustomerID = customerGuid, // ✅ Sử dụng Guid? đã xử lý
                     BranchID = employee.BranchID,
                     IssueDate = DateTime.Now,
                     TotalAmount = request.TotalAmount,
@@ -446,7 +464,7 @@ namespace Web.Areas.Admin.Controllers
 
                     // Lock ticket
                     ticket.Status = "Đã đặt";
-                    ticket.LockedBy = request.IsGuest ? null : request.CustomerId;
+                    ticket.LockedBy = customerGuid; // ✅ Sử dụng Guid? đã xử lý
                     ticket.LockedAt = DateTime.Now;
 
                     var invoiceTicket = new InvoiceTicket
@@ -757,15 +775,23 @@ namespace Web.Areas.Admin.Controllers
 
         // ✅ Callback khi hủy thanh toán PayOS
         [HttpGet]
-        public async Task<IActionResult> PayOsCancel(string invoiceId)
+        public async Task<IActionResult> PayOsCancel(string? invoiceId, string? code, string? id, bool? cancel)
         {
-            if (Guid.TryParse(invoiceId, out Guid invoiceGuid))
+            Console.WriteLine($"=== PayOsCancel Called ===");
+            Console.WriteLine($"invoiceId: {invoiceId}");
+            Console.WriteLine($"Full URL: {Request.Path}{Request.QueryString}");
+
+            if (!string.IsNullOrEmpty(invoiceId) && Guid.TryParse(invoiceId, out Guid invoiceGuid))
             {
                 await CancelInvoice(invoiceGuid);
             }
 
-            TempData["Error"] = "Thanh toán đã bị hủy!";
-            return RedirectToAction("Index");
+            // ✅ Option 1: Hiển thị view
+            return View("PaymentCancel");
+
+            // ✅ Option 2: Redirect trực tiếp về Index với thông báo
+            // TempData["Warning"] = "Thanh toán đã bị hủy!";
+            // return RedirectToAction("Index");
         }
 
         // ✅ Trang hiển thị thành công
