@@ -116,7 +116,7 @@ namespace Web.Controllers
             return Json(ticketPrices);
         }
 
-        // 
+        // Render ra các ghế 
         public async Task<IActionResult> GetSeatingLayout(string showTimeId, Guid currentCustomerId)
         {
             var seats = await _movieService_Cus.GetSeatingLayoutAsync(showTimeId, currentCustomerId);

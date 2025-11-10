@@ -157,9 +157,6 @@ namespace Web.Service
                 ticket.LockedBy = customerId;
                 ticket.LockedAt = DateTime.Now;
                 await _context.SaveChangesAsync();
-
-                Console.WriteLine($"📡 Broadcasting SeatSelected: ShowTime={showTimeId}, Seat={seatId}, Customer={customerId}");
-
                 await _hubContext.Clients.Group(showTimeId).SendAsync("SeatSelected", new
                 {
                     seatId = seatId,

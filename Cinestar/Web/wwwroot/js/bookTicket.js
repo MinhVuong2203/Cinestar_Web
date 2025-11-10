@@ -278,8 +278,8 @@
     }
 
 
-    // Khởi tạo SignalR connection
-
+    
+    // === XỬ LÝ CHỌN GHẾ VỚI SIGNALR ===
 
     // Kết nối SignalR
     let connection = null;
@@ -315,7 +315,7 @@
 
                 if (seatType === 'Ghế đôi') {
                     seatElement.className = 'seat couple';
-                } else if (seatType === 'VIP') {
+                } else if (seatType === 'Ghế VIP') {
                     seatElement.className = 'seat vip';
                 } else {
                     seatElement.className = 'seat regular';
