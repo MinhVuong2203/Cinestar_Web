@@ -848,5 +848,30 @@ namespace Web.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
             }
         }
+        ////realtime chọn ghế
+        //// Render ra các ghế 
+        //public async Task<IActionResult> GetSeatingLayout(string showTimeId, Guid currentCustomerId)
+        //{
+        //    var seats = await _movieService_Cus.GetSeatingLayoutAsync(showTimeId, currentCustomerId);
+        //    return Json(seats);
+        //}
+
+        //// Xử lý click đặt ghế
+        //[HttpPost]
+        //public async Task<IActionResult> SelectSeats(string showTimeId, string seatId)
+        //{
+        //    var customerId = User.FindFirstValue("CustomerID");
+        //    Console.WriteLine(" ------------ " + showTimeId + " " + seatId + " " + customerId);
+        //    var success = await _movieService_Cus.TrySelectSeatAsync(showTimeId, seatId, Guid.Parse(customerId));
+        //    return Json(new { success });
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> DeselectSeat(string showTimeId, string seatId)
+        //{
+        //    var customerId = User.FindFirstValue("CustomerID");
+        //    var success = await _movieService_Cus.DeselectSeatAsync(showTimeId, seatId, Guid.Parse(customerId));
+        //    return Json(new { success });
+        //}
     }
 }

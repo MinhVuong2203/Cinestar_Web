@@ -1053,3 +1053,194 @@ function confirmBooking() {
             }
         });
 }
+//// === XỬ LÝ CHỌN GHẾ VỚI SIGNALR ===
+
+//// Kết nối SignalR
+//let connection = null;
+//let currentShowTimeId = null;
+//let currentCustomerId = null;
+
+//async function initSignalR() {
+//    connection = new signalR.HubConnectionBuilder()
+//        .withUrl("/seatHub")
+//        .configureLogging(signalR.LogLevel.Information)
+//        .withAutomaticReconnect()
+//        .build();
+
+//    connection.on("SeatSelected", function (data) {
+//        const seatElement = document.querySelector(`td.seat[data-seat-id="${data.seatId}"]`);
+//        if (seatElement) {
+//            console.log("Tìm thấy ghế:", data.seatId);
+//            if (data.customerId.toString() === currentCustomerId.toString()) {
+//                seatElement.className = 'seat selected';
+//            } else {
+//                seatElement.className = 'seat choosing';
+//            }
+//        } else {
+//            console.log("Không tìm thấy ghế:", data.seatId);
+//        }
+//    });
+
+//    // Lắng nghe sự kiện: Người khác BỎ CHỌN ghế
+//    connection.on("SeatDeselected", function (data) {
+//        const seatElement = document.querySelector(`td.seat[data-seat-id="${data.seatId}"]`);
+//        if (seatElement) {
+//            const seatType = seatElement.dataset.seatType;
+
+//            if (seatType === 'Ghế đôi') {
+//                seatElement.className = 'seat couple';
+//            } else if (seatType === 'Ghế VIP') {
+//                seatElement.className = 'seat vip';
+//            } else {
+//                seatElement.className = 'seat regular';
+//            }
+//        }
+//    });
+
+//    // Kết nối
+//    try {
+//        await connection.start();
+//        console.log("SignalR connected successfully!");
+//    } catch (err) {
+//        console.error("SignalR connection error:", err);
+//    }
+//}
+
+//// Click vào li để load ghế
+//document.addEventListener('click', function (e) {
+//    if (e.target.classList.contains('item-time')) {
+//        document.querySelectorAll('.item-time').forEach(item => {
+//            item.classList.remove('active');
+//        });
+
+//        e.target.classList.add('active');
+//        const showTimeId = e.target.dataset.showtimeId;
+//        currentCustomerId = document.getElementById("CustomerId").innerHTML;
+//        console.log("ShowTimeID: " + showTimeId);
+//        console.log("CustomerID: " + currentCustomerId);
+
+//        // Rời nhóm cũ (nếu có)
+//        if (currentShowTimeId && connection) {
+//            connection.invoke("LeaveShowTime", currentShowTimeId);
+//        }
+
+//        currentShowTimeId = showTimeId;
+//        if (connection) {
+//            connection.invoke("JoinShowTime", showTimeId);
+//        }
+
+//        loadSeatingLayout(showTimeId, currentCustomerId);
+//    }
+//});
+
+//console.log("Khởi động SignalR...");
+//initSignalR();
+
+//// Load danh sách ghế từ server
+//function loadSeatingLayout(showTimeId, currentCustomerId) {
+//    fetch(`/Admin/EmployeeSale/GetSeatingLayout?showTimeId=${showTimeId}&currentCustomerId=${currentCustomerId}`)
+//        .then(response => response.json())
+//        .then(seats => {
+//            renderSeats(seats, showTimeId);
+//        })
+//        .catch(error => {
+//            console.error('Lỗi:', error);
+//        });
+//}
+
+//// Render ghế ra bảng
+//function renderSeats(seats, showTimeId) {
+//    const table = document.getElementById('seatingTable');
+
+//    // Nhóm ghế theo hàng (A, B, C...)
+//    const rows = {};
+//    seats.forEach(seat => {
+//        const row = seat.seatName[0];
+//        if (!rows[row]) rows[row] = [];
+//        rows[row].push(seat);
+//    });
+
+//    table.innerHTML = '';
+
+//    // Số cột tối đa của hàng
+//    const totalCols = 17;
+
+//    for (let rowName in rows) {
+//        const tr = document.createElement('tr');
+
+//        // Label hàng (A, B, C...)
+//        const tdLabel = document.createElement('td');
+//        tdLabel.className = 'row-label';
+//        tdLabel.textContent = rowName;
+//        tr.appendChild(tdLabel);
+
+//        // Tính số cột thực tế
+//        let realCols = 0;
+//        rows[rowName].forEach(seat => {
+//            realCols += (seat.seatType === 'Ghế đôi') ? 2 : 1;
+//        });
+
+//        const emptyBefore = Math.floor((totalCols - realCols) / 2);
+//        const emptyAfter = totalCols - realCols - emptyBefore;
+
+//        // Thêm ô trống bên trái
+//        for (let i = 0; i < emptyBefore; i++) {
+//            const tdEmpty = document.createElement('td');
+//            tdEmpty.className = 'empty';
+//            tr.appendChild(tdEmpty);
+//        }
+
+//        // Vẽ từng ghế
+//        rows[rowName].forEach(seat => {
+//            const td = document.createElement('td');
+//            td.textContent = seat.seatName;
+//            td.dataset.seatId = seat.seatID;
+//            td.dataset.seatType = seat.seatType;
+
+//            // Xác định class theo trạng thái
+//            let seatClass = 'seat';
+
+//            if (seat.status === 'Đã đặt') {
+//                seatClass += ' booked';
+//            }
+//            else if (seat.status === 'Đang được chọn') {
+//                // Kiểm tra: Ghế do mình chọn hay người khác chọn?
+//                if (seat.isMyChoice) {
+//                    seatClass += ' selected'; // Ghế của mình
+//                } else {
+//                    seatClass += ' choosing'; // Ghế người khác
+//                }
+//            }
+//            else {
+//                // Ghế trống
+//                if (seat.seatType === 'Ghế đôi') {
+//                    seatClass += ' couple';
+//                } else if (seat.seatType === 'Ghế VIP') {
+//                    seatClass += ' vip';
+//                } else {
+//                    seatClass += ' regular';
+//                }
+//            }
+
+//            // Ghế đôi chiếm 2 cột
+//            if (seat.seatType === 'Ghế đôi') {
+//                td.colSpan = 2;
+//            }
+
+//            td.className = seatClass;
+//            tr.appendChild(td);
+//        });
+
+//        // Thêm ô trống bên phải
+//        for (let i = 0; i < emptyAfter; i++) {
+//            const tdEmpty = document.createElement('td');
+//            tdEmpty.className = 'empty';
+//            tr.appendChild(tdEmpty);
+//        }
+
+//        table.appendChild(tr);
+//    }
+
+//    // Gắn sự kiện click
+//    addSeatClickEvents(showTimeId);
+//}
