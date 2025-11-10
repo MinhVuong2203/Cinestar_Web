@@ -264,26 +264,12 @@
     font-size: 28px;
 }*/
 
+/*Đặt vé*/
 .screen {
     height: 100px;
-/*    border-radius: 50% 50% 0 0 / 100% 100% 0 0;*/
     margin: 0 auto 10px;
     width: 100%;
-/*    box-shadow: 0 3px 10px rgba(255,255,255,0.3);*/
-/*    position: relative;*/
 }
-/*.screen::after {
-    position: absolute;
-    content: '';
-    top: 20px;
-    left: 0;
-    background: #ffd700;
-    height: 90%;
-    width: 100%;
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;*/
-/*    margin: 0 auto 10px;*/
-    /*box-shadow: 0 3px 10px rgba(255,255,255,0.3);
-}*/
 
 .screen-label {
     text-align: center;
@@ -437,6 +423,8 @@ td.choosing {
     .legend-box.vip {
         background: linear-gradient(135deg, #FFD700, #FFA500);  
     }
+/*Hết đặt vé*/
+
 
 /*food section*/
 /* ==========================================
