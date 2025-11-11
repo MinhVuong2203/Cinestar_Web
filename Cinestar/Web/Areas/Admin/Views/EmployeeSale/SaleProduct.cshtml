@@ -1,0 +1,141 @@
+﻿@{
+	ViewData["Title"] = "Sale Product";
+	var listProduct = ViewData["lstProducts"] as List<Product>;
+}
+@section Styles {
+    <link href="~/css/Admin/SaleProduct.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+}
+<div class="product-container">
+    <div class="container-fluid py-4">
+        <div class="step-card">
+            <div class="step-header">
+                <h3 class="step-title">Thông tin khách hàng</h3>
+            </div>
+            <div class="customer-input-section">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="customerPhone" class="form-label">
+                            <i class="fas fa-phone"></i> Số điện thoại khách hàng
+                        </label>
+                        <div class="input-group">
+                            <input type="tel"
+                                   class="form-control"
+                                   id="customerPhone"
+                                   placeholder="Nhập số điện thoại (VD: 0912345678)"
+                                   pattern="[0-9]{10,11}"
+                                   maxlength="11">
+                            <button class="btn btn-primary" type="button" id="checkCustomerBtn">
+                                <i class="fas fa-search"></i> Kiểm tra
+                            </button>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            Nhập số điện thoại để kiểm tra thông tin khách hàng. Để trống nếu là khách vãng lai.
+                        </small>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-secondary w-100" type="button" id="skipCustomerBtn">
+                            <i class="fas fa-user-times"></i> Khách vãng lai
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ✅ Customer Info Display -->
+                <!-- ✅ Customer Info Display - Custom Design -->
+                <div id="customerInfoDisplay" class="customer-info-card mt-4" style="display: none;">
+                    <div class="customer-info-header">
+                        <i class="fas fa-user-check"></i>
+                        <h6>Thông tin khách hàng</h6>
+                    </div>
+                    <div class="customer-info-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="fas fa-user"></i> Họ tên:
+                                    </span>
+                                    <span class="info-value" id="displayCustomerName">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="fas fa-envelope"></i> Email:
+                                    </span>
+                                    <span class="info-value" id="displayCustomerEmail">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="fas fa-star"></i> Điểm tích lũy:
+                                    </span>
+                                    <span class="info-value text-warning fw-bold" id="displayCustomerPoint">0</span>
+                                    <span class="text-muted"> điểm</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="fas fa-crown"></i> Hạng thành viên:
+                                    </span>
+                                    <span class="customer-vip-badge" id="displayCustomerVip">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Guest Customer Display - Custom Design -->
+                <div id="guestCustomerDisplay" class="guest-info-card mt-4" style="display: none;">
+                    <div class="guest-info-content">
+                        <i class="fas fa-user-times"></i>
+                        <span>Khách vãng lai (không tích điểm)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Danh sách sản phẩm -->
+            <div class="col-lg-8 col-md-7">
+                <div id="product-list">
+                    @foreach (var product in listProduct)
+                    {
+                        <div class="product-card d-flex align-items-center mb-3" data-product-id="@product.ProductID">
+                            <img src="@product.ImageUrl" class="product-img me-3" alt="@product.ProductName">
+                            <div class="product-info flex-grow-1">
+                                <div class="product-title">@product.ProductName</div>
+                                <div class="product-desc">@product.ProductType</div>
+                            </div>
+                            <div class="text-end">
+                                <div class="product-price mb-2">@(string.Format("{0:N0}", Math.Floor(product.Price.Value))) ₫</div>
+                                <div class="qty-group">
+                                    <button class="qty-btn">-</button>
+                                    <span class="qty-value">0</span>
+                                    <button class="qty-btn">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <!-- Tổng kết đơn hàng -->
+            <div class="col-lg-4 col-md-5">
+                <div class="order-summary" id="order-summary">
+                    <h5><i class="bi bi-receipt"></i> Tổng kết đơn hàng</h5>
+                    <div id="order-detail">
+                        @* <div class="row">
+                            <div class="col-6 text-secondary">Khách hàng:</div>
+                            <div class="col-6 text-end">Khách vãng lai</div>
+                        </div> *@
+                        <div class="row">
+                            <div class="col-6 text-secondary">Bắp nước:</div>
+                            <div class="col-6 text-end" id="order-products">Không có</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="order-total" id="order-total">TỔNG CỘNG: 0 đ</div>
+                    <button class="btn btn-confirm w-100" id="btn-confirm"><i class="bi bi-check-circle"></i> XÁC NHẬN ĐẶT HÀNG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/Admin/SaleProduct.js?v=@DateTime.Now.Ticks"></script>

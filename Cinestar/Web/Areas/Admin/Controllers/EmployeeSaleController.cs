@@ -48,6 +48,25 @@ namespace Web.Areas.Admin.Controllers
             return View(employee);
         }
 
+        //Thông tin nhân viên
+        public async Task<IActionResult> EmployeeInfo()
+        {
+            var employeeIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(employeeIdClaim) || !Guid.TryParse(employeeIdClaim, out Guid employeeId))
+            {
+                TempData["Error"] = "Không tìm thấy thông tin nhân viên!";
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            // Lấy thông tin employee từ database
+            var employee = await _employeeService.GetEmployeeById(employeeId);
+            if (employee == null)
+            {
+                TempData["Error"] = "Nhân viên không tồn tại!";
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            return View(employee);
+        }
+
         //chọn phim để bán vé
         public async Task<IActionResult> SaleTicket()
         {
@@ -145,6 +164,34 @@ namespace Web.Areas.Admin.Controllers
             ViewData["lstProducts"] = lstProducts;
 
 
+            return View(employee);
+        } 
+
+        //trang bán bắp nước
+        public async Task<IActionResult> SaleProduct()
+        {
+            var employeeIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(employeeIdClaim) || !Guid.TryParse(employeeIdClaim, out Guid employeeId))
+            {
+                TempData["Error"] = "Không tìm thấy thông tin nhân viên!";
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            // Lấy thông tin employee từ database
+            var employee = await _employeeService.GetEmployeeById(employeeId);
+            if (employee == null)
+            {
+                TempData["Error"] = "Nhân viên không tồn tại!";
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            //lấy danh sách sản phẩm theo chi nhánh của nhân viên
+            var lstProducts = _productService.GetAllProduct();
+            ViewData["lstProducts"] = lstProducts;
+            // CHỈ set TempData error nếu KHÔNG có sản phẩm
+            // KHÔNG set nếu có sản phẩm để tránh thông báo lỗi khi có sản phẩm
+            if (lstProducts == null || !lstProducts.Any())
+            {
+                ViewBag.NoProductsMessage = "Không có sản phẩm nào tại chi nhánh này!";
+            }
             return View(employee);
         }
 
@@ -505,6 +552,102 @@ namespace Web.Areas.Admin.Controllers
                     invoiceId = invoice.InvoiceID.ToString(),
                     movieTitle = showTime.Movie?.Title,
                     totalAmount = request.TotalAmount
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProductBooking([FromBody] BookingRequestDto request)
+        {
+            try
+            {
+                if (request == null || request.Products == null || !request.Products.Any())
+                {
+                    return Json(new { success = false, message = "Không có sản phẩm nào được chọn" });
+                }
+
+                var employeeIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(employeeIdClaim, out Guid employeeId))
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin nhân viên" });
+                }
+
+                var employee = await _employeeService.GetEmployeeById(employeeId);
+                if (employee == null)
+                {
+                    return Json(new { success = false, message = "Nhân viên không tồn tại" });
+                }
+
+                // ✅ XỬ LÝ CustomerId
+                Guid? customerGuid = null;
+
+                if (!request.IsGuest && !string.IsNullOrEmpty(request.CustomerId))
+                {
+                    if (Guid.TryParse(request.CustomerId, out Guid parsedGuid))
+                    {
+                        customerGuid = parsedGuid;
+                    }
+                    else
+                    {
+                        request.IsGuest = true;
+                        customerGuid = null;
+                    }
+                }
+
+                // ✅ Tính tổng tiền từ products
+                decimal totalAmount = 0;
+                foreach (var product in request.Products)
+                {
+                    totalAmount += product.Price * product.Quantity;
+                }
+
+                // ✅ Đảm bảo totalAmount là integer (không có phần thập phân)
+                totalAmount = Math.Floor(totalAmount);
+
+                // ✅ 1. Tạo Invoice
+                var invoice = new Invoice
+                {
+                    InvoiceID = Guid.NewGuid(),
+                    EmployeeID = employeeId,
+                    CustomerID = customerGuid,
+                    BranchID = employee.BranchID,
+                    IssueDate = DateTime.Now,
+                    TotalAmount = totalAmount,
+                    Discount = 0,
+                    Status = "Chờ thanh toán",
+                    IsDeleted = false
+                };
+
+                _context.Invoices.Add(invoice);
+                await _context.SaveChangesAsync();
+
+                // ✅ 2. Tạo InvoiceProduct (KHÔNG CÓ InvoiceTicket)
+                foreach (var product in request.Products)
+                {
+                    var invoiceProduct = new InvoiceProduct
+                    {
+                        InvoiceID = invoice.InvoiceID,
+                        ProductID = product.ProductId,
+                        Quantity = product.Quantity,
+                        UnitPrice = product.Price
+                    };
+
+                    _context.InvoiceProducts.Add(invoiceProduct);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Đặt hàng thành công",
+                    invoiceId = invoice.InvoiceID.ToString(),
+                    totalAmount = totalAmount
                 });
             }
             catch (Exception ex)
