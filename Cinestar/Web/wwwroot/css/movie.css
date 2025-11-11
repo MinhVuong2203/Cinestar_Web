@@ -183,7 +183,82 @@
     .read-more:hover {
         color: #ff9500;
     }
+/* ========================================
+   CSS CHO PHẦN THÔNG BÁO PHIM SẮP CHIẾU
+   ======================================== */
 
+.coming-soon-notice {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    margin: 40px 0;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+    .coming-soon-notice > div {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .coming-soon-notice .fa-calendar-alt {
+        font-size: 80px;
+        color: #ffd700;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+    }
+
+    .coming-soon-notice h2 {
+        color: #ffffff;
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .coming-soon-notice p {
+        color: #f0f0f0;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+        .coming-soon-notice p:last-of-type {
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+    .coming-soon-notice strong {
+        color: #ffd700;
+    }
+
+    .coming-soon-notice .btn-cta {
+        display: inline-block;
+        padding: 15px 40px;
+        background: #ffd700;
+        color: #000;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    }
+
+        .coming-soon-notice .btn-cta:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+/* Animation cho icon */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
     .movie-content {

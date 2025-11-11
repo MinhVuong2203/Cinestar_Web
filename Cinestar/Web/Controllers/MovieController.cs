@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Web.Filters;
+using Web.Models;
 using Web.Service;
 
 namespace Web.Controllers
@@ -9,17 +10,17 @@ namespace Web.Controllers
     {
         private readonly ICinemaBranchService _cinemaBranchService;
         private readonly IMovieService_Cus _movieService_Cus;
-        private readonly IShowTimeService _showTimeService; // THÊM
+        private readonly IShowTimeService _showTimeService;
 
 
         public MovieController(
             ICinemaBranchService cinemaBranchService,
             IMovieService_Cus movieService_Cus,
-            IShowTimeService showTimeService) // THÊM
+            IShowTimeService showTimeService)
         {
             _cinemaBranchService = cinemaBranchService;
             _movieService_Cus = movieService_Cus;
-            _showTimeService = showTimeService; // THÊM
+            _showTimeService = showTimeService;
         }
 
         [LoadCinemaBranches]
@@ -55,27 +56,29 @@ namespace Web.Controllers
             var cities = _cinemaBranchService.GetListCityBranches();
             ViewData["lstCity"] = cities;
 
-            // Lấy thành phố mặc định (thành phố đầu tiên)
-            var defaultCity = cities.FirstOrDefault() ?? "HỒ CHÍ MINH";
+            // ===== KIỂM TRA PHIM ĐANG CHIẾU HAY SẮP CHIẾU =====
+            var now = DateTime.Now;
+            bool isComingSoon = movie.StartTime.HasValue && movie.StartTime.Value > now;
 
-            // Lấy danh sách rạp chiếu phim này ở thành phố mặc định
-            var branches = _cinemaBranchService.GetBranchesByCityAndMovie(defaultCity, id);
-            ViewData["Branches"] = branches;
-            ViewData["SelectedCity"] = defaultCity;
+            ViewData["IsComingSoon"] = isComingSoon;
 
-            // Lấy lịch chiếu cho rạp đầu tiên (nếu có)
-            //if (branches.Any())
-            //{
-            //    var firstBranch = branches.First();
-            //    var today = DateTime.Today;
-            //    var showTimes = _showTimeService.GetShowTimesByBranchMovieDate(
-            //        firstBranch.BranchID,
-            //        id,
-            //        today
-            //    );
-            //    ViewData["ShowTimes"] = showTimes;
-            //    ViewData["SelectedBranch"] = firstBranch;
-            //}
+            // Nếu là phim đang chiếu, load đầy đủ thông tin đặt vé
+            if (!isComingSoon)
+            {
+                // Lấy thành phố mặc định (thành phố đầu tiên)
+                var defaultCity = cities.FirstOrDefault() ?? "HỒ CHÍ MINH";
+
+                // Lấy danh sách rạp chiếu phim này ở thành phố mặc định
+                var branches = _cinemaBranchService.GetBranchesByCityAndMovie(defaultCity, id);
+                ViewData["Branches"] = branches;
+                ViewData["SelectedCity"] = defaultCity;
+            }
+            else
+            {
+                // Phim sắp chiếu - không load thông tin đặt vé
+                ViewData["Branches"] = new List<CinemaBranch>();
+                ViewData["SelectedCity"] = "";
+            }
 
             return View(movie);
         }
