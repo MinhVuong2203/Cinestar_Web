@@ -144,5 +144,13 @@ namespace Web.Controllers
             return Json(new { success });
         }
 
+        //lấy vé theo ghế ID, showtime ID
+        [HttpGet]
+        public async Task<IActionResult> GetTicketBySeatId(string showTimeId, string seatId)
+        {
+            var ticket = await _movieService_Cus.GetTicketBySeatIdAsync(showTimeId, seatId);
+            return Json(ticket);
+
+        }
     }
 }
