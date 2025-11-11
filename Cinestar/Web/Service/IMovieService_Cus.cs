@@ -15,5 +15,8 @@ namespace Web.Service
         public Task<Object> GetSeatingLayoutAsync(string showTimeId, Guid currentCustomerId);
         public Task<bool> TrySelectSeatAsync(string showTimeId, string seatId, Guid guid);
         public Task<bool> DeselectSeatAsync(string showTimeId, string seatId, Guid guid);
+
+        //lấy vé theo ghế ID, showtimeID
+        public Task<Ticket?> GetTicketBySeatIdAsync(string showTimeId, string seatId);
     }
 }

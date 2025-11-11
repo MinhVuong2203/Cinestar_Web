@@ -41,6 +41,7 @@ namespace Web.Service
                         {
                             ShowTimeID = st.ShowTimeID,
                             TimeDisplay = st.StartTime.ToString("HH:mm"),
+                            nameRoom = st.Room.RoomName,
                             BasePrice = st.Price ?? 0
                         }).ToList()
                     })

@@ -40,7 +40,7 @@
 
     <div class="payment-content">
         <div class="payment-form">
-            <form asp-controller="Payment" asp-action="PaymentMethod" method="post">
+            <form asp-controller="Payment" asp-action="PaymentMethod" asp-area="" method="post">
                 <div class="form-group">
                     <label for="fullname">Họ và tên <span class="required">*</span></label>
                     <input type="text" id="fullname" name="fullname" placeholder="Họ và tên" required>
@@ -78,42 +78,38 @@
 
         <div class="ticket-info">
             <div class="movie-header">
-                <h3>CỤC VÀNG CỦA NGOẠI (T13)</h3>
-                <span class="time-remaining">THỜI GIAN GIỮ VÉ: <span class="countdown">03:50</span></span>
+                <h3 id="movieTitle">CỤC VÀNG CỦA NGOẠI (T13)</h3>
+                <span class="time-remaining">THỜI GIAN GIỮ VÉ: <span class="countdown" id="countdown">03:50</span></span>
             </div>
 
             <p class="age-restriction">Phim dành cho khán giả từ đủ 13 tuổi trở lên (13+)</p>
 
             <div class="cinema-info">
-                <h4>Cinestar Satra Quận 6 (TP.HCM)</h4>
+                <h4 id="cinemaName">Cinestar Satra Quận 6 (TP.HCM)</h4>
                 <p>Tầng 6, TTTM Satra Võ Văn Kiệt, 1468 Võ Văn Kiệt, Phường 1, Quận 6, TP.HCM</p>
             </div>
 
             <div class="showtime-info">
                 <div class="showtime-label">Thời gian</div>
-                <div class="showtime-value">14:10 Thứ Hai 03/11/2025</div>
+                <div class="showtime-value" id="showtime">14:10 Thứ Hai 03/11/2025</div>
             </div>
 
             <div class="ticket-details">
                 <div class="detail-row">
                     <span class="label">Phòng chiếu</span>
-                    <span class="value">03</span>
+                    <span class="value" id="room">03</span>
                 </div>
                 <div class="detail-row">
                     <span class="label">Số vé</span>
-                    <span class="value">1</span>
+                    <span class="value" id="quantity">1</span>
                 </div>
                 <div class="detail-row">
                     <span class="label">Loại vé</span>
-                    <span class="value">Người Lớn</span>
+                    <span class="value" id="ticketType">Người Lớn</span>
                 </div>
                 <div class="detail-row">
-                    <span class="label">Loại ghế</span>
-                    <span class="value">Số ghế</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Ghế Thường</span>
-                    <span class="value">A04</span>
+                    <span class="label">Số ghế</span>
+                    <span class="value" id="seat">A04</span>
                 </div>
             </div>
 
@@ -123,10 +119,12 @@
 
             <div class="total-amount">
                 <div class="total-label">SỐ TIỀN CẦN THANH TOÁN</div>
-                <div class="total-price">45,000VND</div>
+                <div class="total-price" id="totalAmount">45,000VND</div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="~/js/payment/payment.js"></script>
+
+<script src="~/js/payment/paymentMethod.js?v=@DateTime.Now.Ticks"></script>
+<script src="~/js/payment/payment.js?v=@DateTime.Now.Ticks"></script>

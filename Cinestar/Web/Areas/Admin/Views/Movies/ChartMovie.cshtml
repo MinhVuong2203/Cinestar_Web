@@ -1,0 +1,319 @@
+﻿@{
+    ViewData["Title"] = "Thống Kê Phim";
+}
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card.green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stats-card.orange {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stats-card.blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+    .stats-number {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .stats-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .chart-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <h1 class="mb-4">📊 Thống Kê Phim</h1>
+
+    <!-- Cards Tổng Quan -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card">
+                <div class="stats-label">
+                    <i class="fas fa-film"></i> Tổng Số Phim
+                </div>
+                <div class="stats-number">@ViewBag.TotalMovies</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card green">
+                <div class="stats-label">
+                    <i class="fas fa-play-circle"></i> Đang Chiếu
+                </div>
+                <div class="stats-number">@ViewBag.NowShowing</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card orange">
+                <div class="stats-label">
+                    <i class="fas fa-calendar-alt"></i> Sắp Chiếu
+                </div>
+                <div class="stats-number">@ViewBag.ComingSoon</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card blue">
+                <div class="stats-label">
+                    <i class="fas fa-clock"></i> Thời Lượng TB
+                </div>
+                <div class="stats-number">@ViewBag.AvgDuration'</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu Đồ Hàng 1 -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h3 class="chart-title">📽️ Phim Theo Thể Loại</h3>
+                <canvas id="genreChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h3 class="chart-title">🎭 Phim Theo Độ Tuổi</h3>
+                <canvas id="ageChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu Đồ Hàng 2 -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h3 class="chart-title">🌍 Phim Theo Ngôn Ngữ</h3>
+                <canvas id="languageChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h3 class="chart-title">⏱️ Phân Bố Thời Lượng</h3>
+                <canvas id="durationChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu Đồ Hàng 3 -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="chart-container">
+                <h3 class="chart-title">📈 Xu Hướng Phim Theo Tháng</h3>
+                <canvas id="monthChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="chart-container">
+                <h3 class="chart-title">🎬 Phụ Đề & Lồng Tiếng</h3>
+                <canvas id="subDubChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Parse dữ liệu từ ViewBag
+    const moviesByGenre = JSON.parse('@Html.Raw(ViewBag.MoviesByGenre)');
+    const moviesByAge = JSON.parse('@Html.Raw(ViewBag.MoviesByAge)');
+    const moviesByLanguage = JSON.parse('@Html.Raw(ViewBag.MoviesByLanguage)');
+    const durationGroups = JSON.parse('@Html.Raw(ViewBag.DurationGroups)');
+    const moviesByMonth = JSON.parse('@Html.Raw(ViewBag.MoviesByMonth)');
+    const subDubStats = JSON.parse('@Html.Raw(ViewBag.SubDubStats)');
+
+    // Màu sắc
+    const colors = [
+        '#667eea', '#764ba2', '#f093fb', '#f5576c',
+        '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
+        '#fa709a', '#fee140', '#30cfd0', '#330867'
+    ];
+
+    // 1. Biểu đồ Thể Loại (Bar Chart)
+    new Chart(document.getElementById('genreChart'), {
+        type: 'bar',
+        data: {
+            labels: moviesByGenre.map(x => x.Genre),
+            datasets: [{
+                label: 'Số Phim',
+                data: moviesByGenre.map(x => x.Count),
+                backgroundColor: colors[0],
+                borderRadius: 8,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+
+    // 2. Biểu đồ Độ Tuổi (Doughnut Chart)
+    new Chart(document.getElementById('ageChart'), {
+        type: 'doughnut',
+        data: {
+            labels: moviesByAge.map(x => x.AgeLimit),
+            datasets: [{
+                data: moviesByAge.map(x => x.Count),
+                backgroundColor: colors.slice(0, moviesByAge.length),
+                borderWidth: 3,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // 3. Biểu đồ Ngôn Ngữ (Pie Chart)
+    new Chart(document.getElementById('languageChart'), {
+        type: 'pie',
+        data: {
+            labels: moviesByLanguage.map(x => x.Language),
+            datasets: [{
+                data: moviesByLanguage.map(x => x.Count),
+                backgroundColor: colors.slice(3, 3 + moviesByLanguage.length),
+                borderWidth: 3,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // 4. Biểu đồ Thời Lượng (Horizontal Bar)
+    new Chart(document.getElementById('durationChart'), {
+        type: 'bar',
+        data: {
+            labels: durationGroups.map(x => x.Group),
+            datasets: [{
+                label: 'Số Phim',
+                data: durationGroups.map(x => x.Count),
+                backgroundColor: ['#43e97b', '#4facfe', '#f5576c'],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+
+    // 5. Biểu đồ Theo Tháng (Line Chart)
+    new Chart(document.getElementById('monthChart'), {
+        type: 'line',
+        data: {
+            labels: moviesByMonth.map(x => x.Month),
+            datasets: [{
+                label: 'Số Phim Ra Mắt',
+                data: moviesByMonth.map(x => x.Count),
+                borderColor: colors[0],
+                backgroundColor: colors[0] + '20',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: colors[0],
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: true }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+
+    // 6. Biểu đồ Phụ Đề & Lồng Tiếng (Doughnut)
+    new Chart(document.getElementById('subDubChart'), {
+        type: 'doughnut',
+        data: {
+            labels: subDubStats.map(x => x.Type),
+            datasets: [{
+                data: subDubStats.map(x => x.Count),
+                backgroundColor: ['#667eea', '#f5576c', '#cccccc'],
+                borderWidth: 3,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>

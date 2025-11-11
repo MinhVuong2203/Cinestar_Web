@@ -30,8 +30,10 @@ namespace Web.Service
     public class ShowTimeInfo
     {
         public string ShowTimeID { get; set; } = string.Empty;
-public string TimeDisplay { get; set; } = string.Empty; // VD: "14:30"
+        public string TimeDisplay { get; set; } = string.Empty; // VD: "14:30"
         public decimal BasePrice { get; set; }
+
+        public string nameRoom { get; set; }
     }
 
     /// <summary>

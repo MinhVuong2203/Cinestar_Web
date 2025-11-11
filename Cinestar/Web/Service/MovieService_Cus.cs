@@ -203,5 +203,12 @@ namespace Web.Service
             return false;
         }
 
+        public async Task<Ticket?> GetTicketBySeatIdAsync(string showTimeId, string seatId)
+        {
+            var ticket = await _context.Tickets
+                .FirstOrDefaultAsync(t => t.ShowTimeID == showTimeId && t.SeatID == seatId && !t.IsDeleted);
+            return ticket;
+        }
+
     }
 }

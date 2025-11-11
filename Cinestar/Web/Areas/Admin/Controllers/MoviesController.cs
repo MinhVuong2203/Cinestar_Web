@@ -89,7 +89,86 @@ namespace Web.Areas.Admin.Controllers
             }
             return View(movie);
         }
+        public async Task<IActionResult> ChartMovie()
+        {
+            // Thống kê tổng quan
+            var allMovies = await _movieService.GetAllMoviesAsync(); // Bạn cần thêm method này vào IMovieService
+            var activeMovies = allMovies.Where(m => !m.IsDeleted).ToList();
 
+            var totalMovies = activeMovies.Count;
+            var nowShowing = activeMovies.Count(m => m.StartTime <= DateTime.Now && m.EndTime >= DateTime.Now);
+            var comingSoon = activeMovies.Count(m => m.StartTime > DateTime.Now);
+            var avgDuration = activeMovies.Where(m => m.DurationMinutes.HasValue)
+                                          .Average(m => (double?)m.DurationMinutes) ?? 0;
+
+            // Thống kê theo thể loại
+            var moviesByGenre = activeMovies
+                .Where(m => !string.IsNullOrEmpty(m.Genre))
+                .SelectMany(m => m.Genre.Split(',').Select(g => g.Trim()))
+                .GroupBy(g => g)
+                .Select(g => new { Genre = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
+                .Take(10)
+                .ToList();
+
+            // Thống kê theo độ tuổi
+            var moviesByAge = activeMovies
+                .Where(m => !string.IsNullOrEmpty(m.AgeLimit))
+                .GroupBy(m => m.AgeLimit)
+                .Select(g => new { AgeLimit = g.Key, Count = g.Count() })
+                .OrderBy(x => x.AgeLimit)
+                .ToList();
+
+            // Thống kê theo ngôn ngữ
+            var moviesByLanguage = activeMovies
+                .Where(m => !string.IsNullOrEmpty(m.Language))
+                .GroupBy(m => m.Language)
+                .Select(g => new { Language = g.Key, Count = g.Count() })
+                .ToList();
+
+            // Thống kê theo thời lượng
+            var durationGroups = activeMovies
+                .Where(m => m.DurationMinutes.HasValue)
+                .GroupBy(m => m.DurationMinutes < 90 ? "Ngắn (<90 phút)" :
+                             m.DurationMinutes <= 120 ? "Trung bình (90-120 phút)" :
+                             "Dài (>120 phút)")
+                .Select(g => new { Group = g.Key, Count = g.Count() })
+                .ToList();
+
+            // Thống kê phim theo tháng (6 tháng gần nhất)
+            var moviesByMonth = activeMovies
+                .Where(m => m.StartTime.HasValue && m.StartTime.Value >= DateTime.Now.AddMonths(-6))
+                .GroupBy(m => new { m.StartTime.Value.Year, m.StartTime.Value.Month })
+                .Select(g => new {
+                    Month = $"{g.Key.Month:00}/{g.Key.Year}",
+                    Count = g.Count()
+                })
+                .OrderBy(x => x.Month)
+                .ToList();
+
+            // Thống kê phụ đề và lồng tiếng
+            var moviesWithSub = activeMovies.Count(m => !string.IsNullOrEmpty(m.Sub));
+            var moviesWithDub = activeMovies.Count(m => m.Dub == true);
+            var moviesWithoutSubDub = totalMovies - moviesWithSub - moviesWithDub;
+
+            ViewBag.TotalMovies = totalMovies;
+            ViewBag.NowShowing = nowShowing;
+            ViewBag.ComingSoon = comingSoon;
+            ViewBag.AvgDuration = Math.Round(avgDuration, 0);
+
+            ViewBag.MoviesByGenre = System.Text.Json.JsonSerializer.Serialize(moviesByGenre);
+            ViewBag.MoviesByAge = System.Text.Json.JsonSerializer.Serialize(moviesByAge);
+            ViewBag.MoviesByLanguage = System.Text.Json.JsonSerializer.Serialize(moviesByLanguage);
+            ViewBag.DurationGroups = System.Text.Json.JsonSerializer.Serialize(durationGroups);
+            ViewBag.MoviesByMonth = System.Text.Json.JsonSerializer.Serialize(moviesByMonth);
+            ViewBag.SubDubStats = System.Text.Json.JsonSerializer.Serialize(new[] {
+        new { Type = "Có phụ đề", Count = moviesWithSub },
+        new { Type = "Lồng tiếng", Count = moviesWithDub },
+        new { Type = "Không có", Count = moviesWithoutSubDub }
+    });
+
+            return View();
+        }
         // POST: Admin/Movies/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -5,6 +5,10 @@
     const locationName = document.querySelector('.location-name');
     const dropdownArrow = document.querySelector('.dropdown-arrow');
 
+    // ✅ Thêm biến lưu thông tin đặt vé
+    let selectedSeatsData = [];
+    let selectedShowTimeId = null
+
     // Toggle dropdown
     selected.addEventListener('click', function () {
         dropdown.classList.toggle('show');
@@ -101,11 +105,25 @@
             const showTimeId = e.target.dataset.showtimeId;
             const timeDisplay = e.target.textContent.trim();
 
+            selectedShowTimeId = showTimeId;
+
+            // ✅ Lấy tên rạp từ cinestar-item cha
+            const cinemaItem = e.target.closest('.cinestar-item');
+            const cinemaName = cinemaItem?.querySelector('.title')?.textContent || 'Chưa chọn rạp';
+
+            console.log('=== SHOWTIME CLICKED ===');
+            console.log('Cinema Item:', cinemaItem);
+            console.log('Cinema Name:', cinemaName);
+
+            // ✅ Cập nhật tên rạp vào sticky bar
+            const cinemaNameEl = document.getElementById('cinemaName');
+            if (cinemaNameEl) {
+                cinemaNameEl.textContent = cinemaName;
+                console.log('✅ Cinema name updated in sticky bar:', cinemaName);
+            }
+
             // Cập nhật sticky bar
             document.getElementById('selectedSeatsDisplay').textContent = `Suất: ${timeDisplay}`;
-
-            // Tải thông tin vé
-            //loadTicketPrices(showTimeId);
         }
     });
 
@@ -199,7 +217,7 @@
                             <ul class="list-time">`;
 
                             group.showTimes.forEach(st => {
-                            html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}">
+                                html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}" data-room-name="${st.nameRoom}">
                             ${st.timeDisplay}
                         </li>`;
                     });
@@ -266,16 +284,18 @@
     function updateTotalPrice() {
         let total = 0;
 
-        // Lặp qua từng loại vé (mỗi .content là một loại vé riêng biệt)
-        document.querySelectorAll('#ticketContainer .content').forEach(content => {
-            const qty = parseInt(content.querySelector('.quantity').textContent) || 0;
-            const priceText = content.querySelector('.price p').textContent;
-            const price = parseInt(priceText.replace(/[^\d]/g, '')) || 0;
-            total += qty * price;
+        // ✅ Tính tổng tiền từ dữ liệu vé thực tế
+        selectedSeatsData.forEach(seat => {
+            total += seat.price || 0;
         });
 
         document.getElementById('totalPrice').textContent = total.toLocaleString('vi-VN') + ' VNĐ';
-        document.getElementById('bookBtn').disabled = total === 0;
+
+        // ✅ Enable nút thanh toán khi đã chọn ghế
+        const bookBtn = document.getElementById('bookBtn');
+        if (bookBtn) {
+            bookBtn.disabled = selectedSeatsData.length === 0;
+        }
     }
 
 
@@ -339,9 +359,16 @@
             document.querySelectorAll('.item-time').forEach(item => {
                 item.classList.remove('active');
             });
-
+        
             e.target.classList.add('active');
             const showTimeId = e.target.dataset.showtimeId;
+            const roomName = e.target.dataset.roomName;
+
+            const titleElement = document.querySelector('.TitleBrand');
+            if (titleElement) {
+                titleElement.textContent = 'Chọn ghế - ' + roomName;
+            }
+
             currentCustomerId = document.getElementById("CustomerId").innerHTML;
             console.log("ShowTimeID: " + showTimeId);
             console.log("CustomerID: " + currentCustomerId);
@@ -478,11 +505,12 @@
 
         seats.forEach(seat => {
             seat.addEventListener('click', async function () {
-                const seatId = this.dataset.seatId; 
+                const seatId = this.dataset.seatId;
                 const seatType = this.dataset.seatType;
+                const seatName = this.textContent.trim();
 
                 if (this.classList.contains('selected')) {
-                    // Bỏ chọn
+                    // ✅ BỎ CHỌN GHẾ
                     try {
                         const response = await fetch(`/Movie/DeselectSeat?showTimeId=${showTimeId}&seatId=${seatId}`, {
                             method: 'POST'
@@ -493,6 +521,9 @@
                         if (result.success) {
                             this.classList.remove('selected');
 
+                            // ✅ Xóa khỏi danh sách đã chọn
+                            selectedSeatsData = selectedSeatsData.filter(s => s.seatId !== seatId);
+
                             // Trả về class gốc
                             if (seatType === 'Ghế đôi') {
                                 this.classList.add('couple');
@@ -501,6 +532,10 @@
                             } else {
                                 this.classList.add('regular');
                             }
+
+                            // ✅ Cập nhật tổng tiền
+                            updateTotalPrice();
+                            updateSeatDisplay();
                         } else {
                             alert('Không thể bỏ chọn ghế này!');
                         }
@@ -509,31 +544,172 @@
                     }
 
                 } else {
-                    // Kiểm tra số lượng ghế đã chọn
+                    // ✅ CHỌN GHẾ MỚI
                     const selectedSeats = document.querySelectorAll('td.seat.selected');
                     if (selectedSeats.length >= 8) {
                         alert('Bạn chỉ được chọn tối đa 8 ghế!');
                         return;
                     }
-                    // Chọn ghế
+
                     try {
-                        const response = await fetch(`/Movie/SelectSeats?showTimeId=${showTimeId}&seatId=${seatId}`, {
+                        // Chọn ghế trên server
+                        const selectResponse = await fetch(`/Movie/SelectSeats?showTimeId=${showTimeId}&seatId=${seatId}`, {
                             method: 'POST'
                         });
 
-                        const result = await response.json();
+                        const selectResult = await selectResponse.json();
 
-                        if (result.success) { 
+                        if (selectResult.success) {
+                            // ✅ LẤY THÔNG TIN VÉ
+                            const ticketResponse = await fetch(`/Movie/GetTicketBySeatId?showTimeId=${showTimeId}&seatId=${seatId}`);
+                            const ticketData = await ticketResponse.json();
+
+                            console.log('✅ Ticket Info:', ticketData);
+
+                            if (!ticketData) {
+                                alert('Không thể lấy thông tin vé!');
+                                return;
+                            }
+
+                            // ✅ Thêm vào UI
                             this.classList.add('selected');
                             this.classList.remove('regular', 'couple', 'vip');
+
+                            // ✅ Lưu thông tin vé vào danh sách
+                            selectedSeatsData.push({
+                                seatId: seatId,
+                                seatName: seatName,
+                                seatType: seatType,
+                                ticketId: ticketData.ticketID,
+                                ticketType: ticketData.ticketType,
+                                price: ticketData.price || 0,
+                                status: ticketData.status
+                            });
+
+                            console.log('✅ Selected Seats Data:', selectedSeatsData);
+
+                            // ✅ Cập nhật tổng tiền
+                            updateTotalPrice();
+                            updateSeatDisplay();
+
                         } else {
                             alert('Ghế này đã được người khác chọn!');
                         }
                     } catch (error) {
                         console.error('Lỗi chọn ghế:', error);
+                        alert('Có lỗi xảy ra khi chọn ghế!');
                     }
                 }
             });
+        });
+    }
+
+    // ✅ Hàm cập nhật hiển thị ghế đã chọn
+    function updateSeatDisplay() {
+        const displayElement = document.getElementById('selectedSeatsDisplay');
+        if (selectedSeatsData.length > 0) {
+            const seatNames = selectedSeatsData.map(s => s.seatName).join(', ');
+            displayElement.textContent = `Ghế: ${seatNames}`;
+        } else {
+            displayElement.textContent = 'Chưa chọn ghế';
+        }
+    }
+
+    // ✅ XỬ LÝ NÚT ĐẶT VÉ
+    const bookBtn = document.getElementById('bookBtn');
+    if (bookBtn) {
+        bookBtn.addEventListener('click', function () {
+            console.log('=== BOOK BUTTON CLICKED ===');
+
+            // Validation
+            if (selectedSeatsData.length === 0) {
+                alert('Vui lòng chọn ghế trước khi đặt vé!');
+                return;
+            }
+
+            if (!selectedShowTimeId) {
+                alert('Vui lòng chọn suất chiếu!');
+                return;
+            }
+
+            // ✅ Lấy thông tin phim từ DOM
+            const movieTitle = document.querySelector('.movie-title1')?.textContent || 'N/A';
+
+            // ✅ Lấy tên rạp từ sticky bar (đã được cập nhật khi chọn suất chiếu)
+            const cinemaName = document.getElementById('cinemaName')?.textContent || 'N/A';
+
+            // ✅ Lấy địa chỉ rạp từ cinestar-item đang open
+            const activeBranch = document.querySelector('.cinestar-item.open');
+            const cinemaAddress = activeBranch?.querySelector('.address')?.textContent || '';
+
+            // ✅ Debug log
+            console.log('=== CINEMA INFO ===');
+            console.log('Cinema Name from sticky bar:', cinemaName);
+            console.log('Active Branch Element:', activeBranch);
+            console.log('Cinema Address:', cinemaAddress);
+
+            // ✅ Lấy thông tin suất chiếu
+            const selectedTimeSlot = document.querySelector('.item-time.active');
+            const showTimeDisplay = selectedTimeSlot?.textContent.trim() || '';
+            const selectedDate = document.querySelector('.box-time.active')?.dataset.date || '';
+
+            // ✅ Format ngày giờ
+            const dateObj = new Date(selectedDate);
+            const dateStr = dateObj.toLocaleDateString('vi-VN', {
+                weekday: 'long',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
+            // ✅ Lấy thông tin phòng chiếu
+            const roomType = selectedTimeSlot?.closest('.item-infor')?.querySelector('.tt')?.textContent || '';
+
+            // ✅ Tính tổng tiền
+            let totalAmount = 0;
+            selectedSeatsData.forEach(seat => {
+                totalAmount += seat.price || 0;
+            });
+
+            // ✅ Chuẩn bị dữ liệu booking
+            const bookingData = {
+                // Thông tin phim
+                movieTitle: movieTitle,
+                movieId: document.querySelector('.box-time')?.dataset.movieId || '',
+
+                // Thông tin rạp
+                cinemaName: cinemaName,
+                cinemaAddress: cinemaAddress,
+
+                // Thông tin suất chiếu
+                showTimeId: selectedShowTimeId,
+                showTime: showTimeDisplay,
+                showDate: dateStr,
+                roomType: roomType,
+                roomNumber: roomType.match(/\d+/)?.[0] || 'N/A',
+
+                // Thông tin vé và ghế
+                seats: selectedSeatsData,
+                totalSeats: selectedSeatsData.length,
+
+                // Thông tin giá
+                totalAmount: totalAmount,
+
+                // Thời gian đặt vé
+                bookingTime: new Date().toISOString()
+            };
+
+            console.log('✅ Full Booking Data:', JSON.stringify(bookingData, null, 2));
+
+            // ✅ Lưu vào sessionStorage
+            sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+
+            // ✅ Verify data was saved
+            const savedData = sessionStorage.getItem('bookingData');
+            console.log('✅ Verified saved data:', savedData);
+
+            // ✅ Chuyển sang trang thanh toán
+            window.location.href = '/Payment/Index';
         });
     }
 });

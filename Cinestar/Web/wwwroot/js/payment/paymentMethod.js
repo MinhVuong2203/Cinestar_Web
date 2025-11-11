@@ -1,91 +1,94 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
+    console.log('=== PAYMENT METHOD PAGE LOADED ===');
+
     let selectedMethod = null;
     let countdownInterval = null;
     let timeLeft = 0;
 
-    // Load customer and booking info
+    // ✅ Load booking info từ localStorage (đã được lưu bởi payment.js)
     loadBookingInfo();
 
-    // Start countdown
+    // ✅ Start countdown
     startCountdown();
 
     function loadBookingInfo() {
-        // Ưu tiên lấy dữ liệu từ server, sau đó fallback về localStorage
-        let customerInfo = null;
+        // ✅ Lấy từ localStorage
+        const bookingInfoStr = localStorage.getItem('bookingInfo');
         
-        if (window.serverCustomerInfo) {
- customerInfo = window.serverCustomerInfo;
-            timeLeft = customerInfo.timeLeft || 230;
-            
-            // Lưu vào localStorage để đồng bộ
-       localStorage.setItem('customerInfo', JSON.stringify(customerInfo));
-     } else {
-            // Fallback về localStorage
-         const storedInfo = localStorage.getItem('customerInfo');
-            if (storedInfo) {
-            customerInfo = JSON.parse(storedInfo);
-    timeLeft = customerInfo.timeLeft || 230;
-            }
+        if (!bookingInfoStr) {
+            console.error('❌ No booking info found!');
+            alert('Không tìm thấy thông tin đặt vé. Vui lòng đặt vé lại!');
+            window.location.href = '/Movie';
+            return;
         }
 
-        if (!customerInfo) {
-     alert('Không tìm thấy thông tin khách hàng. Vui lòng nhập lại.');
-     window.location.href = '/Payment/Index';
-return;
-     }
+        const bookingInfo = JSON.parse(bookingInfoStr);
+        console.log('✅ Booking Info loaded:', bookingInfo);
 
-        console.log('Customer info loaded:', customerInfo);
+        // ✅ Lấy timeLeft từ bookingInfo hoặc mặc định 5 phút
+        timeLeft = bookingInfo.timeLeft || (5 * 60);
 
-        // Load booking info từ localStorage
-        const bookingInfo = localStorage.getItem('bookingInfo');
-        if (bookingInfo) {
-    const booking = JSON.parse(bookingInfo);
-
-    // Cập nhật UI với thông tin booking
-            updateElement('movieTitle', booking.movieTitle);
- updateElement('cinemaName', booking.cinema);
-            updateElement('showtime', booking.showtime);
-        updateElement('room', booking.room);
-    updateElement('quantity', booking.quantity);
-    updateElement('ticketType', booking.ticketType);
-       updateElement('seat', booking.seat);
- updateElement('totalAmount', formatCurrency(booking.amount));
+        // ✅ Cập nhật UI
+        updateElement('movieTitle', bookingInfo.movieTitle);
+        
+        const cinemaNameEl = document.querySelector('.cinema-info h4');
+        if (cinemaNameEl) {
+            cinemaNameEl.textContent = bookingInfo.cinema;
         }
+
+        const cinemaAddressEl = document.querySelector('.cinema-info p');
+        if (cinemaAddressEl) {
+            cinemaAddressEl.textContent = bookingInfo.cinemaAddress || '';
+        }
+
+        updateElement('showtime', bookingInfo.showtime);
+        updateElement('room', bookingInfo.room);
+        updateElement('quantity', bookingInfo.quantity);
+        updateElement('ticketType', bookingInfo.ticketType);
+        updateElement('seat', bookingInfo.seat);
+        updateElement('totalAmount', formatCurrency(bookingInfo.amount));
+
+        console.log('✅ UI updated successfully');
     }
 
     function updateElement(id, value) {
-      const element = document.getElementById(id);
-        if (element && value) {
-        element.textContent = value;
+        const element = document.getElementById(id);
+        if (element && value !== undefined && value !== null) {
+            element.textContent = value;
         }
     }
 
     function startCountdown() {
         function updateCountdown() {
-      const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
             const countdownElement = document.getElementById('countdown');
 
             if (countdownElement) {
-      countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Thay đổi màu khi còn ít thời gian
+                if (timeLeft <= 60) {
+                    countdownElement.style.color = '#ff3333';
+                }
             }
 
             if (timeLeft > 0) {
-    timeLeft--;
-     
-        // Cập nhật thời gian trong localStorage
-       const customerInfo = JSON.parse(localStorage.getItem('customerInfo') || '{}');
-                customerInfo.timeLeft = timeLeft;
-         localStorage.setItem('customerInfo', JSON.stringify(customerInfo));
+                timeLeft--;
+                
+                // ✅ Cập nhật thời gian trong localStorage
+                const bookingInfo = JSON.parse(localStorage.getItem('bookingInfo') || '{}');
+                bookingInfo.timeLeft = timeLeft;
+                localStorage.setItem('bookingInfo', JSON.stringify(bookingInfo));
             } else {
-       clearInterval(countdownInterval);
-     alert('Thời gian giữ vé đã hết hạn!');
-     
-           // Clear stored data and redirect
- localStorage.removeItem('customerInfo');
-        localStorage.removeItem('bookingInfo');
-            window.location.href = '/Home/Index';
-       }
+                clearInterval(countdownInterval);
+                alert('Thời gian giữ vé đã hết hạn!');
+                
+                // Clear stored data and redirect
+                sessionStorage.removeItem('bookingData');
+                localStorage.removeItem('bookingInfo');
+                window.location.href = '/Movie';
+            }
         }
 
         countdownInterval = setInterval(updateCountdown, 1000);
@@ -93,139 +96,147 @@ return;
     }
 
     function formatCurrency(amount) {
-        return new Intl.NumberFormat('vi-VN').format(amount) + ' VND';
+        if (!amount) return '0 VNĐ';
+        return new Intl.NumberFormat('vi-VN').format(amount) + ' VNĐ';
     }
 
-    // Global functions cho onclick events
+    // ✅ Global functions
     window.selectPaymentMethod = function (method) {
         selectedMethod = method;
 
         // Remove previous selection
-   document.querySelectorAll('.method-option').forEach(option => {
- option.classList.remove('selected');
- });
+        document.querySelectorAll('.method-option').forEach(option => {
+            option.classList.remove('selected');
+        });
 
-     // Add selection to clicked method
- event.currentTarget.classList.add('selected');
+        // Add selection to clicked method
+        event.currentTarget.classList.add('selected');
 
         // Enable payment button
         const payBtn = document.getElementById('payBtn');
         if (payBtn) {
             payBtn.disabled = false;
             payBtn.textContent = 'THANH TOÁN';
-   }
+        }
+
+        console.log('✅ Payment method selected:', method);
     };
 
     window.goBack = function () {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
+        if (confirm('Bạn có chắc muốn quay lại? Thông tin đặt vé vẫn được giữ.')) {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            window.history.back();
         }
-        window.location.href = '/Payment/Index';
     };
 
     window.proceedPayment = async function () {
         if (!selectedMethod) {
-      alert('Vui lòng chọn phương thức thanh toán!');
- return;
-   }
+            alert('Vui lòng chọn phương thức thanh toán!');
+            return;
+        }
 
- // Show loading state
-  const payBtn = document.getElementById('payBtn');
+        // Show loading state
+        const payBtn = document.getElementById('payBtn');
         if (payBtn) {
-     payBtn.textContent = 'ĐANG XỬ LÝ...';
+            payBtn.textContent = 'ĐANG XỬ LÝ...';
             payBtn.disabled = true;
         }
 
         // Clear countdown interval
         if (countdownInterval) {
-  clearInterval(countdownInterval);
-  }
+            clearInterval(countdownInterval);
+        }
 
-        // Get customer and booking info
-        const customerInfo = JSON.parse(localStorage.getItem('customerInfo') || '{}');
+        // ✅ Lấy booking info
         const bookingInfo = JSON.parse(localStorage.getItem('bookingInfo') || '{}');
+        const bookingData = JSON.parse(sessionStorage.getItem('bookingData') || '{}');
 
- try {
-        if (selectedMethod === 'payOS') {
- // Tạo payment request cho PayOS
-    const paymentRequest = {
-    orderCode: Date.now(), // Tạo order code unique
-        amount: parseInt(bookingInfo.amount) || 45000,
-    description: 'Ve xem phim',  // Rút ngắn description xuống dưới 25 ký tự (không dấu)
-  buyerName: customerInfo.fullname || 'Customer',
-        buyerEmail: customerInfo.email || 'customer@email.com',
-buyerPhone: customerInfo.phone || '0000000000',
-          buyerAddress: 'Viet Nam',// Không dấu
-      items: [
-         {
-      name: bookingInfo.movieTitle || 'Ve xem phim',
-      quantity: parseInt(bookingInfo.quantity) || 1,
-           price: parseInt(bookingInfo.amount) || 45000
-  }
-        ],
-     cancelUrl: `${window.location.origin}/Payment/PaymentCancel`,
-     returnUrl: `${window.location.origin}/Payment/PaymentSuccess`,
-     expiredAt: Math.floor(Date.now() / 1000) + (15 * 60) // Hết hạn sau 15 phút
-      };
+        try {
+            if (selectedMethod === 'payOS') {
+                // ✅ Tạo payment request cho PayOS
+                const paymentRequest = {
+                    orderCode: Date.now(),
+                    amount: parseInt(bookingInfo.amount) || 0,
+                    description: 'Ve xem phim',
+                    buyerName: 'Customer',
+                    buyerEmail: 'customer@email.com',
+                    buyerPhone: '0000000000',
+                    buyerAddress: 'Viet Nam',
+                    items: [
+                        {
+                            name: bookingInfo.movieTitle || 'Ve xem phim',
+                            quantity: parseInt(bookingInfo.quantity) || 1,
+                            price: parseInt(bookingInfo.amount) || 0
+                        }
+                    ],
+                    cancelUrl: `${window.location.origin}/Payment/PaymentCancel`,
+                    returnUrl: `${window.location.origin}/Payment/PaymentSuccess`,
+                    expiredAt: Math.floor(Date.now() / 1000) + (15 * 60),
+                    // ✅ Thêm thông tin vé để xử lý sau khi thanh toán
+                    bookingData: bookingData
+                };
 
-  // Gọi API tạo payment link
-        const response = await fetch('/Payment/CreatePayOsPayment', {
-          method: 'POST',
-      headers: {
- 'Content-Type': 'application/json',
-  },
-     body: JSON.stringify(paymentRequest)
-        });
+                console.log('✅ Payment Request:', paymentRequest);
 
-const result = await response.json();
+                // Gọi API tạo payment link
+                const response = await fetch('/Payment/CreatePayOsPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentRequest)
+                });
 
-  if (result.success && result.checkoutUrl) {
-        // Lưu order code để tracking
-   localStorage.setItem('currentOrderCode', paymentRequest.orderCode);
-    
-    // Redirect đến trang thanh toán PayOS
-  window.location.href = result.checkoutUrl;
-      } else {
-         alert('Không thể tạo link thanh toán: ' + (result.message || 'Lỗi không xác định'));
-   if (payBtn) {
-    payBtn.textContent = 'THANH TOÁN';
-         payBtn.disabled = false;
-     }
-      startCountdown();
-  }
-   } else if (selectedMethod === 'momo') {
-     // Redirect to MoMo payment (nếu có)
-  window.location.href = '/Payment/MomoPayment';
-    } else {
-    alert('Phương thức thanh toán chưa được hỗ trợ!');
+                const result = await response.json();
+
+                if (result.success && result.checkoutUrl) {
+                    // Lưu order code để tracking
+                    localStorage.setItem('currentOrderCode', paymentRequest.orderCode);
+                    
+                    // Redirect đến trang thanh toán PayOS
+                    window.location.href = result.checkoutUrl;
+                } else {
+                    alert('Không thể tạo link thanh toán: ' + (result.message || 'Lỗi không xác định'));
+                    if (payBtn) {
+                        payBtn.textContent = 'THANH TOÁN';
+                        payBtn.disabled = false;
+                    }
+                    startCountdown();
+                }
+            } else if (selectedMethod === 'momo') {
+                // Redirect to MoMo payment
+                window.location.href = '/Payment/MomoPayment';
+            } else {
+                alert('Phương thức thanh toán chưa được hỗ trợ!');
                 if (payBtn) {
-  payBtn.textContent = 'THANH TOÁN';
-    payBtn.disabled = false;
-     }
-  startCountdown();
-      }
-     } catch (error) {
-            console.error('Payment error:', error);
-  alert('Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại!');
-       if (payBtn) {
-         payBtn.textContent = 'THANH TOÁN';
-   payBtn.disabled = false;
-}
-      startCountdown();
+                    payBtn.textContent = 'THANH TOÁN';
+                    payBtn.disabled = false;
+                }
+                startCountdown();
+            }
+        } catch (error) {
+            console.error('❌ Payment error:', error);
+            alert('Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại!');
+            if (payBtn) {
+                payBtn.textContent = 'THANH TOÁN';
+                payBtn.disabled = false;
+            }
+            startCountdown();   
         }
     };
 
-    // Prevent page refresh from losing data
+    // ✅ Cleanup
     window.addEventListener('beforeunload', function () {
         if (countdownInterval) {
- clearInterval(countdownInterval);
-  }
+            clearInterval(countdownInterval);
+        }
     });
 
-    // Handle browser back/forward buttons
-window.addEventListener('popstate', function () {
+    window.addEventListener('popstate', function () {
         if (countdownInterval) {
-          clearInterval(countdownInterval);
-}
+            clearInterval(countdownInterval);
+        }
     });
 });

@@ -32,6 +32,6 @@ namespace Web.Areas.Admin.Service
         Task<IEnumerable<Movie>> GetCurrentShowingMoviesAsync();
         Task<IEnumerable<Movie>> GetUpcomingMoviesAsync();
         Task<MoviePagedResult> GetMoviesPagedAsync(int pageNumber, int pageSize, string? searchKeyword, string? filterStatus);
-
+        
     }
 }
