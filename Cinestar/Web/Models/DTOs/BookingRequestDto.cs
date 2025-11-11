@@ -3,7 +3,7 @@
     public class BookingRequestDto
     {
         // Customer Info
-        public Guid? CustomerId { get; set; }
+        public string? CustomerId { get; set; }
         public string? CustomerPhone { get; set; }
         public string CustomerName { get; set; } = string.Empty;
         public bool IsGuest { get; set; }
