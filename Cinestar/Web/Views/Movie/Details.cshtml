@@ -329,257 +329,71 @@
             </div>
         </div>
         <!-- END CHỌN GHẾ -->
-
         <section class="food-section">
             <div class="container">
                 <h2 class="section-title text-center">CHỌN BẮP NƯỚC</h2>
             </div>
 
-            <!-- Dòng sản phẩm COMBO -->
-            <div id="combo" class="product-category">
-                <div class="container">
-                    <h3 class="category-title">COMBO 2 NGĂN</h3>
-                    <div class="row justify-content-center">
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Combo Gấu">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">COMBO GẤU</h5>
-                                            <p class="product-info">1 bắp ngọt + 1 nước ngọt</p>
-                                            <p class="product-price">189,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1562777953-4456cfd4c2d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Combo Đôi">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">COMBO ĐÔI</h5>
-                                            <p class="product-info">2 bắp ngọt + 2 nước ngọt</p>
-                                            <p class="product-price">229,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Combo Gia Đình">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">COMBO GIA ĐÌNH</h5>
-                                            <p class="product-info">2 bắp ngọt + 2 nước ngọt + 1 snack</p>
-                                            <p class="product-price">299,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @{
+                var products = ViewData["Products"] as Dictionary<string, List<Product>>;
+            }
+            @if (products != null && products.Any())
+            {
+                foreach (var category in products)
+                {
+                    var categoryName = category.Key;
+                    var categoryProducts = category.Value;
 
-            <!-- Dòng sản phẩm NƯỚC NGỌT -->
-            <div id="soft-drink" class="product-category">
-                <div class="container">
-                    <h3 class="category-title">NƯỚC NGỌT</h3>
-                    <div class="row justify-content-center">
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1607305387299-a3d9611cd469?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Fanta">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">FANTA</h5>
-                                            <p class="product-info">Nước ngọt vị cam</p>
-                                            <p class="product-price">37,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
+                    <div id="@categoryName.Replace(" ", "-").ToLower()" class="product-category">
+                        <div class="container">
+                            <h3 class="category-title">@categoryName</h3>
+                            <div class="row justify-content-center">
+                                @foreach (var product in categoryProducts)
+                                {
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="product-card" data-product-id="@product.ProductID">
+                                            <div class="row g-0">
+                                                <div class="col-md-5">
+                                                    <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "~/image/no-image.jpg" : product.ImageUrl)"
+                                                         class="product-img"
+                                                         alt="@product.ProductName"
+                                                         onerror="this.src='~/image/no-image.jpg'">
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <div class="card-body">
+                                                        <h5 class="product-name">@product.ProductName</h5>
+                                                        <p class="product-price" data-price="@product.Price">
+                                                            @(product.Price?.ToString("N0")) VND
+                                                        </p>
+                                                        <div class="quantity-control">
+                                                            <button class="qty-btn minus" type="button">-</button>
+                                                            <span class="qty-value">0</span>
+                                                            <button class="qty-btn plus" type="button">+</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1622635362426-9e4a88fdeea2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Sprite">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">SPRITE</h5>
-                                            <p class="product-info">Nước ngọt vị chanh xanh</p>
-                                            <p class="product-price">37,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1596894387814-769c3e8e9b6a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Coke Zero">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">COKE ZERO</h5>
-                                            <p class="product-info">Nước ngọt không calo</p>
-                                            <p class="product-price">37,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Dòng sản phẩm NƯỚC ĐÓNG CHAI -->
-            <div id="bottled-water" class="product-category">
+                }
+            }
+            else
+            {
                 <div class="container">
-                    <h3 class="category-title">NƯỚC ĐÓNG CHAI</h3>
-                    <div class="row justify-content-center">
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1548839140-29a74924eb0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Dasani">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">NUỚC SUỐI DASANI</h5>
-                                            <p class="product-info">Nước suối đóng chai 500ml</p>
-                                            <p class="product-price">25,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1583337130435-07e2ff46d8a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="La Vie">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">NUỚC SUỐI LA VIE</h5>
-                                            <p class="product-info">Nước suối đóng chai 750ml</p>
-                                            <p class="product-price">30,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 50px 20px; border-radius: 10px; text-align: center;">
+                        <p style="color: white; font-size: 1.2em; margin: 0;">
+                            Hiện tại chưa có sản phẩm nào.
+                        </p>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-top: 10px;">
+                            Vui lòng quay lại sau hoặc liên hệ quản trị viên.
+                        </p>
                     </div>
                 </div>
-            </div>
-
-            <!-- Dòng sản phẩm SNACKS - KEO -->
-            <div id="snacks" class="product-category">
-                <div class="container">
-                    <h3 class="category-title">SNACKS - KẸO</h3>
-                    <div class="row justify-content-center">
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1564905459672-65525e8a5786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Poca">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">POCA KHÔAI TÂY</h5>
-                                            <p class="product-info">Snack khoai tây vị muối biển</p>
-                                            <p class="product-price">58,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="product-card">
-                                <div class="row g-0">
-                                    <div class="col-md-5">
-                                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" class="product-img" alt="Oishi">
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                            <h5 class="product-name">OISHI SNACK</h5>
-                                            <p class="product-info">Snack khoai tây vị tôm</p>
-                                            <p class="product-price">55,000 VND</p>
-                                            <div class="quantity-control">
-                                                <button class="qty-btn minus">-</button>
-                                                <span class="qty-value">0</span>
-                                                <button class="qty-btn plus">+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </section>
     }
 </div>

@@ -47,6 +47,7 @@ builder.Services.AddScoped<ILogin, Login>();
 builder.Services.AddScoped<IPayOsService, PayOsService>();
 builder.Services.AddHostedService<WorkShiftStatusUpdater>();
 builder.Services.AddHostedService<SeatCleanupBackgroundService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // Đăng ký tất cả service trong namespace Web.Areas.Admin.Services
 var adminAssembly = typeof(Web.Areas.Admin.Controllers.HomeController).Assembly;

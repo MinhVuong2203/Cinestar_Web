@@ -2,6 +2,7 @@
 using Web.Areas.Admin.Service;
 using Web.Models;
 using Web.Service;
+using IProductService = Web.Areas.Admin.Service.IProductService;
 
 namespace Web.Areas.Admin.Controllers
 {

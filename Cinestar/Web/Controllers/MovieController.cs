@@ -11,16 +11,19 @@ namespace Web.Controllers
         private readonly ICinemaBranchService _cinemaBranchService;
         private readonly IMovieService_Cus _movieService_Cus;
         private readonly IShowTimeService _showTimeService;
+        private readonly IProductService _productService;
 
 
         public MovieController(
             ICinemaBranchService cinemaBranchService,
             IMovieService_Cus movieService_Cus,
-            IShowTimeService showTimeService)
+            IShowTimeService showTimeService,
+            IProductService productService)
         {
             _cinemaBranchService = cinemaBranchService;
             _movieService_Cus = movieService_Cus;
             _showTimeService = showTimeService;
+            _productService = productService;
         }
 
         [LoadCinemaBranches]
@@ -38,7 +41,7 @@ namespace Web.Controllers
             return View();
         }
 
-        public IActionResult Details(string id)
+        public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -72,12 +75,65 @@ namespace Web.Controllers
                 var branches = _cinemaBranchService.GetBranchesByCityAndMovie(defaultCity, id);
                 ViewData["Branches"] = branches;
                 ViewData["SelectedCity"] = defaultCity;
+
+                // ===== LẤY DANH SÁCH SẢN PHẨM =====
+                try
+                {
+                    Console.WriteLine("\n🎬 [CONTROLLER] ========== PRODUCT LOADING START ==========");
+
+                    // Kiểm tra service
+                    if (_productService == null)
+                    {
+                        Console.WriteLine("❌ [CONTROLLER] _productService is NULL - Dependency Injection failed!");
+                        ViewData["Products"] = new Dictionary<string, List<Product>>();
+                        return View(movie);
+                    }
+
+                    Console.WriteLine("✅ [CONTROLLER] _productService is injected successfully");
+                    Console.WriteLine($"[CONTROLLER] Service type: {_productService.GetType().Name}");
+
+                    // Gọi service
+                    var products = await _productService.GetAllProductsGroupedByTypeAsync();
+
+                    // Kiểm tra kết quả
+                    Console.WriteLine($"\n[CONTROLLER] Received: {products?.Count ?? 0} categories");
+
+                    if (products != null && products.Any())
+                    {
+                        foreach (var category in products)
+                        {
+                            Console.WriteLine($"[CONTROLLER]   ✓ {category.Key}: {category.Value.Count} products");
+                        }
+                        ViewData["Products"] = products;
+                    }
+                    else
+                    {
+                        Console.WriteLine("⚠️ [CONTROLLER] No products returned from service");
+                        ViewData["Products"] = new Dictionary<string, List<Product>>();
+                    }
+
+                    Console.WriteLine("🎬 [CONTROLLER] ========== PRODUCT LOADING END ==========\n");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ [CONTROLLER] EXCEPTION: {ex.Message}");
+                    Console.WriteLine($"[CONTROLLER] Type: {ex.GetType().Name}");
+                    Console.WriteLine($"[CONTROLLER] Stack Trace:\n{ex.StackTrace}");
+
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine($"[CONTROLLER] Inner Exception: {ex.InnerException.Message}");
+                    }
+
+                    ViewData["Products"] = new Dictionary<string, List<Product>>();
+                }
             }
             else
             {
                 // Phim sắp chiếu - không load thông tin đặt vé
                 ViewData["Branches"] = new List<CinemaBranch>();
                 ViewData["SelectedCity"] = "";
+                ViewData["Products"] = new Dictionary<string, List<Product>>();
             }
 
             return View(movie);

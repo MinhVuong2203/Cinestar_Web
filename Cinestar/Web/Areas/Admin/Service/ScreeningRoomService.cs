@@ -46,8 +46,7 @@ namespace Web.Areas.Admin.Service
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
 
-            // ✅ TỰ ĐỘNG TẠO 250 GHẾ SAU KHI TẠO PHÒNG
-            // Lấy RoomID vừa tạo (do trigger tạo)
+            //TỰ ĐỘNG TẠO 250 GHẾ SAU KHI TẠO PHÒNG
             var createdRoomId = await _context.Rooms
                 .AsNoTracking()
                 .Where(r => r.RoomName == room.RoomName && !r.IsDeleted)
@@ -57,12 +56,12 @@ namespace Web.Areas.Admin.Service
 
             if (!string.IsNullOrEmpty(createdRoomId))
             {
-                await CreateSeatsUsingRawSQL(createdRoomId, room.SeatCount ?? 250); // Truyền seatCount thực sự ở đây!
+                await CreateSeatsUsingRawSQL(createdRoomId, room.SeatCount ?? 250);
             }
 
         }
 
-        // ✅ TẠO GHẾ BẰNG RAW SQL (250 ghế đúng logic)
+        // tạo ghế cho phòng
         private async Task CreateSeatsUsingRawSQL(string roomId, int seatCount)
         {
             var insertStatements = new List<string>();
@@ -108,7 +107,6 @@ namespace Web.Areas.Admin.Service
                 }
             }
 
-            // Nếu chưa đủ seatCount, thêm nữa các hàng tiếp, toàn ghế thường!
             char nextRow = (char)(rowList.Last() + 1);
             while (totalSeats < seatCount && nextRow <= 'Z')
             {
@@ -120,8 +118,6 @@ namespace Web.Areas.Admin.Service
                 }
                 nextRow++;
             }
-
-            // Batched insert như cũ
             var batchSize = 100;
             for (int i = 0; i < insertStatements.Count; i += batchSize)
             {
@@ -136,14 +132,6 @@ namespace Web.Areas.Admin.Service
                 await _context.Database.ExecuteSqlRawAsync(sql);
             }
         }
-
-
-
-
-
-
-
-
 
         // Cập nhật phòng chiếu
         public async Task EditScreeningRoom(Room room)
@@ -168,18 +156,6 @@ namespace Web.Areas.Admin.Service
                 await _context.SaveChangesAsync();
             }
         }
-
-
-        // Khôi phục phòng chiếu đã xóa
-        //public async Task RestoreScreeningRoom(string roomId)
-        //{
-        //    Room room = await _context.Rooms.FindAsync(roomId);
-        //    if (room != null)
-        //    {
-        //        room.IsDeleted = false;
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
 
         // Lấy danh sách chi nhánh đang hoạt động
         public async Task<List<CinemaBranch>> GetActiveBranches()

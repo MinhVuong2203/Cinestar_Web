@@ -6,6 +6,7 @@ using Web.Data;
 using Web.Models;
 using Web.Models.DTOs;
 using Web.Service;
+using IProductService = Web.Areas.Admin.Service.IProductService;
 
 namespace Web.Areas.Admin.Controllers
 {
