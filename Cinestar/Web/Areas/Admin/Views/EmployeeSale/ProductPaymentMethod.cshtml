@@ -1,0 +1,355 @@
+﻿@model Web.Models.Invoice
+@{
+    ViewData["Title"] = "Chọn phương thức thanh toán";
+    var totalAmount = Model.TotalAmount ?? 0;
+}
+
+@section Styles {
+    <style>
+        .payment-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .payment-header i {
+                font-size: 48px;
+                color: #dc3545;
+                margin-bottom: 15px;
+            }
+
+            .payment-header h2 {
+                color: #333;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+        .order-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+            .order-info h5 {
+                color: #333;
+                font-weight: 600;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+            .info-row:last-child {
+                border-bottom: none;
+            }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border-radius: 8px;
+            color: white;
+        }
+
+            .total-amount .label {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+
+            .total-amount .amount {
+                font-size: 32px;
+                font-weight: 700;
+            }
+
+        .payment-methods {
+            margin-top: 30px;
+        }
+
+            .payment-methods h5 {
+                color: #333;
+                font-weight: 600;
+                margin-bottom: 20px;
+            }
+
+        .payment-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .payment-option:hover {
+                border-color: #dc3545;
+                background: #fff5f5;
+                transform: translateX(5px);
+            }
+
+            .payment-option i {
+                font-size: 36px;
+                color: #dc3545;
+            }
+
+            .payment-option.cash i {
+                color: #28a745;
+            }
+
+            .payment-option.payos i {
+                color: #007bff;
+            }
+
+        .payment-option-content {
+            flex: 1;
+        }
+
+        .payment-option-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .payment-option-desc {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .payment-option-arrow {
+            font-size: 24px;
+            color: #ccc;
+        }
+
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-back {
+            flex: 1;
+            padding: 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .btn-back:hover {
+                background: #5a6268;
+            }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .product-name {
+            color: #333;
+        }
+
+        .product-quantity {
+            color: #666;
+        }
+    </style>
+}
+
+<div class="payment-container">
+    <div class="payment-card">
+        <!-- Header -->
+        <div class="payment-header">
+            <i class="bi bi-credit-card"></i>
+            <h2>Chọn phương thức thanh toán</h2>
+        </div>
+
+        <!-- Order Information -->
+        <div class="order-info">
+            <h5><i class="bi bi-receipt"></i> Thông tin đơn hàng</h5>
+
+            <div class="info-row">
+                <span class="info-label">Khách hàng:</span>
+                <span class="info-value">
+                    @if (Model.Customer != null)
+                    {
+                        @Model.Customer.FullName
+                    }
+                    else
+                    {
+                        <text>Khách vãng lai</text>
+                    }
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Combo:</span>
+                <div class="info-value">
+                    @if (Model.InvoiceProducts != null && Model.InvoiceProducts.Any())
+                    {
+                        foreach (var item in Model.InvoiceProducts)
+                        {
+                            <div class="product-item">
+                                <span class="product-name">@item.Product?.ProductName</span>
+                                <span class="product-quantity">x @item.Quantity</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <text>Không có</text>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="total-amount">
+            <div class="label">Tổng thanh toán:</div>
+            <div class="amount">@(string.Format("{0:N0}", Math.Floor(totalAmount))) ₫</div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <h5>Chọn phương thức:</h5>
+
+            <!-- Cash Payment -->
+            <div class="payment-option cash" onclick="payByCash()">
+                <i class="bi bi-cash-coin"></i>
+                <div class="payment-option-content">
+                    <div class="payment-option-title">Tiền mặt</div>
+                    <div class="payment-option-desc">Thanh toán trực tiếp tại quầy</div>
+                </div>
+                <i class="bi bi-chevron-right payment-option-arrow"></i>
+            </div>
+
+            <!-- PayOS Payment -->
+            <div class="payment-option payos" onclick="payByPayOS()">
+                <i class="bi bi-qr-code"></i>
+                <div class="payment-option-content">
+                    <div class="payment-option-title">PayOS (QR Code)</div>
+                    <div class="payment-option-desc">Quét mã QR để thanh toán qua ngân hàng</div>
+                </div>
+                <i class="bi bi-chevron-right payment-option-arrow"></i>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-back" onclick="window.history.back()">
+                <i class="bi bi-arrow-left"></i> Hủy và quay lại
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const invoiceId = '@Model.InvoiceID';
+
+        // ✅ Thanh toán tiền mặt
+        function payByCash() {
+            if (!confirm('Xác nhận thanh toán bằng tiền mặt?')) {
+                return;
+            }
+
+            fetch('/Admin/EmployeeSale/ProcessProductCashPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ invoiceId: invoiceId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thanh toán thành công!');
+                    window.location.href = `/Admin/EmployeeSale/ProductPaymentSuccess?invoiceId=${invoiceId}`;
+                } else {
+                    alert('Thanh toán thất bại: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi thanh toán!');
+            });
+        }
+
+        // ✅ Thanh toán PayOS
+        function payByPayOS() {
+            // Show loading
+            const payosOption = document.querySelector('.payment-option.payos');
+            const originalContent = payosOption.innerHTML;
+            payosOption.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo mã thanh toán...';
+            payosOption.style.pointerEvents = 'none';
+
+            fetch('/Admin/EmployeeSale/ProcessProductPayOsPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ invoiceId: invoiceId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Mở link thanh toán trong tab mới
+                    window.open(data.paymentUrl);
+                } else {
+                    alert('Không thể tạo mã thanh toán: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tạo mã thanh toán!');
+            })
+            .finally(() => {
+                payosOption.innerHTML = originalContent;
+                payosOption.style.pointerEvents = 'auto';
+            });
+        }
+
+        // ✅ Auto check timeout (15 phút)
+        setTimeout(function() {
+            alert('Đơn hàng đã hết hạn (quá 15 phút)!');
+            window.location.href = '/Admin/EmployeeSale/Index';
+        }, 15 * 60 * 1000);
+    </script>
+}

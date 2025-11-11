@@ -405,9 +405,9 @@ function setupConfirmButton() {
             const result = await response.json();
 
             if (result.success) {
-                alert('Đặt hàng thành công!');
+                //alert('Đặt hàng thành công!');
                 // Redirect to payment method page
-                window.location.href = `/Admin/EmployeeSale/PaymentMethod?invoiceId=${result.invoiceId}`;
+                window.location.href = `/Admin/EmployeeSale/ProductPaymentMethod?invoiceId=${result.invoiceId}`;
             } else {
                 alert('Đặt hàng thất bại: ' + (result.message || 'Vui lòng thử lại'));
             }

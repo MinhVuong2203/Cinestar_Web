@@ -1,0 +1,224 @@
+﻿@model Web.Models.Invoice
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+}
+
+@section Styles {
+    <style>
+        .success-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .invoice-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+            .summary-row:last-child {
+                border-bottom: none;
+            }
+
+        .summary-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .total-row {
+            font-size: 20px;
+            color: #dc3545;
+            padding-top: 15px;
+            border-top: 2px solid #dc3545;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-primary-custom {
+            flex: 1;
+            padding: 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .btn-primary-custom:hover {
+                background: #c82333;
+            }
+
+        .btn-secondary-custom {
+            flex: 1;
+            padding: 15px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .btn-secondary-custom:hover {
+                background: #5a6268;
+            }
+
+        .product-list {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .product-item {
+            padding: 5px 0;
+            color: #333;
+        }
+    </style>
+}
+
+<div class="success-container">
+    <div class="success-card">
+        <!-- Success Icon -->
+        <i class="bi bi-check-circle-fill success-icon"></i>
+
+        <!-- Title -->
+        <h1 class="success-title">Thanh toán thành công!</h1>
+        <p class="success-message">Cảm ơn bạn đã mua hàng tại CineStar</p>
+
+        <!-- Invoice Summary -->
+        <div class="invoice-summary">
+            <div class="summary-row">
+                <span class="summary-label">Mã hóa đơn:</span>
+                <span class="summary-value">@Model.InvoiceID.ToString().Substring(0, 8).ToUpper()</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Khách hàng:</span>
+                <span class="summary-value">
+                    @if (Model.Customer != null)
+                    {
+                        @Model.Customer.FullName
+                    }
+                    else
+                    {
+                        <text>Khách vãng lai</text>
+                    }
+                </span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Sản phẩm:</span>
+                <div class="summary-value">
+                    @if (Model.InvoiceProducts != null && Model.InvoiceProducts.Any())
+                    {
+                        <div class="product-list">
+                            @foreach (var item in Model.InvoiceProducts)
+                            {
+                                <div class="product-item">
+                                    @item.Product?.ProductName x@item.Quantity
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <text>Không có</text>
+                    }
+                </div>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Phương thức:</span>
+                <span class="summary-value">
+                    @if (Model.Payments != null && Model.Payments.Any())
+                    {
+                        @Model.Payments.First().Method
+                    }
+                    else
+                    {
+                        <text>-</text>
+                    }
+                </span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Thời gian:</span>
+                <span class="summary-value">@Model.IssueDate?.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+
+            <div class="summary-row total-row">
+                <span class="summary-label">Tổng cộng:</span>
+                <span class="summary-value">@(string.Format("{0:N0}", Math.Floor(Model.TotalAmount ?? 0))) ₫</span>
+            </div>
+
+            @if (Model.CustomerID != null)
+            {
+                var pointsEarned = Math.Floor((Model.TotalAmount ?? 0) / 10000);
+                <div class="summary-row" style="color: #28a745;">
+                    <span class="summary-label">Điểm tích lũy:</span>
+                    <span class="summary-value">+@pointsEarned điểm</span>
+                </div>
+            }
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-primary-custom" onclick="window.location.href='/Admin/EmployeeSale/SaleProduct'">
+                <i class="bi bi-cart-plus"></i> Bán hàng tiếp
+            </button>
+            <button class="btn-secondary-custom" onclick="window.location.href='/Admin/EmployeeSale/Index'">
+                <i class="bi bi-house"></i> Về trang chủ
+            </button>
+        </div>
+    </div>
+</div>

@@ -992,6 +992,285 @@ namespace Web.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductPaymentMethod(string invoiceId)
+        {
+            if (!Guid.TryParse(invoiceId, out Guid invoiceGuid))
+            {
+                TempData["Error"] = "Không tìm thấy hóa đơn!";
+                return RedirectToAction("SaleProduct");
+            }
+
+            var invoice = await _context.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.InvoiceProducts)
+                    .ThenInclude(ip => ip.Product)
+                .FirstOrDefaultAsync(i => i.InvoiceID == invoiceGuid && !i.IsDeleted);
+
+            if (invoice == null)
+            {
+                TempData["Error"] = "Hóa đơn không tồn tại!";
+                return RedirectToAction("SaleProduct");
+            }
+
+            // Check timeout (15 phút)
+            if (invoice.IssueDate?.AddMinutes(15) < DateTime.Now)
+            {
+                await CancelProductInvoice(invoiceGuid);
+                TempData["Error"] = "Đơn hàng đã hết hạn (quá 15 phút)!";
+                return RedirectToAction("SaleProduct");
+            }
+
+            return View(invoice);
+        }
+
+        // ✅ Hủy invoice cho product (không cần unlock tickets)
+        private async Task CancelProductInvoice(Guid invoiceId)
+        {
+            var invoice = await _context.Invoices
+                .FirstOrDefaultAsync(i => i.InvoiceID == invoiceId);
+
+            if (invoice != null)
+            {
+                invoice.Status = "Đã hủy";
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        // ✅ Trang hiển thị thành công cho Product
+        [HttpGet]
+        public async Task<IActionResult> ProductPaymentSuccess(string invoiceId)
+        {
+            if (!Guid.TryParse(invoiceId, out Guid invoiceGuid))
+            {
+                TempData["Error"] = "Không tìm thấy hóa đơn!";
+                return RedirectToAction("SaleProduct");
+            }
+
+            var invoice = await _context.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.InvoiceProducts)
+                    .ThenInclude(ip => ip.Product)
+                .Include(i => i.Payments)
+                .FirstOrDefaultAsync(i => i.InvoiceID == invoiceGuid && !i.IsDeleted);
+
+            if (invoice == null)
+            {
+                TempData["Error"] = "Hóa đơn không tồn tại!";
+                return RedirectToAction("SaleProduct");
+            }
+
+            return View(invoice);
+        }
+
+        // ✅ Callback sau khi thanh toán PayOS thành công cho Product
+        [HttpGet]
+        public async Task<IActionResult> ProductPayOsSuccess(string invoiceId, long orderCode)
+        {
+            try
+            {
+                if (!Guid.TryParse(invoiceId, out Guid invoiceGuid))
+                {
+                    TempData["Error"] = "Không tìm thấy hóa đơn!";
+                    return RedirectToAction("SaleProduct");
+                }
+
+                // ✅ Kiểm tra trạng thái thanh toán từ PayOS
+                var isSuccess = await _payOsService.IsPaymentSuccess(orderCode);
+
+                if (!isSuccess)
+                {
+                    TempData["Error"] = "Thanh toán chưa được xác nhận!";
+                    return RedirectToAction("ProductPaymentMethod", new { invoiceId });
+                }
+
+                var invoice = await _context.Invoices
+                    .Include(i => i.Customer)
+                    .FirstOrDefaultAsync(i => i.InvoiceID == invoiceGuid && !i.IsDeleted);
+
+                if (invoice == null)
+                {
+                    TempData["Error"] = "Không tìm thấy hóa đơn!";
+                    return RedirectToAction("SaleProduct");
+                }
+
+                // ✅ Cập nhật invoice status
+                invoice.Status = "Đã thanh toán";
+
+                // ✅ Tạo payment record
+                var payment = new Payment
+                {
+                    PaymentID = Guid.NewGuid(),
+                    InvoiceID = invoice.InvoiceID,
+                    Method = "PayOS",
+                    Amount = invoice.TotalAmount,
+                    PaymentTime = DateTime.Now
+                };
+
+                _context.Payments.Add(payment);
+
+                // ✅ Cộng điểm cho customer (nếu không phải guest)
+                if (invoice.CustomerID != null)
+                {
+                    var customer = await _context.Customers.FindAsync(invoice.CustomerID);
+                    if (customer != null)
+                    {
+                        var pointsToAdd = Math.Floor(invoice.TotalAmount.Value / 10000);
+                        customer.Point = (customer.Point ?? 0) + pointsToAdd;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Thanh toán thành công!";
+                return RedirectToAction("ProductPaymentSuccess", new { invoiceId });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                TempData["Error"] = "Có lỗi xảy ra khi xác nhận thanh toán!";
+                return RedirectToAction("SaleProduct");
+            }
+        }
+
+        // ✅ Xử lý thanh toán tiền mặt cho Product
+        [HttpPost]
+        public async Task<IActionResult> ProcessProductCashPayment([FromBody] PaymentRequestDto request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.InvoiceId) || !Guid.TryParse(request.InvoiceId, out Guid invoiceGuid))
+                {
+                    return Json(new { success = false, message = "Invoice ID không hợp lệ" });
+                }
+
+                var invoice = await _context.Invoices
+                    .Include(i => i.Customer)
+                    .FirstOrDefaultAsync(i => i.InvoiceID == invoiceGuid && !i.IsDeleted);
+
+                if (invoice == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy hóa đơn" });
+                }
+
+                // ✅ Cập nhật invoice status
+                invoice.Status = "Đã thanh toán";
+
+                // ✅ Tạo payment record
+                var payment = new Payment
+                {
+                    PaymentID = Guid.NewGuid(),
+                    InvoiceID = invoice.InvoiceID,
+                    Method = "Tiền mặt",
+                    Amount = invoice.TotalAmount,
+                    PaymentTime = DateTime.Now
+                };
+
+                _context.Payments.Add(payment);
+
+                // ✅ Cộng điểm cho customer (nếu không phải guest)
+                if (invoice.CustomerID != null)
+                {
+                    var customer = await _context.Customers.FindAsync(invoice.CustomerID);
+                    if (customer != null)
+                    {
+                        var pointsToAdd = Math.Floor(invoice.TotalAmount.Value / 10000);
+                        customer.Point = (customer.Point ?? 0) + pointsToAdd;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Thanh toán thành công",
+                    invoiceId = invoice.InvoiceID.ToString()
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        // ✅ Xử lý thanh toán PayOS cho Product
+        [HttpPost]
+        public async Task<IActionResult> ProcessProductPayOsPayment([FromBody] PaymentRequestDto request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.InvoiceId) || !Guid.TryParse(request.InvoiceId, out Guid invoiceGuid))
+                {
+                    return Json(new { success = false, message = "Invoice ID không hợp lệ" });
+                }
+
+                var invoice = await _context.Invoices
+                    .Include(i => i.Customer)
+                    .Include(i => i.InvoiceProducts)
+                        .ThenInclude(ip => ip.Product)
+                    .FirstOrDefaultAsync(i => i.InvoiceID == invoiceGuid && !i.IsDeleted);
+
+                if (invoice == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy hóa đơn" });
+                }
+
+                if (invoice.Status == "Đã thanh toán")
+                {
+                    return Json(new { success = false, message = "Hóa đơn đã được thanh toán" });
+                }
+
+                // ✅ Lấy thông tin khách hàng
+                string buyerName = invoice.Customer?.FullName ?? "Khách vãng lai";
+                string buyerEmail = invoice.Customer?.Email ?? "guest@cinestar.com";
+                string buyerPhone = invoice.Customer?.Phone ?? "0000000000";
+
+                // ✅ Tạo mô tả từ danh sách sản phẩm
+                var productNames = string.Join(", ",
+                    invoice.InvoiceProducts.Select(ip => ip.Product?.ProductName ?? "Sản phẩm")
+                );
+                var description = $"Thanh toán bắp nước - {productNames}";
+
+                // ✅ Tạo payment link
+                var paymentResult = await _payOsService.CreateTicketPaymentLink(
+                    invoiceGuid,
+                    invoice.TotalAmount.Value,
+                    buyerName,
+                    buyerEmail,
+                    buyerPhone,
+                    description,
+                    isAdminSale: true
+                );
+
+                if (paymentResult == null)
+                {
+                    return Json(new { success = false, message = "Không thể tạo link thanh toán" });
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Tạo link thanh toán thành công",
+                    paymentUrl = paymentResult.checkoutUrl,
+                    orderCode = paymentResult.orderCode
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        // ✅ DTO cho payment request
+        public class PaymentRequestDto
+        {
+            public string InvoiceId { get; set; }
+        }
+
         ////realtime chọn ghế
         //// Render ra các ghế 
         //public async Task<IActionResult> GetSeatingLayout(string showTimeId, Guid currentCustomerId)
