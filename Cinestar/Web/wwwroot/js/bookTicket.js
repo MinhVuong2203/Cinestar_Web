@@ -217,7 +217,7 @@
                             <ul class="list-time">`;
 
                             group.showTimes.forEach(st => {
-                            html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}">
+                                html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}" data-room-name="${st.nameRoom}">
                             ${st.timeDisplay}
                         </li>`;
                     });
@@ -359,9 +359,16 @@
             document.querySelectorAll('.item-time').forEach(item => {
                 item.classList.remove('active');
             });
-
+        
             e.target.classList.add('active');
             const showTimeId = e.target.dataset.showtimeId;
+            const roomName = e.target.dataset.roomName;
+
+            const titleElement = document.querySelector('.TitleBrand');
+            if (titleElement) {
+                titleElement.textContent = 'Chọn ghế - ' + roomName;
+            }
+
             currentCustomerId = document.getElementById("CustomerId").innerHTML;
             console.log("ShowTimeID: " + showTimeId);
             console.log("CustomerID: " + currentCustomerId);
