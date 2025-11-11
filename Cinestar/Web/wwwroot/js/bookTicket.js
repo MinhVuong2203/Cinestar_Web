@@ -508,6 +508,12 @@
                     }
 
                 } else {
+                    // Kiểm tra số lượng ghế đã chọn
+                    const selectedSeats = document.querySelectorAll('td.seat.selected');
+                    if (selectedSeats.length >= 8) {
+                        alert('Bạn chỉ được chọn tối đa 8 ghế!');
+                        return;
+                    }
                     // Chọn ghế
                     try {
                         const response = await fetch(`/Movie/SelectSeats?showTimeId=${showTimeId}&seatId=${seatId}`, {
