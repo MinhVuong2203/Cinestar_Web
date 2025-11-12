@@ -8,6 +8,7 @@
     // ✅ Thêm biến lưu thông tin đặt vé
     let selectedSeatsData = [];
     let selectedShowTimeId = null
+    let selectedProducts = []; // ✅ THÊM MỚI: Lưu sản phẩm đã chọn
 
     // Toggle dropdown
     selected.addEventListener('click', function () {
@@ -284,20 +285,93 @@
     function updateTotalPrice() {
         let total = 0;
 
-        // ✅ Tính tổng tiền từ dữ liệu vé thực tế
+        // Tính tổng tiền từ ghế
         selectedSeatsData.forEach(seat => {
             total += seat.price || 0;
         });
 
+        //  tổng tiền từ sản phẩm
+        selectedProducts.forEach(product => {
+            total += product.totalPrice || 0;
+        });
+
         document.getElementById('totalPrice').textContent = total.toLocaleString('vi-VN') + ' VNĐ';
 
-        // ✅ Enable nút thanh toán khi đã chọn ghế
+        // Enable nút thanh toán khi đã chọn ghế
         const bookBtn = document.getElementById('bookBtn');
         if (bookBtn) {
             bookBtn.disabled = selectedSeatsData.length === 0;
         }
     }
 
+    // Xử lý tăng/giảm số lượng sản phẩm
+    document.addEventListener('click', function (e) {
+        // Xử lý nút tăng
+        if (e.target.classList.contains('plus')) {
+            const card = e.target.closest('.product-card');
+            const productId = card.dataset.productId;
+            const qtyValue = card.querySelector('.qty-value');
+            const productName = card.querySelector('.product-name').textContent;
+            const priceElement = card.querySelector('.product-price');
+            const price = parseInt(priceElement.dataset.price);
+
+            let currentQty = parseInt(qtyValue.textContent);
+            currentQty += 1;
+            qtyValue.textContent = currentQty;
+
+            // Cập nhật hoặc thêm sản phẩm vào danh sách
+            updateProductSelection(productId, productName, price, currentQty);
+            updateTotalPrice();
+        }
+
+        // Xử lý nút giảm
+        if (e.target.classList.contains('minus')) {
+            const card = e.target.closest('.product-card');
+            const productId = card.dataset.productId;
+            const qtyValue = card.querySelector('.qty-value');
+            const productName = card.querySelector('.product-name').textContent;
+            const priceElement = card.querySelector('.product-price');
+            const price = parseInt(priceElement.dataset.price);
+
+            let currentQty = parseInt(qtyValue.textContent);
+            if (currentQty > 0) {
+                currentQty--;
+                qtyValue.textContent = currentQty;
+
+                // Cập nhật hoặc xóa sản phẩm khỏi danh sách
+                updateProductSelection(productId, productName, price, currentQty);
+                updateTotalPrice();
+            }
+        }
+    });
+
+    // Hàm cập nhật sản phẩm đã chọn
+    function updateProductSelection(productId, productName, price, quantity) {
+        const existingProductIndex = selectedProducts.findIndex(p => p.productId === productId);
+
+        if (quantity === 0) {
+            // Xóa sản phẩm nếu số lượng = 0
+            if (existingProductIndex !== -1) {
+                selectedProducts.splice(existingProductIndex, 1);
+            }
+        } else {
+            // Cập nhật hoặc thêm sản phẩm
+            if (existingProductIndex !== -1) {
+                selectedProducts[existingProductIndex].quantity = quantity;
+                selectedProducts[existingProductIndex].totalPrice = price * quantity;
+            } else {
+                selectedProducts.push({
+                    productId: productId,
+                    productName: productName,
+                    price: price,
+                    quantity: quantity,
+                    totalPrice: price * quantity
+                });
+            }
+        }
+
+        console.log('✅ Selected Products:', selectedProducts);
+    }
 
     
     // === XỬ LÝ CHỌN GHẾ VỚI SIGNALR ===
@@ -616,6 +690,7 @@
     }
 
     // ✅ XỬ LÝ NÚT ĐẶT VÉ
+    // ✅ XỬ LÝ NÚT ĐẶT VÉ
     const bookBtn = document.getElementById('bookBtn');
     if (bookBtn) {
         bookBtn.addEventListener('click', function () {
@@ -632,28 +707,18 @@
                 return;
             }
 
-            // ✅ Lấy thông tin phim từ DOM
+            // Lấy thông tin phim
             const movieTitle = document.querySelector('.movie-title1')?.textContent || 'N/A';
-
-            // ✅ Lấy tên rạp từ sticky bar (đã được cập nhật khi chọn suất chiếu)
             const cinemaName = document.getElementById('cinemaName')?.textContent || 'N/A';
-
-            // ✅ Lấy địa chỉ rạp từ cinestar-item đang open
             const activeBranch = document.querySelector('.cinestar-item.open');
             const cinemaAddress = activeBranch?.querySelector('.address')?.textContent || '';
 
-            // ✅ Debug log
-            console.log('=== CINEMA INFO ===');
-            console.log('Cinema Name from sticky bar:', cinemaName);
-            console.log('Active Branch Element:', activeBranch);
-            console.log('Cinema Address:', cinemaAddress);
-
-            // ✅ Lấy thông tin suất chiếu
+            // Lấy thông tin suất chiếu
             const selectedTimeSlot = document.querySelector('.item-time.active');
             const showTimeDisplay = selectedTimeSlot?.textContent.trim() || '';
             const selectedDate = document.querySelector('.box-time.active')?.dataset.date || '';
 
-            // ✅ Format ngày giờ
+            // Format ngày giờ
             const dateObj = new Date(selectedDate);
             const dateStr = dateObj.toLocaleDateString('vi-VN', {
                 weekday: 'long',
@@ -662,16 +727,25 @@
                 year: 'numeric'
             });
 
-            // ✅ Lấy thông tin phòng chiếu
+            // Lấy thông tin phòng chiếu
             const roomType = selectedTimeSlot?.closest('.item-infor')?.querySelector('.tt')?.textContent || '';
 
-            // ✅ Tính tổng tiền
-            let totalAmount = 0;
+            // Tính tổng tiền ghế
+            let seatsTotal = 0;
             selectedSeatsData.forEach(seat => {
-                totalAmount += seat.price || 0;
+                seatsTotal += seat.price || 0;
             });
 
-            // ✅ Chuẩn bị dữ liệu booking
+            // ✅ Tính tổng tiền sản phẩm
+            let productsTotal = 0;
+            selectedProducts.forEach(product => {
+                productsTotal += product.totalPrice || 0;
+            });
+
+            // ✅ Tổng tiền cuối cùng
+            const totalAmount = seatsTotal + productsTotal;
+
+            // ✅ Chuẩn bị dữ liệu booking (có thêm products)
             const bookingData = {
                 // Thông tin phim
                 movieTitle: movieTitle,
@@ -691,6 +765,11 @@
                 // Thông tin vé và ghế
                 seats: selectedSeatsData,
                 totalSeats: selectedSeatsData.length,
+                seatsTotal: seatsTotal,
+
+                // ✅ THÊM: Thông tin sản phẩm
+                products: selectedProducts,
+                productsTotal: productsTotal,
 
                 // Thông tin giá
                 totalAmount: totalAmount,
@@ -699,16 +778,44 @@
                 bookingTime: new Date().toISOString()
             };
 
+            // ✅ THÊM: Tạo bookingInfo cho payment.js
+            const bookingInfo = {
+                movieTitle: movieTitle,
+                cinema: cinemaName,
+                cinemaAddress: cinemaAddress,
+                showtime: showTimeDisplay,
+                showDate: dateStr,
+                room: roomType.match(/\d+/)?.[0] || 'N/A',
+                quantity: selectedSeatsData.length,
+                ticketType: selectedSeatsData.map(s => s.ticketType).join(', '),
+                seat: selectedSeatsData.map(s => s.seatName).join(', '),
+                products: selectedProducts,
+                seatsTotal: seatsTotal,
+                productsTotal: productsTotal,
+                amount: totalAmount,
+                timeLeft: 5 * 60 // 5 phút
+            };
+
             console.log('✅ Full Booking Data:', JSON.stringify(bookingData, null, 2));
+            console.log('✅ Booking Info:', JSON.stringify(bookingInfo, null, 2));
 
-            // ✅ Lưu vào sessionStorage
+            // ✅ Lưu vào sessionStorage (KHÔNG DÙNG localStorage)
             sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+            sessionStorage.setItem('bookingInfo', JSON.stringify(bookingInfo));
 
-            // ✅ Verify data was saved
+            // Verify
             const savedData = sessionStorage.getItem('bookingData');
+            const savedInfo = sessionStorage.getItem('bookingInfo');
             console.log('✅ Verified saved data:', savedData);
+            console.log('✅ Verified saved info:', savedInfo);
 
-            // ✅ Chuyển sang trang thanh toán
+            console.log('=== BOOKING SUMMARY ===');
+            console.log('Seats Total:', seatsTotal);
+            console.log('Products Total:', productsTotal);
+            console.log('Total Amount:', totalAmount);
+            console.log('Selected Products:', selectedProducts);
+
+            // Chuyển sang trang thanh toán
             window.location.href = '/Payment/Index';
         });
     }
