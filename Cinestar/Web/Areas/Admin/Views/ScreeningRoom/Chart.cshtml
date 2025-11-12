@@ -1,0 +1,179 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Thống kê Phòng chiếu";
+}
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .chart-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <h1 class="mb-4">📊 Thống kê Phòng chiếu</h1>
+
+    <!-- Phần thống kê phòng (trên) -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="chart-container">
+                <h3 class="chart-title">Top phòng có lượt chọn cao nhất theo chi nhánh</h3>
+                <form id="roomChartForm">
+                    <div class="mb-3">
+                        <label>Chi nhánh:</label>
+                        <select class="form-select" name="branchId">
+                            @foreach (var branch in ViewBag.AllBranches)
+                            {
+                                <option value="@branch.BranchID">@branch.BranchName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Từ ngày:</label>
+                        <input type="date" class="form-control" name="fromDate" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="mb-3">
+                        <label>Đến ngày:</label>
+                        <input type="date" class="form-control" name="toDate" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="loadRoomChart()">Tải biểu đồ</button>
+                </form>
+                <canvas id="roomChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phần thống kê ghế (dưới) -->
+    <div class="row">
+        <div class="col-12">
+            <div class="chart-container">
+                <h3 class="chart-title">Top ghế có lượt chọn cao nhất theo phòng</h3>
+                <form id="seatChartForm">
+                    <div class="mb-3">
+                        <label>Phòng chiếu:</label>
+                        <select class="form-select" name="roomId">
+                            @foreach (var room in ViewBag.AllRooms)
+                            {
+                                <option value="@room.RoomID">@room.RoomName (@room.Branch.BranchName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Từ ngày:</label>
+                        <input type="date" class="form-control" name="fromDate" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="mb-3">
+                        <label>Đến ngày:</label>
+                        <input type="date" class="form-control" name="toDate" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="loadSeatChart()">Tải biểu đồ</button>
+                </form>
+                <canvas id="seatChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Mảng màu gradient lấy cảm hứng từ ChartMovie
+        const colors = [
+            'rgba(102, 126, 234, 0.8)', // Purple-blue
+            'rgba(118, 75, 162, 0.8)',
+            'rgba(17, 153, 142, 0.8)', // Green
+            'rgba(56, 239, 125, 0.8)',
+            'rgba(240, 147, 251, 0.8)', // Orange-pink
+            'rgba(245, 87, 108, 0.8)',
+            'rgba(79, 172, 254, 0.8)', // Blue-cyan
+            'rgba(0, 242, 254, 0.8)'
+        ];
+
+        let roomChartInstance;
+        let seatChartInstance;
+
+        function loadRoomChart() {
+            const formData = $('#roomChartForm').serialize();
+            $.post('/admin/ScreeningRoom/GetRoomChartData', formData, function (data) {
+                const ctx = document.getElementById('roomChart').getContext('2d');
+                if (roomChartInstance) roomChartInstance.destroy();
+                roomChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Số lượt chọn',
+                            data: data.values,
+                            backgroundColor: colors.slice(0, data.labels.length),
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: true, position: 'bottom' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function loadSeatChart() {
+            const formData = $('#seatChartForm').serialize();
+            $.post('/admin/ScreeningRoom/GetSeatChartData', formData, function (data) {
+                const ctx = document.getElementById('seatChart').getContext('2d');
+                if (seatChartInstance) seatChartInstance.destroy();
+                seatChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Số lượt chọn',
+                            data: data.values,
+                            backgroundColor: colors.slice(0, data.labels.length),
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: true, position: 'bottom' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+}

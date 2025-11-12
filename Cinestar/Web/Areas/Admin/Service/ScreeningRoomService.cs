@@ -166,5 +166,64 @@ namespace Web.Areas.Admin.Service
                 .ToListAsync();
             return branches;
         }
+
+        // Thống kê phòng có số lượt chọn (vé) cao nhất theo chi nhánh và khoảng thời gian
+        public async Task<List<(string RoomName, int TicketCount)>> GetTopRoomsByBranch(
+    string branchId, DateTime fromDate, DateTime toDate)
+        {
+            var query = from it in _context.InvoiceTickets
+                        join t in _context.Tickets on it.TicketID equals t.TicketID
+                        join st in _context.ShowTimes on t.ShowTimeID equals st.ShowTimeID
+                        join r in _context.Rooms on st.RoomID equals r.RoomID
+                        join inv in _context.Invoices on it.InvoiceID equals inv.InvoiceID
+                        where r.BranchID == branchId
+                              && !r.IsDeleted
+                              && inv.IssueDate >= fromDate.Date
+                              && inv.IssueDate < toDate.Date.AddDays(1)
+                              && inv.Status == "Completed" // hoặc "Paid", "Success" → kiểm tra DB!
+                              && !inv.IsDeleted
+                              && !t.IsDeleted
+                        group it by new { r.RoomID, r.RoomName } into g
+                        select new
+                        {
+                            RoomName = g.Key.RoomName,
+                            TicketCount = g.Sum(x => x.Quantity ?? 1) // Nếu có Quantity > 1
+                        };
+
+            var results = await query
+                .OrderByDescending(x => x.TicketCount)
+                .Take(10)
+                .ToListAsync();
+
+            return results.Select(x => (x.RoomName, x.TicketCount)).ToList();
+        }
+
+        // Thống kê ghế có số lượt chọn (vé) cao nhất theo phòng và khoảng thời gian
+        public async Task<List<(string SeatName, int TicketCount)>> GetTopSeatsByRoom(string roomId, DateTime fromDate, DateTime toDate)
+        {
+            var query = from it in _context.InvoiceTickets
+                        join t in _context.Tickets on it.TicketID equals t.TicketID
+                        join st in _context.ShowTimes on t.ShowTimeID equals st.ShowTimeID
+                        join inv in _context.Invoices on it.InvoiceID equals inv.InvoiceID
+                        where st.RoomID == roomId
+                              && inv.IssueDate >= fromDate.Date
+                              && inv.IssueDate < toDate.Date.AddDays(1)
+                              && inv.Status == "Completed"
+                              && !inv.IsDeleted
+                              && !t.IsDeleted
+                        group it by new { t.SeatID, t.Seat.SeatName } into g
+                        select new
+                        {
+                            SeatName = g.Key.SeatName,
+                            TicketCount = g.Sum(x => x.Quantity ?? 1)
+                        };
+
+            var results = await query
+                .OrderByDescending(x => x.TicketCount)
+                .Take(20)
+                .ToListAsync();
+
+            return results.Select(x => (x.SeatName, x.TicketCount)).ToList();
+        }
     }
 }

@@ -216,5 +216,35 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
+
+        // GET: Admin/ScreeningRoom/Chart
+        public async Task<IActionResult> Chart()
+        {
+            ViewBag.AllBranches = await _screeningRoomService.GetActiveBranches();
+            ViewBag.AllRooms = await _screeningRoomService.GetScreeningRooms(); // Lấy tất cả phòng để chọn
+            return View();
+        }
+
+        // POST: Admin/ScreeningRoom/GetRoomChartData
+        [HttpPost]
+        public async Task<JsonResult> GetRoomChartData(string branchId, DateTime fromDate, DateTime toDate)
+        {
+            var data = await _screeningRoomService.GetTopRoomsByBranch(branchId, fromDate, toDate);
+            var labels = data.Select(x => x.RoomName).ToArray();
+            var values = data.Select(x => x.TicketCount).ToArray();
+
+            return Json(new { labels, values });
+        }
+
+        // POST: Admin/ScreeningRoom/GetSeatChartData
+        [HttpPost]
+        public async Task<JsonResult> GetSeatChartData(string roomId, DateTime fromDate, DateTime toDate)
+        {
+            var data = await _screeningRoomService.GetTopSeatsByRoom(roomId, fromDate, toDate);
+            var labels = data.Select(x => x.SeatName).ToArray();
+            var values = data.Select(x => x.TicketCount).ToArray();
+
+            return Json(new { labels, values });
+        }
     }
 }
