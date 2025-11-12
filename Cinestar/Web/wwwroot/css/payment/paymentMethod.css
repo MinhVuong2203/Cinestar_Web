@@ -308,3 +308,50 @@
         flex-direction: column;
     }
 }
+
+
+.food-section {
+    padding: 15px 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.food-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffc107;
+    margin-bottom: 10px;
+}
+
+.product-list {
+    margin-top: 10px;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+    .product-item:last-child {
+        border-bottom: none;
+    }
+
+.product-name {
+    font-size: 14px;
+    color: #fff;
+}
+
+.product-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffc107;
+}
+
+.no-products {
+    font-size: 14px;
+    color: #888;
+    font-style: italic;
+    padding: 8px 0;
+}
