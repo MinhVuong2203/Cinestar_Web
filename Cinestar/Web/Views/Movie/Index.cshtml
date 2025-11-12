@@ -27,7 +27,7 @@
                             for (int slideIndex = 0; slideIndex < slideCount; slideIndex++)
                             {
                                 var moviesInSlide = nowShowingMovies.Skip(slideIndex * 4).Take(4).ToList();
-                                <div class="carousel-slide" style="">
+                                <div class="carousel-slide">
                                     <div class="row g-4 justify-content-between">
                                         @foreach (var movie in moviesInSlide)
                                         {
@@ -74,7 +74,7 @@
                                                                 <span class="play-icon">▶</span> Xem Trailer
                                                             </a>
                                                         }
-                                                        <a href = "/movie/details/@movie.MovieID" class="btn-book">ĐẶT VÉ</a>
+                                                        <a href="/movie/details/@movie.MovieID" class="btn-book">ĐẶT VÉ</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -221,10 +221,90 @@
             }
         </div>
     </section>
+</div>
 
-<script src="~/js/Customer/homeCustomer.js"></script>
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        // ========== CAROUSEL INITIALIZATION ==========
+        initCarousel('movieCarousel', 'prevBtn', 'nextBtn', 'carouselDots');
+        initCarousel('movieCarousel3', 'prevBtn3', 'nextBtn3', 'carouselDots3');
+
+        function initCarousel(carouselId, prevBtnId, nextBtnId, dotsId) {
+            const track = document.getElementById(carouselId);
+            const prevBtn = document.getElementById(prevBtnId);
+            const nextBtn = document.getElementById(nextBtnId);
+            const dotsContainer = document.getElementById(dotsId);
+
+            if (!track) return;
+
+            const slides = track.querySelectorAll('.carousel-slide');
+            const slideCount = slides.length;
+
+            if (slideCount === 0) return;
+
+            let currentSlide = 0;
+
+            // Create dots
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < slideCount; i++) {
+                    const dot = document.createElement('span');
+                    dot.classList.add('dot');
+                    if (i === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function updateCarousel() {
+                const offset = -currentSlide * 100;
+                track.style.transform = `translateX(${offset}%)`;
+
+                if (dotsContainer) {
+                    const dots = dotsContainer.querySelectorAll('.dot');
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === currentSlide);
+                    });
+                }
+
+                if (prevBtn) prevBtn.disabled = currentSlide === 0;
+                if (nextBtn) nextBtn.disabled = currentSlide === slideCount - 1;
+            }
+
+            function goToSlide(index) {
+                if (index >= 0 && index < slideCount) {
+                    currentSlide = index;
+                    updateCarousel();
+                }
+            }
+
+            function nextSlide() {
+                if (currentSlide < slideCount - 1) {
+                    currentSlide++;
+                    updateCarousel();
+                }
+            }
+
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateCarousel();
+                }
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+            updateCarousel();
+
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(updateCarousel, 250);
+            });
+        }
+
+        // ========== READ MORE FUNCTIONALITY ==========
         const readMoreBtn = document.querySelector('.read-more');
         const synopsisMore = document.querySelector('.synopsis-more');
         const ellipsis = document.querySelector('.ellipsis');
@@ -232,12 +312,10 @@
         if (readMoreBtn && synopsisMore && ellipsis) {
             readMoreBtn.addEventListener('click', function() {
                 if (synopsisMore.classList.contains('hidden')) {
-                    // Hiện nội dung đầy đủ, ẩn dấu ba chấm
                     synopsisMore.classList.remove('hidden');
                     ellipsis.classList.add('hidden');
                     readMoreBtn.textContent = 'Thu gọn';
                 } else {
-                    // Ẩn nội dung, hiện lại dấu ba chấm
                     synopsisMore.classList.add('hidden');
                     ellipsis.classList.remove('hidden');
                     readMoreBtn.textContent = 'Xem thêm';
@@ -245,221 +323,179 @@
             });
         }
 
-    // === STICKY BAR FUNCTIONALITY ===
-    const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
-    const seatCount = document.getElementById('seatCount');
-    const totalPrice = document.getElementById('totalPrice');
-    const bookButton = document.getElementById('bookBtn');
-    const countdownTimer = document.getElementById('countdownTimer');
-    const stickyBar = document.getElementById('stickyBar');
+        // ========== STICKY BAR FUNCTIONALITY ==========
+        const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
+        const seatCount = document.getElementById('seatCount');
+        const totalPrice = document.getElementById('totalPrice');
+        const bookButton = document.getElementById('bookBtn');
+        const countdownTimer = document.getElementById('countdownTimer');
+        const stickyBar = document.getElementById('stickyBar');
 
-    // Show sticky bar after page loads with class
-    setTimeout(function() {
+        // Only run sticky bar code if elements exist
         if (stickyBar) {
-            stickyBar.classList.add('show');
+            setTimeout(function() {
+                stickyBar.classList.add('show');
+            }, 500);
         }
-    }, 500);
 
-    // Countdown timer (5 minutes)
-    let timeLeft = 300;
-    function updateTimer() {
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
+        // Countdown timer
         if (countdownTimer) {
-            countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            let timeLeft = 300;
 
-            // Change color when time is low (1 minute)
-            if (timeLeft <= 60) {
-                countdownTimer.classList.add('warning');
-            } else {
-                countdownTimer.classList.remove('warning');
+            function updateTimer() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 60) {
+                    countdownTimer.classList.add('warning');
+                } else {
+                    countdownTimer.classList.remove('warning');
+                }
+
+                if (timeLeft <= 0) {
+                    alert('Thời gian giữ vé đã hết!');
+                    document.querySelectorAll('.seat.selected').forEach(seat => {
+                        seat.classList.remove('selected');
+                        const originalClass = seat.textContent.includes('P') || seat.textContent.includes('Q') || seat.textContent.includes('R') ? 'couple' : 'regular';
+                        seat.classList.add(originalClass);
+                    });
+                    updateStickyBar();
+                    timeLeft = 300;
+                    countdownTimer.classList.remove('warning');
+                }
+                timeLeft--;
             }
+
+            setInterval(updateTimer, 1000);
         }
 
-        if (timeLeft <= 0) {
-            alert('Thời gian giữ vé đã hết!');
-            // Reset selections
-            document.querySelectorAll('.seat.selected').forEach(seat => {
-                seat.classList.remove('selected');
-                const originalClass = seat.textContent.includes('P') || seat.textContent.includes('Q') || seat.textContent.includes('R') ? 'couple' : 'regular';
-                seat.classList.add(originalClass);
-            });
-            updateStickyBar();
-            timeLeft = 300; // Reset timer
-            if (countdownTimer) {
-                countdownTimer.classList.remove('warning');
-            }
-        }
-        timeLeft--;
-    }
+        // Update sticky bar function
+        function updateStickyBar() {
+            // Check if elements exist before accessing them
+            if (!selectedSeatsDisplay || !seatCount || !totalPrice || !bookButton) return;
 
-    // Start timer
-    setInterval(updateTimer, 1000);
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            const seatNames = Array.from(selectedSeats).map(seat => seat.textContent).sort();
 
-    // Update sticky
-    function updateStickyBar() {
-        const selectedSeats = document.querySelectorAll('.seat.selected');
-        const seatNames = Array.from(selectedSeats).map(seat => seat.textContent).sort();
-        const cinemaBranch = document.getElementById('selected-branch').textContent;
+            // Safe check for cinema branch
+            const cinemaBranchEl = document.getElementById('selected-branch');
+            const cinemaBranch = cinemaBranchEl ? cinemaBranchEl.textContent : '';
 
-   //      if (cinemaBranch) {
-   //          Update cinema branch display
-			// const cinemaInfo = document.querySelector('.cinema-info');
-			// if (cinemaInfo) cinemaInfo.textContent = "Cinema " + cinemaBranch;
+            seatCount.textContent = selectedSeats.length;
 
-   //      }
-
-        // Update seat count
-        if (seatCount) seatCount.textContent = selectedSeats.length;
-
-        if (selectedSeats.length > 0) {
-            // Update selected seats display
-            if (selectedSeatsDisplay) selectedSeatsDisplay.textContent = seatNames.join(', ');
-
-            // Calculate total price
-            const total = selectedSeats.length * 99000; // 99,000 VND per seat
-            if (totalPrice) totalPrice.textContent = total.toLocaleString('vi-VN') + ' VNĐ';
-
-            // Enable book button
-            if (bookButton) {
+            if (selectedSeats.length > 0) {
+                selectedSeatsDisplay.textContent = seatNames.join(', ');
+                const total = selectedSeats.length * 99000;
+                totalPrice.textContent = total.toLocaleString('vi-VN') + ' VNĐ';
                 bookButton.disabled = false;
-            }
-        } else {
-            // No seats selected
-            if (selectedSeatsDisplay) selectedSeatsDisplay.textContent = 'Chưa chọn ghế';
-            if (totalPrice) totalPrice.textContent = '0 VNĐ';
-
-            // Disable book button
-            if (bookButton) {
+            } else {
+                selectedSeatsDisplay.textContent = 'Chưa chọn ghế';
+                totalPrice.textContent = '0 VNĐ';
                 bookButton.disabled = true;
             }
         }
-    }
 
-    // Seat selection logic with animation
-    const seats = document.querySelectorAll('td.seat:not(.booked)');
-    seats.forEach(seat => {
-        seat.addEventListener('click', function () {
-            // Add click effect
-            this.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 150);
+        // ========== SEAT SELECTION ==========
+        const seats = document.querySelectorAll('td.seat:not(.booked)');
 
-            if (this.classList.contains('selected')) {
-                this.classList.remove('selected');
-                // Restore original class
-                const originalClass = this.textContent.includes('P') || this.textContent.includes('Q') || this.textContent.includes('R') ? 'couple' : 'regular';
-                this.classList.add(originalClass);
-            } else {
-                this.classList.add('selected');
-                this.classList.remove('regular', 'couple');
-            }
+        if (seats.length > 0) {
+            seats.forEach(seat => {
+                seat.addEventListener('click', function () {
+                    this.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        const originalClass = this.textContent.includes('P') || this.textContent.includes('Q') || this.textContent.includes('R') ? 'couple' : 'regular';
+                        this.classList.add(originalClass);
+                    } else {
+                        this.classList.add('selected');
+                        this.classList.remove('regular', 'couple');
+                    }
+                    updateStickyBar();
+                });
+
+                seat.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('booked')) {
+                        this.style.transform = 'scale(1.05)';
+                    }
+                });
+
+                seat.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('selected')) {
+                        this.style.transform = 'scale(1)';
+                    }
+                });
+            });
+
+            // Initial update
             updateStickyBar();
-        });
+        }
 
-        // Add hover effects
-        seat.addEventListener('mouseenter', function() {
-            if (!this.classList.contains('booked')) {
-                this.style.transform = 'scale(1.05)';
-            }
-        });
+        // Book button
+        if (bookButton) {
+            bookButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                const selectedSeats = document.querySelectorAll('.seat.selected');
 
-        seat.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('selected')) {
-                this.style.transform = 'scale(1)';
-            }
-        });
-    });
+                if (selectedSeats.length === 0) {
+                    alert('Vui lòng chọn ghế trước khi đặt vé!');
+                    return;
+                }
 
-    // Book button functionality
-    if (bookButton) {
-         bookButton.addEventListener('click', function (e) {
-             e.preventDefault();
+                window.location.href = '/Payment/Index';
+            });
+        }
 
-             const selectedSeats = document.querySelectorAll('.seat.selected');
-
-             if (selectedSeats.length === 0) {
-                 alert('Vui lòng chọn ghế trước khi đặt vé!');
-                 return;
-             }
-
-             window.location.href = '/Payment/Index';
-         });
-    }
-
-    // Initial update
-    updateStickyBar();
-    });
-
-        // const seats = document.querySelectorAll('td.seat:not(.booked)');
-
-        // seats.forEach(seat => {
-        //     seat.addEventListener('click', function() {
-        //         if (this.classList.contains('selected')) {
-        //             if (this.classList.contains('couple')) {
-        //                 this.classList.remove('selected');
-        //                 this.classList.add('couple');
-        //             } else {
-        //                 this.classList.remove('selected');
-        //                 this.classList.add('regular');
-        //             }
-        //         } else {
-        //             this.classList.add('selected');
-        //             this.classList.remove('regular', 'couple');
-        //         }
-        //     });
-        // });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
+        // ========== CATEGORY LINKS ==========
         const categoryLinks = document.querySelectorAll('.category-link');
 
-        categoryLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Ngăn hành vi mặc định của thẻ a
+        if (categoryLinks.length > 0) {
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    categoryLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
 
-                // Xóa class 'active' khỏi tất cả các link
-                categoryLinks.forEach(l => l.classList.remove('active'));
+                    const targetSectionId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetSectionId);
 
-                // Thêm class 'active' vào link vừa được nhấn
-                link.classList.add('active');
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
 
-                // Lấy id của section từ href của link
-                const targetSectionId = link.getAttribute('href');
+        // ========== PRODUCT QUANTITY CONTROL ==========
+        const productCards = document.querySelectorAll('.product-card');
 
-                // Cuộn mượt mà đến section tương ứng
-                const targetSection = document.querySelector(targetSectionId);
-                if (targetSection) {
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start' // Cuộn đến đầu của section
+        if (productCards.length > 0) {
+            productCards.forEach(card => {
+                const minusBtn = card.querySelector('.minus');
+                const plusBtn = card.querySelector('.plus');
+                const qtyValue = card.querySelector('.qty-value');
+
+                if (minusBtn && plusBtn && qtyValue) {
+                    minusBtn.addEventListener('click', () => {
+                        let currentValue = parseInt(qtyValue.textContent);
+                        if (currentValue > 0) {
+                            qtyValue.textContent = currentValue - 1;
+                        }
+                    });
+
+                    plusBtn.addEventListener('click', () => {
+                        let currentValue = parseInt(qtyValue.textContent);
+                        qtyValue.textContent = currentValue + 1;
                     });
                 }
             });
-        });
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        // Xử lý nút tăng/giảm số lượng
-        const productCards = document.querySelectorAll('.product-card');
-
-        productCards.forEach(card => {
-            const minusBtn = card.querySelector('.minus');
-            const plusBtn = card.querySelector('.plus');
-            const qtyValue = card.querySelector('.qty-value');
-
-            minusBtn.addEventListener('click', () => {
-                let currentValue = parseInt(qtyValue.textContent);
-                // Thay đổi ở đây: cho phép giảm xuống 0
-                if (currentValue > 0) {
-                    qtyValue.textContent = currentValue - 1;
-                }
-            });
-
-            plusBtn.addEventListener('click', () => {
-                let currentValue = parseInt(qtyValue.textContent);
-                qtyValue.textContent = currentValue + 1;
-            });
-        });
+        }
     });
 </script>
