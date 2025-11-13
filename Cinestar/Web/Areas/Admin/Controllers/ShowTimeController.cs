@@ -55,14 +55,7 @@ namespace Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ShowTime model)
         {
-            System.Diagnostics.Debug.WriteLine("========== DEBUG CREATE SHOWTIME ==========");
-            System.Diagnostics.Debug.WriteLine($"ShowTimeID: '{model.ShowTimeID}'");
-            System.Diagnostics.Debug.WriteLine($"MovieID: '{model.MovieID}'");
-            System.Diagnostics.Debug.WriteLine($"RoomID: '{model.RoomID}'");
-            System.Diagnostics.Debug.WriteLine($"StartTime: {model.StartTime:yyyy-MM-dd HH:mm:ss}");
-            System.Diagnostics.Debug.WriteLine($"Price: {model.Price}");
-            System.Diagnostics.Debug.WriteLine($"IsDeleted: {model.IsDeleted}");
-
+         
             // Validate: Giờ bắt đầu phải >= giờ hiện tại
             if (model.StartTime < DateTime.Now)
             {
@@ -102,10 +95,9 @@ namespace Web.Areas.Admin.Controllers
                 return View(model);
             }
 
-            System.Diagnostics.Debug.WriteLine("\n✅ ModelState is VALID, calling service...");
+           
             var result = await _service.CreateAsync(model);
-            System.Diagnostics.Debug.WriteLine($"Service returned: {result}");
-            System.Diagnostics.Debug.WriteLine("==========================================\n");
+           
 
             if (result)
             {
