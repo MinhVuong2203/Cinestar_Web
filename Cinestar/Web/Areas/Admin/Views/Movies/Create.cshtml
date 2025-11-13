@@ -124,7 +124,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="EndTime" class="form-label">
+                    <label asp-for="EndTime" class="form-label required">
                         <i class="fas fa-calendar-times"></i> Ngày Kết Thúc
                     </label>
                     <input asp-for="EndTime" class="form-control" type="datetime-local" />
@@ -180,23 +180,54 @@
     }
 
     <script>
+        // Preview ảnh
         document.getElementById('imageFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            const preview = document.getElementById('imagePreview');
-            const fileName = document.getElementById('fileName');
-
             if (file) {
-                // Update file name
-                fileName.textContent = file.name;
-
-                // Show preview
+                document.getElementById('fileName').textContent = file.name;
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
                     preview.innerHTML = `<img src="${e.target.result}" alt="Preview" />`;
                     preview.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
             }
+        });
+        const endTimeInput = document.querySelector('input[name="EndTime"]');
+            if (!endTimeInput.value) {
+                e.preventDefault();
+                alert('Vui lòng nhập ngày kết thúc!');
+                endTimeInput.focus();
+                endTimeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+        // Xử lý submit
+        let submitting = false;
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (submitting) {
+                e.preventDefault();
+                return false;
+            }
+
+            // jQuery validation tự động check [Required] từ Model
+            if (!$(this).valid()) {
+                e.preventDefault();
+                document.querySelector('.input-validation-error')?.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+                return false;
+            }
+
+            // Show loading
+            submitting = true;
+            const btn = document.querySelector('.btn-submit');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+
+             // Kiểm tra EndTime có được nhập không
+            
         });
     </script>
 }

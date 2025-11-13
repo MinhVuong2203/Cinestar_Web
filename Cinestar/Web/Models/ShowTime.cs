@@ -24,10 +24,12 @@ public partial class ShowTime
 
     [StringLength(10)]
     [Unicode(false)]
+    [Required(ErrorMessage = "Tên phim không được để trống!")]
     public string MovieID { get; set; } = null!;
 
     [StringLength(10)]
     [Unicode(false)]
+    [Required(ErrorMessage = "Số phòng không được để trống!")]
     public string RoomID { get; set; } = null!;
 
     public bool IsDeleted { get; set; }

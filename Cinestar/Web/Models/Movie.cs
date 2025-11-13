@@ -15,8 +15,9 @@ public partial class Movie
     public string MovieID { get; set; } = string.Empty!;
 
     [StringLength(200)]
+    [Required(ErrorMessage = "Vui lòng nhập tên phim")]
     public string Title { get; set; } = null!;
-
+    [Required(ErrorMessage = "Vui lòng nhập thời lượng phim")]
     public int? DurationMinutes { get; set; }
 
     [StringLength(100)]
@@ -33,6 +34,7 @@ public partial class Movie
     [StringLength(10)]
     public string? AgeLimit { get; set; }
 
+    [Required(ErrorMessage = "Vui lòng nhập ngày khởi chiếu!")]
     [Column(TypeName = "datetime")]
     public DateTime? StartTime { get; set; }
 

@@ -57,7 +57,9 @@ namespace Web.Service
             var movies = await _context.Movies
                 .Where(m => !m.IsDeleted
                     && m.StartTime.HasValue
-                    && m.StartTime.Value > now)  // Chưa bắt đầu chiếu
+                 
+                    && m.StartTime.Value > now
+                  )  // Chưa bắt đầu chiếu
                 .OrderBy(m => m.StartTime)
                 .Take(pageSize)
                 .ToListAsync();
