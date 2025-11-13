@@ -46,7 +46,7 @@ body {
     }
 
 .sidebar-header {
-    padding: 14px;
+    padding: 2px;
     background: linear-gradient(225deg, var(--primary-color), var(--secondary-color));
     text-align: center;
 }
