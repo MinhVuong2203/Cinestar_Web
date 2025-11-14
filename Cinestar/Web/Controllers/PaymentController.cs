@@ -408,8 +408,8 @@ namespace Web.Controllers
                             foreach (var invoiceTicket in invoice.InvoiceTickets)
                             {
                                 invoiceTicket.Ticket.Status = "Đã thanh toán";
-                                invoiceTicket.Ticket.LockedBy = null;
-                                invoiceTicket.Ticket.LockedAt = null;
+                                invoiceTicket.Ticket.LockedBy = invoice.CustomerID;
+                                invoiceTicket.Ticket.LockedAt = DateTime.Now;
                             }
 
                             // ✅ Tạo payment record
