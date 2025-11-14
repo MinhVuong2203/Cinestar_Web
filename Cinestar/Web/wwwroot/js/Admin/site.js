@@ -213,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
         hideLoading();
     }
 });
+
     // Show loading khi click link có class 'loading-link'
     const loadingLinks = document.querySelectorAll('.loading-link');
     loadingLinks.forEach(function (link) {
@@ -225,4 +226,3 @@ document.addEventListener('DOMContentLoaded', function () {
         hideLoading();
     });
 
-});
