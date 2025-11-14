@@ -671,12 +671,12 @@ function setupSeatClickEvents() {
             // CHỌN ghế mới
             else {
                 // Kiểm tra ghế đôi
-                if (seatType === 'couple') {
-                    if (!isValidCoupleSelection(seatName)) {
-                        alert('Ghế đôi phải được chọn theo cặp');
-                        return;
-                    }
-                }
+                //if (seatType === 'couple') {
+                //    if (!isValidCoupleSelection(seatName)) {
+                //        alert('Ghế đôi phải được chọn theo cặp');
+                //        return;
+                //    }
+                //}
 
                 this.classList.add('selected');
                 addSeat(seatName, seatType, seatId);
