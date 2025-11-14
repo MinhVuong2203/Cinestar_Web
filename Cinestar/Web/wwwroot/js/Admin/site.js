@@ -186,43 +186,67 @@ function debounce(func, wait) {
     };
 }
 
-// Loading
 function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = 'flex';
 }
+
 function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(function (form) {
+    // Xử lý form submit
+    document.querySelectorAll('form').forEach(function (form) {
         form.addEventListener('submit', function (e) {
-            if (form.checkValidity()) {
+            // Kiểm tra HTML5 validation
+            if (!form.checkValidity()) {
+                return; // Không show loading nếu form không hợp lệ
+            }
+
+            // Kiểm tra jQuery validation (nếu có sử dụng)
+            if (typeof jQuery !== 'undefined' && jQuery(form).data('validator')) {
+                const validator = jQuery(form).validate();
+                if (!validator.form()) {
+                    return; // Không show loading nếu validation error
+                }
+            }
+
+            // Show loading nếu tất cả validation pass
+            showLoading();
+
+            // Tự động ẩn loading sau khi page load (trường hợp validation error từ server)
+            setTimeout(function () {
+                // Check nếu có validation errors từ server
+                if (document.querySelector('.field-validation-error, .validation-summary-errors')) {
+                    hideLoading();
+                }
+            }, 100);
+        });
+    });
+
+    // Xử lý loading links
+    document.querySelectorAll('.loading-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+            const href = link.getAttribute('href');
+            // Không show loading cho link # hoặc _blank
+            if (href && href !== '#' && link.target !== '_blank') {
                 showLoading();
             }
         });
     });
+});
 
-    // Ẩn loading khi trang load xong
+// Ẩn loading khi trang load xong
+window.addEventListener('load', function () {
     hideLoading();
+});
 
-    // Ẩn loading nếu có validation error từ server
-    const validationErrors = document.querySelector('.validation-summary-errors, .field-validation-error, [class*="error"]');
-    if (validationErrors) {
+// Ẩn loading khi có validation error từ server (sau page load)
+window.addEventListener('pageshow', function () {
+    if (document.querySelector('.field-validation-error, .validation-summary-errors')) {
         hideLoading();
     }
 });
-
-    // Show loading khi click link có class 'loading-link'
-    const loadingLinks = document.querySelectorAll('.loading-link');
-    loadingLinks.forEach(function (link) {
-        link.addEventListener('click', function () {
-            showLoading();
-        });
-    });
-    // ẩn đi khi loading xong
-    window.addEventListener('load', function () {
-        hideLoading();
-    });
 
