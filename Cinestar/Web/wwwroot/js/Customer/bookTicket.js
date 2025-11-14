@@ -89,8 +89,14 @@
     });
 
     // === XỬ LÝ CINESTAR DROPDOWN ===
-    document.querySelectorAll('.cinestar-heading').forEach(function (heading) {
-        heading.addEventListener('click', function () {
+    document.addEventListener('click', function (e) {
+        // Kiểm tra xem element được click có phải là cinestar-heading hay element con của nó
+        const heading = e.target.closest('.cinestar-heading');
+
+        if (heading) {
+            console.log('🎯 Cinestar heading clicked');
+            console.log('Đã nhấn vào cinestar-heading');
+
             const item = heading.closest('.cinestar-item');
             const wasOpen = item.classList.contains('open');
 
@@ -100,21 +106,38 @@
             // Mở/đóng item hiện tại
             if (!wasOpen) {
                 item.classList.add('open');
+                console.log('✅ Opening branch:', item.dataset.branchId);
 
                 // Cập nhật tên rạp trong sticky bar
                 const cinemaName = item.querySelector('.title').textContent;
-                document.getElementById('cinemaName').textContent = cinemaName;
-
-                // Load lịch chiếu cho rạp này
-                const branchId = item.dataset.branchId;
-                const selectedDate = document.querySelector('.box-time.active')?.dataset.date;
-                const movieId = document.querySelector('.box-time.active')?.dataset.movieId;
-
-                if (branchId && selectedDate && movieId) {
-                    loadShowTimes(branchId, movieId, selectedDate);
+                const cinemaNameEl = document.getElementById('cinemaName');
+                if (cinemaNameEl) {
+                    cinemaNameEl.textContent = cinemaName;
+                    console.log('✅ Cinema name updated:', cinemaName);
                 }
+
+                // Load lịch chiếu cho rạp này (nếu chưa có)
+                const branchId = item.dataset.branchId;
+                const showtimeContainer = item.querySelector('.showtime-container');
+
+                // Kiểm tra xem đã load showtimes chưa
+                const hasShowtimes = showtimeContainer.querySelector('.list-infor');
+
+                if (!hasShowtimes) {
+                    const selectedDate = document.querySelector('.box-time.active')?.dataset.date;
+                    const movieId = document.querySelector('.box-time.active')?.dataset.movieId;
+
+                    if (branchId && selectedDate && movieId) {
+                        console.log('📅 Loading showtimes for:', { branchId, movieId, selectedDate });
+                        loadShowTimes(branchId, movieId, selectedDate);
+                    }
+                } else {
+                    console.log('ℹ️ Showtimes already loaded');
+                }
+            } else {
+                console.log('🔽 Closing branch');
             }
-        });
+        }
     });
 
     // === XỬ LÝ CLICK CHO TIME SLOTS ===
@@ -172,88 +195,123 @@
     // === HÀM TẠO DANH SÁCH RẠP ===
     function loadBranches(city, movieId) {
         const container = document.getElementById('branchesContainer');
-        container.innerHTML = '<p class="text-center">Đang tải...</p>';
+        container.innerHTML = '<p class="text-center" style="color: white;">Đang tải...</p>';
+
+        console.log('🌆 Loading branches for city:', city, 'movie:', movieId);
 
         fetch(`/Movie/GetBranchesByCity?city=${encodeURIComponent(city)}&movieId=${movieId}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(branches => {
+                console.log('📍 Branches loaded:', branches.length);
+
                 if (branches.length === 0) {
-                    container.innerHTML = '<p class="no-data">Không có rạp chiếu phim này tại khu vực đã chọn</p>';
+                    container.innerHTML = '<p class="no-data" style="color: white;">Không có rạp chiếu phim này tại khu vực đã chọn</p>';
                     return;
                 }
 
+                // ✅ Render HTML cho các rạp
                 let html = '<ul class="cinestar-list">';
                 branches.forEach((branch, index) => {
                     html += `
-                        <li class="cinestar-item ${index === 0 ? 'open' : ''}"
-                            data-branch-id="${branch.branchId}">
-                            <div class="cinestar-heading">
-                                <h4 class="title">${branch.branchName}</h4>
-                                <span class="chevron">
-                                    <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
-                                </span>
+                    <li class="cinestar-item ${index === 0 ? 'open' : ''}"
+                        data-branch-id="${branch.branchId}">
+                        <div class="cinestar-heading">
+                            <h4 class="title">${branch.branchName}</h4>
+                            <span class="chevron">
+                                <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
+                            </span>
+                        </div>
+                        <div class="cinestar-body">
+                            <p class="address">${branch.address}, ${branch.district}</p>
+                            <div class="showtime-container" data-branch-id="${branch.branchId}">
+                                <p class="loading" style="color: white;">Đang tải lịch chiếu...</p>
                             </div>
-                            <div class="cinestar-body">
-                                <p class="address">${branch.address}, ${branch.district}</p>
-                                <div class="showtime-container" data-branch-id="${branch.branchId}">
-                                    <p class="loading">Đang tải lịch chiếu...</p>
-                                </div>
-                            </div>
-                        </li>`;
+                        </div>
+                    </li>`;
                 });
                 html += '</ul>';
                 container.innerHTML = html;
 
-                // Tải lịch chiếu cho rạp đầu tiên
-                if (branches.length > 0) {
-                    const selectedDate = document.querySelector('.box-time.active')?.dataset.date ||
-                        new Date().toISOString().split('T')[0];
-                    loadShowTimes(branches[0].branchId, movieId, selectedDate);
+                console.log('✅ Branches rendered to DOM');
+
+                // ✅ Auto load showtimes cho rạp đầu tiên
+                const selectedDate = document.querySelector('.box-time.active')?.dataset.date ||
+                    new Date().toISOString().split('T')[0];
+
+                const firstBranch = branches[0];
+                if (firstBranch) {
+                    console.log('🎬 Auto-loading showtimes for first branch:', firstBranch.branchId);
+
+                    // Cập nhật tên rạp trong sticky bar
+                    document.getElementById('cinemaName').textContent = firstBranch.branchName;
+
+                    // Load showtimes
+                    loadShowTimes(firstBranch.branchId, movieId, selectedDate);
                 }
+
+                // ✅ KHÔNG CẦN gắn event listener ở đây nữa vì đã dùng event delegation
             })
             .catch(error => {
-                console.error('Error:', error);
-                container.innerHTML = '<p class="error">Không thể tải danh sách rạp</p>';
+                console.error('❌ Error loading branches:', error);
+                container.innerHTML = '<p class="error" style="color: red;">Không thể tải danh sách rạp. Vui lòng thử lại.</p>';
             });
     }
 
     // === HÀM TẠO LỊCH CHIẾU ===
     function loadShowTimes(branchId, movieId, date) {
-        const container = document.querySelector(`.showtime-container[data-branch-id="${branchId}"]`);
-        if (!container) return;
+        console.log('📺 loadShowTimes called:', { branchId, movieId, date });
 
-        container.innerHTML = '<p class="loading">Đang tải lịch chiếu...</p>';
+        const container = document.querySelector(`.showtime-container[data-branch-id="${branchId}"]`);
+        if (!container) {
+            console.error('❌ Container not found for branchId:', branchId);
+            return;
+        }
+
+        console.log('✅ Container found, loading...');
+        container.innerHTML = '<p class="loading" style="color: white;">Đang tải lịch chiếu...</p>';
 
         fetch(`/Movie/GetShowTimes?branchId=${branchId}&movieId=${movieId}&date=${date}`)
-            .then(response => response.json())
+            .then(response => {
+                console.log('📡 Response status:', response.status);
+                return response.json();
+            })
             .then(showTimeGroups => {
-                if (showTimeGroups.length === 0) {
-                    container.innerHTML = '<p class="no-data">Không có suất chiếu trong ngày này</p>';
+                console.log('📅 Showtimes loaded:', showTimeGroups);
+
+                if (!Array.isArray(showTimeGroups) || showTimeGroups.length === 0) {
+                    container.innerHTML = '<p class="no-data" style="color: white;">Không có suất chiếu trong ngày này</p>';
                     return;
                 }
 
                 let html = '<ul class="list-infor">';
                 showTimeGroups.forEach(group => {
                     html += `
-                        <li class="item-infor">
-                            <div class="tt">${group.roomType}</div>
-                            <ul class="list-time">`;
+                    <li class="item-infor">
+                        <div class="tt">${group.roomType}</div>
+                        <ul class="list-time">`;
 
-                            group.showTimes.forEach(st => {
-                                html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}" data-room-name="${st.nameRoom}">
-                            ${st.timeDisplay}
-                        </li>`;
+                    group.showTimes.forEach(st => {
+                        html += `<li class="item-time" data-showtime-id="${st.showTimeID}" data-price="${st.basePrice}" data-room-name="${st.nameRoom}">
+                        ${st.timeDisplay}
+                    </li>`;
                     });
 
                     html += `</ul>
-                        </li>`;
+                    </li>`;
                 });
                 html += '</ul>';
                 container.innerHTML = html;
+
+                console.log('✅ Showtimes rendered');
             })
             .catch(error => {
-                console.error('Error:', error);
-                container.innerHTML = '<p class="error">Không thể tải lịch chiếu</p>';
+                console.error('❌ Error loading showtimes:', error);
+                container.innerHTML = '<p class="error" style="color: red;">Không thể tải lịch chiếu</p>';
             });
     }
 
@@ -856,5 +914,46 @@
             // Chuyển sang trang thanh toán
             window.location.href = '/Payment/Index';
         });
+    }
+});
+// ✅ AUTO-LOAD SHOWTIMES KHI TRANG LOAD
+document.addEventListener('DOMContentLoaded', function () {
+    // Lấy ngày hiện tại (ngày đầu tiên đã active)
+    const activeDate = document.querySelector('.box-time.active');
+    const movieId = activeDate?.dataset.movieId;
+    const selectedDate = activeDate?.dataset.date;
+
+    console.log('🚀 Page loaded - Auto loading showtimes');
+    console.log('Movie ID:', movieId);
+    console.log('Selected Date:', selectedDate);
+
+    // Lấy tất cả các rạp đang hiển thị
+    const allBranches = document.querySelectorAll('.cinestar-item');
+
+    if (allBranches.length > 0 && movieId && selectedDate) {
+        console.log(`📍 Found ${allBranches.length} branches, loading showtimes...`);
+
+        allBranches.forEach((branch, index) => {
+            const branchId = branch.dataset.branchId;
+
+            // Mở rạp đầu tiên
+            if (index === 0) {
+                branch.classList.add('open');
+
+                // Cập nhật tên rạp vào sticky bar
+                const cinemaName = branch.querySelector('.title')?.textContent;
+                if (cinemaName) {
+                    document.getElementById('cinemaName').textContent = cinemaName;
+                }
+            }
+
+            // Load showtimes cho mỗi rạp
+            if (branchId) {
+                console.log(`Loading showtimes for branch ${branchId}`);
+                loadShowTimes(branchId, movieId, selectedDate);
+            }
+        });
+    } else {
+        console.log('⚠️ No branches found or missing date/movie info');
     }
 });

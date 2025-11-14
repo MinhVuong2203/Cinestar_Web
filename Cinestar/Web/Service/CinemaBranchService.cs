@@ -29,7 +29,8 @@ namespace Web.Service
                     .Where(b => !b.IsDeleted)
                     .Select(b => b.City)
                     .Distinct()
-                    .OrderBy(city => city)
+                    .OrderBy(city => city != "TP.HCM") // false (HCM) sẽ lên đầu
+                    .ThenBy(city => city)
                     .AsNoTracking()
                     .ToList();
             }
