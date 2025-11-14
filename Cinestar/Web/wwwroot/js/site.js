@@ -34,6 +34,45 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Loading
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            if (form.checkValidity()) {
+                showLoading();
+            }
+        });
+    });
+
+    // Ẩn loading khi trang load xong
+    hideLoading();
+
+    // Ẩn loading nếu có validation error từ server
+    const validationErrors = document.querySelector('.validation-summary-errors, .field-validation-error, [class*="error"]');
+    if (validationErrors) {
+        hideLoading();
+    }
+});
+// Show loading khi click link có class 'loading-link'
+const loadingLinks = document.querySelectorAll('.loading-link');
+loadingLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+        showLoading();
+    });
+});
+// ẩn đi khi loading xong
+window.addEventListener('load', function () {
+    hideLoading();
+});
+
 // User dropdown functionality
 //const userDropdown = document.querySelector('.user-dropdown');
 //if (userDropdown) {

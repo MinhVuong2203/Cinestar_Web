@@ -203,6 +203,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // Ẩn loading khi trang load xong
+    hideLoading();
+
+    // Ẩn loading nếu có validation error từ server
+    const validationErrors = document.querySelector('.validation-summary-errors, .field-validation-error, [class*="error"]');
+    if (validationErrors) {
+        hideLoading();
+    }
+});
     // Show loading khi click link có class 'loading-link'
     const loadingLinks = document.querySelectorAll('.loading-link');
     loadingLinks.forEach(function (link) {
