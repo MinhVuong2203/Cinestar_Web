@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.Areas.Admin.Service;
 using Web.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin, EmployeeMovies")]
     public class ShowTimeController : Controller
     {
         private readonly IShowTimeService _service;
