@@ -1,6 +1,7 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Web.Areas.Admin.Service;
 using Web.Data;
 using Web.Models;
@@ -11,6 +12,7 @@ using IProductService = Web.Areas.Admin.Service.IProductService;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin, EmployeeSales")]
     public class EmployeeSaleController : Controller
     {
         private readonly IEmployeeService _employeeService;
