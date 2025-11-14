@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Areas.Admin.Service;
 using Web.Data;
@@ -7,14 +8,15 @@ using Web.Models;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin, EmployeeTechnician")]
     public class SeatManagementController : Controller
     {
         private readonly ISeatManagementService _seatManagementService;
-        private readonly CineStarContext _context; // ✅ Thêm
+        private readonly CineStarContext _context; 
 
         public SeatManagementController(
             ISeatManagementService seatManagementService,
-            CineStarContext context) // ✅ Inject DbContext
+            CineStarContext context) 
         {
             _seatManagementService = seatManagementService;
             _context = context;
