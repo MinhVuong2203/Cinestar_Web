@@ -999,6 +999,29 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
+        // Thêm phương thức public để hủy invoice qua AJAX
+        [HttpPost]
+        public async Task<IActionResult> CancelInvoice(string invoiceId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(invoiceId) || !Guid.TryParse(invoiceId, out Guid invoiceGuid))
+                {
+                    return Json(new { success = false, message = "Invoice ID không hợp lệ" });
+                }
+
+                // Gọi private helper đã có để thực hiện hủy và unlock ghế
+                await CancelInvoice(invoiceGuid);
+
+                return Json(new { success = true, message = "Hủy hóa đơn thành công" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CancelInvoice (public): {ex.Message}");
+                return Json(new { success = false, message = "Có lỗi khi hủy hóa đơn: " + ex.Message });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> ProductPaymentMethod(string invoiceId)
         {
