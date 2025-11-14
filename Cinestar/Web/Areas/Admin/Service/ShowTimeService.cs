@@ -167,11 +167,20 @@ namespace Web.Areas.Admin.Service
         public async Task<List<Room>> GetRoomsByBranchAsync(string branchId)
             => await _db.Rooms.Where(r => r.BranchID == branchId && !r.IsDeleted).OrderBy(r => r.RoomName).ToListAsync();
 
+        // ✅ UPDATED: Include ReleaseDate
         public async Task<Movie?> GetMovieByIdAsync(string movieId)
-            => await _db.Movies.FindAsync(movieId);
+            => await _db.Movies
+                .Where(m => m.MovieID == movieId)
+                .FirstOrDefaultAsync();
 
         public async Task<CinemaBranch?> GetBranchByIdAsync(string branchId)
             => await _db.CinemaBranches.FindAsync(branchId);
+
+        // ✅ NEW: Get Room with Branch info
+        public async Task<Room?> GetRoomByIdAsync(string roomId)
+            => await _db.Rooms
+                .Include(r => r.Branch)
+                .FirstOrDefaultAsync(r => r.RoomID == roomId);
 
         public async Task<List<ShowTime>> GetShowTimesByRoomAndDateAsync(string roomId, DateTime date)
         {

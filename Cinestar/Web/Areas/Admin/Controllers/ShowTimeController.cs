@@ -17,7 +17,7 @@ namespace Web.Areas.Admin.Controllers
             _service = service;
         }
 
-        // UPDATED: Index with pagination
+        // Index with pagination
         public async Task<IActionResult> Index(
             int pageNumber = 1,
             int pageSize = 10,
@@ -27,11 +27,9 @@ namespace Web.Areas.Admin.Controllers
         {
             var pagedResult = await _service.GetShowTimesPagedAsync(pageNumber, pageSize, branchId, movieId, roomId);
 
-            // Load filter dropdowns
             ViewBag.Movies = new SelectList(await _service.GetAllMoviesAsync(), "MovieID", "Title", movieId);
             ViewBag.Branches = new SelectList(await _service.GetAllBranchesAsync(), "BranchID", "BranchName", branchId);
 
-            // Pass filter values to view
             ViewBag.CurrentBranchId = branchId;
             ViewBag.CurrentMovieId = movieId;
             ViewBag.CurrentRoomId = roomId;
@@ -57,13 +55,6 @@ namespace Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ShowTime model)
         {
-         
-            // Validate: Giờ bắt đầu phải >= giờ hiện tại
-            if (model.StartTime < DateTime.Now)
-            {
-                ModelState.AddModelError("StartTime", "Giờ bắt đầu phải lớn hơn hoặc bằng giờ hiện tại!");
-            }
-
             model.IsDeleted = false;
 
             ModelState.Remove("ShowTimeID");
@@ -71,35 +62,84 @@ namespace Web.Areas.Admin.Controllers
             ModelState.Remove("Room");
             ModelState.Remove("Tickets");
 
-            System.Diagnostics.Debug.WriteLine($"\nModelState.IsValid: {ModelState.IsValid}");
-            System.Diagnostics.Debug.WriteLine($"ModelState.ErrorCount: {ModelState.ErrorCount}");
+            // ✅ VALIDATION 1: Giờ bắt đầu phải >= giờ hiện tại
+            if (model.StartTime < DateTime.Now)
+            {
+                ModelState.AddModelError("StartTime", "Giờ bắt đầu phải lớn hơn hoặc bằng giờ hiện tại!");
+            }
+
+            // ✅ VALIDATION 2: Giờ bắt đầu phải >= Ngày khởi chiếu của phim (Movie.StartTime)
+            var movie = await _service.GetMovieByIdAsync(model.MovieID);
+            if (movie != null && movie.StartTime.HasValue)
+            {
+                if (model.StartTime.Date < movie.StartTime.Value.Date)
+                {
+                    ModelState.AddModelError("StartTime",
+                        $"Giờ bắt đầu phải từ ngày khởi chiếu của phim ({movie.StartTime.Value:dd/MM/yyyy}) trở đi!");
+                }
+            }
+
+            // ✅ VALIDATION 3: Kiểm tra thời gian nằm trong giờ hoạt động của chi nhánh
+            var room = await _service.GetRoomByIdAsync(model.RoomID);
+            if (room?.Branch != null && movie != null && movie.DurationMinutes.HasValue)
+            {
+                var branch = room.Branch;
+
+                if (branch.OpenHour != default && branch.CloseHour != default)
+                {
+                    var startTimeOnly = TimeOnly.FromDateTime(model.StartTime);
+                    var endTime = model.StartTime.AddMinutes(movie.DurationMinutes.Value);
+                    var endTimeOnly = TimeOnly.FromDateTime(endTime);
+
+                    var minStartTime = branch.OpenHour.AddMinutes(15);
+
+                    if (startTimeOnly < minStartTime)
+                    {
+                        ModelState.AddModelError("StartTime",
+                            $"Giờ bắt đầu phải từ {minStartTime:HH\\:mm} trở đi (giờ mở cửa + 15 phút)!");
+                    }
+
+                    if (endTimeOnly > branch.CloseHour)
+                    {
+                        ModelState.AddModelError("StartTime",
+                            $"Giờ kết thúc ({endTimeOnly:HH\\:mm}) vượt quá giờ đóng cửa ({branch.CloseHour:HH\\:mm})!");
+                    }
+                }
+            }
+
+            // ✅ VALIDATION 4: Kiểm tra xung đột lịch chiếu
+            if (movie != null && movie.DurationMinutes.HasValue)
+            {
+                var endTime = model.StartTime.AddMinutes(movie.DurationMinutes.Value);
+                var hasConflict = await _service.CheckTimeConflictAsync(
+                    model.RoomID,
+                    model.StartTime,
+                    endTime
+                );
+
+                if (hasConflict)
+                {
+                    var conflicts = await _service.GetConflictingShowTimesAsync(
+                        model.RoomID,
+                        model.StartTime,
+                        endTime
+                    );
+
+                    var conflictDetails = string.Join(", ", conflicts.Select(c =>
+                        $"{c.Movie?.Title} ({c.StartTime:HH:mm})"));
+
+                    ModelState.AddModelError("StartTime",
+                        $"Thời gian chiếu bị trùng với các suất: {conflictDetails}");
+                }
+            }
 
             if (!ModelState.IsValid)
             {
-                System.Diagnostics.Debug.WriteLine("\n❌❌❌ MODELSTATE ERRORS ❌❌❌");
-                foreach (var state in ModelState)
-                {
-                    if (state.Value.Errors.Count > 0)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"\n*** Field: {state.Key} ***");
-                        System.Diagnostics.Debug.WriteLine($"    AttemptedValue: '{state.Value.AttemptedValue}'");
-                        System.Diagnostics.Debug.WriteLine($"    RawValue: '{state.Value.RawValue}'");
-                        foreach (var error in state.Value.Errors)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"    - Error: {error.ErrorMessage}");
-                            if (error.Exception != null)
-                                System.Diagnostics.Debug.WriteLine($"    - Exception: {error.Exception.Message}");
-                        }
-                    }
-                }
-                System.Diagnostics.Debug.WriteLine("==========================================\n");
                 await LoadSelectLists();
                 return View(model);
             }
 
-           
             var result = await _service.CreateAsync(model);
-           
 
             if (result)
             {
@@ -126,15 +166,81 @@ namespace Web.Areas.Admin.Controllers
         {
             if (id != model.ShowTimeID) return BadRequest();
 
-            // Validate: Giờ bắt đầu phải >= giờ hiện tại
+            ModelState.Remove("Movie");
+            ModelState.Remove("Room");
+            ModelState.Remove("Tickets");
+
+            // ✅ VALIDATION 1: Giờ bắt đầu phải > giờ hiện tại
             if (model.StartTime <= DateTime.Now)
             {
                 ModelState.AddModelError("StartTime", "Giờ bắt đầu phải lớn hơn giờ hiện tại!");
             }
 
-            ModelState.Remove("Movie");
-            ModelState.Remove("Room");
-            ModelState.Remove("Tickets");
+            // ✅ VALIDATION 2: Giờ bắt đầu phải >= Ngày khởi chiếu của phim (Movie.StartTime)
+            var movie = await _service.GetMovieByIdAsync(model.MovieID);
+            if (movie != null && movie.StartTime.HasValue)
+            {
+                if (model.StartTime.Date < movie.StartTime.Value.Date)
+                {
+                    ModelState.AddModelError("StartTime",
+                        $"Giờ bắt đầu phải từ ngày khởi chiếu của phim ({movie.StartTime.Value:dd/MM/yyyy}) trở đi!");
+                }
+            }
+
+            // ✅ VALIDATION 3: Kiểm tra giờ hoạt động chi nhánh
+            var room = await _service.GetRoomByIdAsync(model.RoomID);
+            if (room?.Branch != null && movie != null && movie.DurationMinutes.HasValue)
+            {
+                var branch = room.Branch;
+
+                if (branch.OpenHour != default && branch.CloseHour != default)
+                {
+                    var startTimeOnly = TimeOnly.FromDateTime(model.StartTime);
+                    var endTime = model.StartTime.AddMinutes(movie.DurationMinutes.Value);
+                    var endTimeOnly = TimeOnly.FromDateTime(endTime);
+                    var minStartTime = branch.OpenHour.AddMinutes(15);
+
+                    if (startTimeOnly < minStartTime)
+                    {
+                        ModelState.AddModelError("StartTime",
+                            $"Giờ bắt đầu phải từ {minStartTime:HH\\:mm} trở đi!");
+                    }
+
+                    if (endTimeOnly > branch.CloseHour)
+                    {
+                        ModelState.AddModelError("StartTime",
+                            $"Giờ kết thúc vượt quá giờ đóng cửa!");
+                    }
+                }
+            }
+
+            // ✅ VALIDATION 4: Kiểm tra xung đột (loại trừ chính nó)
+            if (movie != null && movie.DurationMinutes.HasValue)
+            {
+                var endTime = model.StartTime.AddMinutes(movie.DurationMinutes.Value);
+                var hasConflict = await _service.CheckTimeConflictAsync(
+                    model.RoomID,
+                    model.StartTime,
+                    endTime,
+                    model.ShowTimeID
+                );
+
+                if (hasConflict)
+                {
+                    var conflicts = await _service.GetConflictingShowTimesAsync(
+                        model.RoomID,
+                        model.StartTime,
+                        endTime,
+                        model.ShowTimeID
+                    );
+
+                    var conflictDetails = string.Join(", ", conflicts.Select(c =>
+                        $"{c.Movie?.Title} ({c.StartTime:HH:mm})"));
+
+                    ModelState.AddModelError("StartTime",
+                        $"Thời gian chiếu bị trùng với các suất: {conflictDetails}");
+                }
+            }
 
             if (ModelState.IsValid)
             {
@@ -186,7 +292,11 @@ namespace Web.Areas.Admin.Controllers
         public async Task<JsonResult> GetMovieDuration(string movieId)
         {
             var movie = await _service.GetMovieByIdAsync(movieId);
-            return Json(new { duration = movie?.DurationMinutes ?? 0 });
+            return Json(new
+            {
+                duration = movie?.DurationMinutes ?? 0,
+                releaseDate = movie?.StartTime?.ToString("yyyy-MM-dd")
+            });
         }
 
         [HttpGet]
@@ -226,9 +336,9 @@ namespace Web.Areas.Admin.Controllers
 
                 return Json(new { success = true, data });
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(new { success = false, message = ex.Message });
+                return Json(new { success = false, message = "Lỗi tải dữ liệu" });
             }
         }
 
@@ -241,9 +351,9 @@ namespace Web.Areas.Admin.Controllers
                 var hasConflict = await _service.CheckTimeConflictAsync(roomId, startTime, endTime, excludeShowTimeId);
                 return Json(new { success = true, hasConflict });
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(new { success = false, hasConflict = true, message = ex.Message });
+                return Json(new { success = false, hasConflict = true, message = "Lỗi kiểm tra xung đột" });
             }
         }
 

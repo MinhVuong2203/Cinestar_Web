@@ -10,7 +10,6 @@ namespace Web.Areas.Admin.Service
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
-
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
     }
@@ -29,14 +28,13 @@ namespace Web.Areas.Admin.Service
         public bool IsDeleted { get; set; }
         public int TotalRecords { get; set; }
         public int TotalPages { get; set; }
-
-        // Computed property for end time display
         public int DurationMinutes { get; set; }
     }
 
     // Interface
     public interface IShowTimeService
     {
+        // Basic CRUD
         Task<List<ShowTime>> GetAllAsync();
         Task<ShowTime?> GetByIdAsync(string id);
         Task<bool> CreateAsync(ShowTime showTime);
@@ -44,19 +42,20 @@ namespace Web.Areas.Admin.Service
         Task<bool> SoftDeleteAsync(string id);
         Task<bool> RestoreAsync(string id);
 
-        // Existing methods
+        // Lookup methods
         Task<List<Movie>> GetAllMoviesAsync();
         Task<List<CinemaBranch>> GetAllBranchesAsync();
         Task<List<Room>> GetRoomsByBranchAsync(string branchId);
         Task<Movie?> GetMovieByIdAsync(string movieId);
+        Task<CinemaBranch?> GetBranchByIdAsync(string branchId);
+        Task<Room?> GetRoomByIdAsync(string roomId); // ✅ NEW
+
+        // Timeline & Conflict checking
         Task<List<ShowTime>> GetShowTimesByRoomAndDateAsync(string roomId, DateTime date);
         Task<bool> CheckTimeConflictAsync(string roomId, DateTime startTime, DateTime endTime, string? excludeShowTimeId = null);
         Task<List<ShowTime>> GetConflictingShowTimesAsync(string roomId, DateTime startTime, DateTime endTime, string? excludeShowTimeId = null);
 
-        // NEW: Pagination method
+        // Pagination
         Task<PagedResult<ShowTimeDto>> GetShowTimesPagedAsync(int pageNumber = 1, int pageSize = 10, string? branchId = null, string? movieId = null, string? roomId = null);
-
-        // NEW: Get branch by id for validation
-        Task<CinemaBranch?> GetBranchByIdAsync(string branchId);
     }
 }
