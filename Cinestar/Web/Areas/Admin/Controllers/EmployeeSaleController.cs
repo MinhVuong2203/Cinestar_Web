@@ -807,6 +807,9 @@ namespace Web.Areas.Admin.Controllers
                 var movieTitle = invoice.InvoiceTickets?.FirstOrDefault()?.Ticket?.ShowTime?.Movie?.Title ?? "Vé xem phim";
                 var description = $"Thanh toán vé xem phim - {movieTitle}";
 
+                var cancelUrl = $"{Request.Scheme}://{Request.Host}/Admin/EmployeeSale/PayOsCancel?invoiceId={invoiceGuid}";
+                var returnUrl = $"{Request.Scheme}://{Request.Host}/Admin/EmployeeSale/PayOsSuccess?invoiceId={invoiceGuid}";
+
                 // ✅ Tạo payment link
                 var paymentResult = await _payOsService.CreateTicketPaymentLink(
                     invoiceGuid,
@@ -815,7 +818,8 @@ namespace Web.Areas.Admin.Controllers
                     buyerEmail,
                     buyerPhone,
                     description,
-                    isAdminSale: true
+                    cancelUrl,
+                    returnUrl
                 );
 
                 if (paymentResult == null)
@@ -843,6 +847,7 @@ namespace Web.Areas.Admin.Controllers
 
         // ✅ Callback sau khi thanh toán PayOS thành công
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> PayOsSuccess(string invoiceId, long orderCode)
         {
             try
@@ -921,6 +926,7 @@ namespace Web.Areas.Admin.Controllers
 
         // ✅ Callback khi hủy thanh toán PayOS
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> PayOsCancel(string? invoiceId, string? code, string? id, bool? cancel)
         {
             Console.WriteLine($"=== PayOsCancel Called ===");
@@ -933,7 +939,7 @@ namespace Web.Areas.Admin.Controllers
             }
 
             // ✅ Option 1: Hiển thị view
-            return View("PaymentCancel");
+            return View();
 
             // ✅ Option 2: Redirect trực tiếp về Index với thông báo
             // TempData["Warning"] = "Thanh toán đã bị hủy!";

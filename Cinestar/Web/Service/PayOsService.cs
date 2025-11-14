@@ -141,7 +141,9 @@ namespace Web.Service
             string buyerName,
             string buyerEmail,
             string buyerPhone,
-            string description)
+            string description,
+            string cancelUrl,
+            string returnUrl)
         {
             try
             {
@@ -158,15 +160,26 @@ namespace Web.Service
                 var items = new List<ItemData>
                 {
                     new ItemData(normalizedItemName, 1, validatedAmount)
-            };
+                };
+
+                // Nếu cancelUrl/returnUrl trống => fallback mặc định; 
+                // nếu không, giữ nguyên giá trị truyền vào.
+                var finalCancelUrl = !string.IsNullOrWhiteSpace(cancelUrl)
+                    ? cancelUrl
+                    : $"{baseUrl}/Payment/PaymentCancel?invoiceId={invoiceId}";
+
+                var finalReturnUrl = !string.IsNullOrWhiteSpace(returnUrl)
+                    ? returnUrl
+                    : $"{baseUrl}/Payment/PaymentSuccess?invoiceId={invoiceId}";
+
 
                 var paymentData = new PaymentData(
                         orderCode: orderCode,
                         amount: validatedAmount,
                         description: normalizedDescription,
                         items: items,
-                        cancelUrl: $"{baseUrl}/Payment/PaymentCancel?invoiceId={invoiceId}",
-                         returnUrl: $"{baseUrl}/Payment/PaymentSuccess?invoiceId={invoiceId}",
+                        cancelUrl: cancelUrl,
+                        returnUrl: returnUrl,
                         buyerName: buyerName,
                         buyerEmail: validatedEmail,
                         buyerPhone: validatedPhone,
@@ -183,13 +196,13 @@ namespace Web.Service
             }
         }
         public async Task<CreatePaymentResult?> CreateTicketPaymentLink(
-    Guid invoiceId,
-    decimal amount,
-    string buyerName,
-    string buyerEmail,
-    string buyerPhone,
-    string description,
-    bool isAdminSale = false) // ✅ Thêm parameter
+            Guid invoiceId,
+            decimal amount,
+            string buyerName,
+            string buyerEmail,
+            string buyerPhone,
+            string description,
+            bool isAdminSale) // ✅ Thêm parameter
         {
             try
             {
