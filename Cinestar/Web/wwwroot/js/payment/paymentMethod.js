@@ -196,6 +196,27 @@
                 const shortTitle = bookingInfo.movieTitle?.substring(0, 15) || 'Phim';
                 const description = `Ve ${shortTitle}`;
 
+                // ✅ Chuẩn bị BookingData
+                const bookingDataPayload = {
+                    showTimeId: bookingData.showTimeId || '',
+                    customerId: bookingData.customerId || '00000000-0000-0000-0000-000000000000',
+                    customerName: bookingData.customerName || '',
+                    customerPhone: bookingData.customerPhone || '',
+                    customerEmail: bookingData.customerEmail || '',
+                    seats: (bookingData.seats || []).map(seat => ({
+                        seatId: seat.seatId || '',
+                        ticketId: seat.ticketId || '',
+                        seatName: seat.seatName || '',
+                        price: seat.price || 0
+                    })),
+                    products: (bookingData.products || []).map(product => ({
+                        productId: product.productId || '',
+                        productName: product.productName || '',
+                        quantity: product.quantity || 0,
+                        price: product.price || 0
+                    }))
+                };
+
                 // ✅ Tạo payment request
                 const paymentRequest = {
                     orderCode: Date.now(),
@@ -209,7 +230,7 @@
                     cancelUrl: `${window.location.origin}/Payment/PaymentCancel`,
                     returnUrl: `${window.location.origin}/Payment/PaymentSuccess`,
                     expiredAt: Math.floor(Date.now() / 1000) + (15 * 60),
-                    bookingData: bookingData
+                    bookingData: bookingDataPayload
                 };
 
                 console.log('✅ Payment Request:', paymentRequest);
@@ -225,7 +246,29 @@
                     body: JSON.stringify(paymentRequest)
                 });
 
-                const result = await response.json();
+                //const result = await response.json();
+                let result;
+
+                // ✅ THÊM ĐOẠN NÀY ĐỂ DEBUG
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
+                try {
+                    result = await response.json(); // ✅ Chỉ gọi .json() một lần
+                    console.log('✅ API Result:', result);
+                } catch (error) {
+                    console.error('❌ Failed to parse JSON:', error);
+                    const responseText = await response.text();
+                    console.error('Response text:', responseText);
+                    alert('Lỗi server: Không thể parse JSON response');
+
+                    if (payBtn) {
+                        payBtn.textContent = 'THANH TOÁN';
+                        payBtn.disabled = false;
+                    }
+                    startCountdown();
+                    return;
+                }
 
                 if (result.success && result.checkoutUrl) {
                     localStorage.setItem('currentOrderCode', paymentRequest.orderCode);

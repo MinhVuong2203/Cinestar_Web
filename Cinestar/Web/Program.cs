@@ -18,6 +18,13 @@ builder.Services.AddControllersWithViews().AddRazorOptions(options =>
     options.AreaViewLocationFormats.Add("/Areas/{2}/Views/Shared/{0}.cshtml");
     options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
 });
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout 30 phút
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // GDPR compliance
+    options.Cookie.Name = ".CinestarWeb.Session";
+});
 
 // Configure PayOS Settings
 builder.Services.Configure<PayOsSettings>(builder.Configuration.GetSection("PayOS"));
@@ -29,7 +36,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/AccessDenied";
-        options.Cookie.MaxAge = null;
+        //options.Cookie.MaxAge = null;
         options.Cookie.Name = "CinestarAuth";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Strict;
@@ -61,7 +68,6 @@ builder.Services.Scan(scan => scan
 builder.Services.AddControllersWithViews(option =>
 {
     option.Filters.Add<LoadCinemaBranchesAttribute>();
-    option.Filters.Add<AreaPrefixFilter>(); // THÊM FILTER MỚI
 });
 
 // Đăng ký SignalR 
@@ -84,6 +90,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<SeatHub>("/seatHub");
+app.UseSession();
 
 // Cấu hình router - THÊM ROUTE CHO CÁC ROLE
 app.MapControllerRoute(

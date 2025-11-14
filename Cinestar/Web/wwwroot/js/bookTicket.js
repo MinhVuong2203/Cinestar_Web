@@ -5,6 +5,27 @@
     const locationName = document.querySelector('.location-name');
     const dropdownArrow = document.querySelector('.dropdown-arrow');
 
+    const bookingData = {
+        movieId: movieIdFromScript,
+        branchId: null,
+        showTime: null,
+        tickets: {},
+        seats: [],
+        date: null,
+        time: null,
+        roomName: null,
+        roomType: null,
+        combos: {},
+        // ✅ Customer info
+        customerPhone: null,
+        customerId: null,
+        customerName: null,
+        isGuest: true
+    };
+
+    let ticketPrices = {};
+    //let selectedSeats = [];
+    let customerData = null;
     // ✅ Thêm biến lưu thông tin đặt vé
     let selectedSeatsData = [];
     let selectedShowTimeId = null
@@ -115,6 +136,7 @@
             console.log('=== SHOWTIME CLICKED ===');
             console.log('Cinema Item:', cinemaItem);
             console.log('Cinema Name:', cinemaName);
+            console.log('ShowTime ID:', showTimeId);
 
             // ✅ Cập nhật tên rạp vào sticky bar
             const cinemaNameEl = document.getElementById('cinemaName');
@@ -690,7 +712,6 @@
     }
 
     // ✅ XỬ LÝ NÚT ĐẶT VÉ
-    // ✅ XỬ LÝ NÚT ĐẶT VÉ
     const bookBtn = document.getElementById('bookBtn');
     if (bookBtn) {
         bookBtn.addEventListener('click', function () {
@@ -745,7 +766,20 @@
             // ✅ Tổng tiền cuối cùng
             const totalAmount = seatsTotal + productsTotal;
 
-            // ✅ Chuẩn bị dữ liệu booking (có thêm products)
+            // ✅ Lấy CustomerId (nếu user đã login)
+            const customerIdElement = document.getElementById('CustomerId');
+            let customerId = '00000000-0000-0000-0000-000000000000'; // Default GUID
+
+            if (customerIdElement && customerIdElement.innerHTML) {
+                const customerIdStr = customerIdElement.innerHTML.trim();
+                if (customerIdStr && customerIdStr !== '') {
+                    customerId = customerIdStr;
+                }
+            }
+
+            console.log('✅ Customer ID:', customerId);
+
+            // ✅ Chuẩn bị dữ liệu booking (có thêm customerId)
             const bookingData = {
                 // Thông tin phim
                 movieTitle: movieTitle,
@@ -774,11 +808,14 @@
                 // Thông tin giá
                 totalAmount: totalAmount,
 
+                // ✅ THÊM: Customer ID
+                customerId: customerId,
+
                 // Thời gian đặt vé
                 bookingTime: new Date().toISOString()
             };
 
-            // ✅ THÊM: Tạo bookingInfo cho payment.js
+            // ✅ Tạo bookingInfo cho payment.js
             const bookingInfo = {
                 movieTitle: movieTitle,
                 cinema: cinemaName,
@@ -799,7 +836,7 @@
             console.log('✅ Full Booking Data:', JSON.stringify(bookingData, null, 2));
             console.log('✅ Booking Info:', JSON.stringify(bookingInfo, null, 2));
 
-            // ✅ Lưu vào sessionStorage (KHÔNG DÙNG localStorage)
+            // ✅ Lưu vào sessionStorage
             sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
             sessionStorage.setItem('bookingInfo', JSON.stringify(bookingInfo));
 
@@ -814,6 +851,7 @@
             console.log('Products Total:', productsTotal);
             console.log('Total Amount:', totalAmount);
             console.log('Selected Products:', selectedProducts);
+            console.log('Customer ID:', customerId);
 
             // Chuyển sang trang thanh toán
             window.location.href = '/Payment/Index';

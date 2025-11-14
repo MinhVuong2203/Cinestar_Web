@@ -128,14 +128,8 @@ namespace Web.Controllers
                         authProperties
                     );
 
-                    string redirectUrl = role switch
-                    {
-                        "Admin" => "/admin",
-                        "EmployeeSales" => "/employee-sales",
-                        "EmployeeTechnician" => "/employee-technician",
-                        "EmployeeMovies" => "/employee-movies",
-                        _ => "/admin"
-                    };
+                    string redirectUrl = "/admin";
+
 
                     return Json(new
                     {
