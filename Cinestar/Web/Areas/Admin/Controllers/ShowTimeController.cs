@@ -79,6 +79,16 @@ namespace Web.Areas.Admin.Controllers
                 }
             }
 
+            // ✅ VALIDATION 2.5: Giờ bắt đầu phải <= Ngày kết thúc của phim (Movie.EndTime) nếu có
+            if (movie != null && movie.EndTime.HasValue)
+            {
+                if (model.StartTime.Date > movie.EndTime.Value.Date)
+                {
+                    ModelState.AddModelError("StartTime",
+                        $"Giờ bắt đầu phải trước ngày kết thúc chiếu của phim ({movie.EndTime.Value:dd/MM/yyyy})!");
+                }
+            }
+
             // ✅ VALIDATION 3: Kiểm tra thời gian nằm trong giờ hoạt động của chi nhánh
             var room = await _service.GetRoomByIdAsync(model.RoomID);
             if (room?.Branch != null && movie != null && movie.DurationMinutes.HasValue)
@@ -187,6 +197,16 @@ namespace Web.Areas.Admin.Controllers
                 }
             }
 
+            // ✅ VALIDATION 2.5: Giờ bắt đầu phải <= Ngày kết thúc của phim (Movie.EndTime) nếu có
+            if (movie != null && movie.EndTime.HasValue)
+            {
+                if (model.StartTime.Date > movie.EndTime.Value.Date)
+                {
+                    ModelState.AddModelError("StartTime",
+                        $"Giờ bắt đầu phải trước ngày kết thúc chiếu của phim ({movie.EndTime.Value:dd/MM/yyyy})!");
+                }
+            }
+
             // ✅ VALIDATION 3: Kiểm tra giờ hoạt động chi nhánh
             var room = await _service.GetRoomByIdAsync(model.RoomID);
             if (room?.Branch != null && movie != null && movie.DurationMinutes.HasValue)
@@ -252,6 +272,15 @@ namespace Web.Areas.Admin.Controllers
                 }
                 TempData["ErrorMessage"] = "Cập nhật thất bại!";
             }
+
+            // ✅ CRITICAL: Load lại Movie và Room trước khi return View
+            var showTime = await _service.GetByIdAsync(id);
+            if (showTime != null)
+            {
+                model.Movie = showTime.Movie;
+                model.Room = showTime.Room;
+            }
+
             await LoadSelectLists();
             return View(model);
         }
@@ -295,7 +324,8 @@ namespace Web.Areas.Admin.Controllers
             return Json(new
             {
                 duration = movie?.DurationMinutes ?? 0,
-                releaseDate = movie?.StartTime?.ToString("yyyy-MM-dd")
+                releaseDate = movie?.StartTime?.ToString("yyyy-MM-dd"),
+                endDate = movie?.EndTime?.ToString("yyyy-MM-dd")
             });
         }
 

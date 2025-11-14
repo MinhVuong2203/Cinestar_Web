@@ -167,7 +167,7 @@ namespace Web.Areas.Admin.Service
         public async Task<List<Room>> GetRoomsByBranchAsync(string branchId)
             => await _db.Rooms.Where(r => r.BranchID == branchId && !r.IsDeleted).OrderBy(r => r.RoomName).ToListAsync();
 
-        // ✅ UPDATED: Include ReleaseDate
+        // ✅ UPDATED: Include ReleaseDate and EndTime
         public async Task<Movie?> GetMovieByIdAsync(string movieId)
             => await _db.Movies
                 .Where(m => m.MovieID == movieId)
