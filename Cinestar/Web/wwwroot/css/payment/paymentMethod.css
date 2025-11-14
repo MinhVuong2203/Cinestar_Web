@@ -52,12 +52,14 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
+    background: transparent;
 }
 
 .payment-methods {
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
     padding: 30px;
     border-radius: 10px;
+    color: white;
 }
 
     .payment-methods h2 {
@@ -76,6 +78,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
+    color: white;
 }
 
     .method-option:hover {
@@ -193,9 +196,10 @@
     }
 
 .ticket-info {
-    background: #4a6fa5;
+    background: linear-gradient(135deg, #4169E1 0%, #1E90FF 50%, #87CEEB 100%);
     padding: 25px;
     border-radius: 10px;
+    color: white;
 }
 
 .movie-header {
@@ -207,15 +211,20 @@
 
     .movie-header h3 {
         font-size: 1.2rem;
-        color: #ffd700;
+        color: white;
+        font-weight: bold;
     }
 
 .time-remaining {
     font-size: 0.9rem;
+    color: white;
 }
 
 .countdown {
-    color: #ffd700;
+    background: #ffd700;
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 4px;
     font-weight: bold;
 }
 
@@ -228,12 +237,14 @@
 .cinema-info h4 {
     margin-bottom: 8px;
     font-size: 1.1rem;
+    color: white;
 }
 
 .cinema-info p {
     font-size: 0.85rem;
     opacity: 0.9;
     margin-bottom: 20px;
+    color: white;
 }
 
 .showtime-info {
@@ -243,10 +254,12 @@
 .showtime-label {
     font-weight: bold;
     margin-bottom: 5px;
+    color: #ffd700;
 }
 
 .showtime-value {
     font-size: 1.1rem;
+    color: white;
 }
 
 .ticket-details {
@@ -262,6 +275,10 @@
 
     .detail-row .label {
         color: #ffd700;
+    }
+
+    .detail-row .value {
+        color: white;
     }
 
 .food-section {
@@ -284,12 +301,67 @@
 
 .total-label {
     font-size: 0.9rem;
+    color: #ffd700;
 }
 
 .total-price {
     font-size: 1.5rem;
-    color: #ffd700;
+    color: white;
 }
+
+.products-list {
+    margin-top: 10px;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+    .product-item:last-child {
+        border-bottom: none;
+    }
+
+.product-name {
+    flex: 1;
+    color: #333;
+}
+
+.product-qty {
+    color: #666;
+    margin: 0 15px;
+    font-size: 0.9em;
+}
+
+.product-price {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.price-breakdown {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95em;
+}
+
+    .price-row.total {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #007bff;
+        padding-top: 15px;
+        border-top: 2px solid #007bff;
+        margin-top: 10px;
+    }
 
 @media (max-width: 768px) {
     .payment-content {
