@@ -15,43 +15,42 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Loading
 function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = 'flex';
 }
+
 function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(function (form) {
+    // Xử lý form submit
+    document.querySelectorAll('form').forEach(function (form) {
         form.addEventListener('submit', function (e) {
+            // Chỉ show loading nếu form hợp lệ
             if (form.checkValidity()) {
                 showLoading();
             }
         });
     });
 
-    // Ẩn loading khi trang load xong
-    hideLoading();
-
-    // Ẩn loading nếu có validation error từ server
-    const validationErrors = document.querySelector('.validation-summary-errors, .field-validation-error, [class*="error"]');
-    if (validationErrors) {
-        hideLoading();
-    }
-});
-// Show loading khi click link có class 'loading-link'
-const loadingLinks = document.querySelectorAll('.loading-link');
-loadingLinks.forEach(function (link) {
-    link.addEventListener('click', function () {
-        showLoading();
+    // Xử lý loading links
+    document.querySelectorAll('.loading-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+            const href = link.getAttribute('href');
+            // Không show loading cho link # hoặc _blank
+            if (href && href !== '#' && link.target !== '_blank') {
+                showLoading();
+            }
+        });
     });
 });
-// ẩn đi khi loading xong
+
+// Ẩn loading khi trang load xong
 window.addEventListener('load', function () {
     hideLoading();
 });
-
 // User dropdown functionality
 //const userDropdown = document.querySelector('.user-dropdown');
 //if (userDropdown) {
