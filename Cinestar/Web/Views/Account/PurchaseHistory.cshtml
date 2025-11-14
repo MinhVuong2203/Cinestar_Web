@@ -1,9 +1,12 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Thông tin cá nhân";
+	var loggedCustomer = ViewData["LoggedCustomer"] as Web.Models.Customer;
+    var purchasedTickets = ViewData["PurchasedTickets"] as List<Web.Models.DTOs.PurchasedTicketDto>;
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/CinestartMember.css?v=@DateTime.Now.Ticks">
+    <link rel="stylesheet" href="~/css/PurchaseHistory.css?v=@DateTime.Now.Ticks" />
 }
 
 <div class="container-Member">
@@ -62,6 +65,53 @@
     <div class="main-content">
         <h1>LỊCH SỬ MUA HÀNG</h1>
 
+        @if (purchasedTickets != null && purchasedTickets.Any())
+        {
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Phim</th>
+                        <th>Suất chiếu</th>
+                        <th>Ghế</th>
+                        <th>Giá vé</th>
+                        <th>Rạp</th>
+                        <th>Phòng</th>
+                        <th>Loại vé</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày mua</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ticket in purchasedTickets)
+                    {
+                        <tr>
+                            <td>@ticket.MovieTitle</td>
+                            <td>@ticket.ShowTime.ToString("HH:mm dd/MM/yyyy")</td>
+                            <td>@ticket.SeatName</td>
+                            <td>@ticket.Price.ToString("N0") VNĐ</td>
+                            <td>@ticket.BranchName</td>
+                            <td>@ticket.RoomName</td>
+                            <td>@ticket.TicketType</td>
+                            <td>
+                                @{
+                                    var statusClass = ticket.Status == "Đã thanh toán" ? "status-paid"
+                                    : ticket.Status == "Đã hủy" ? "status-cancel"
+                                    : "status-pending";
+                                }
+                                <span class="@statusClass">@ticket.Status</span>
+                            </td>
+                            <td>@(ticket.PurchaseDate?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="no-history">
+                Bạn chưa có lịch sử mua vé nào.
+            </div>
+        }
     </div>
 </div>
 

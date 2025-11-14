@@ -5,8 +5,6 @@
 
 <link rel="stylesheet" href="~/css/Admin/ShowTime.css" />
 
-
-
 <div class="showtime-container">
     <div class="showtime-header">
         @if (TempData["ErrorMessage"] != null)
@@ -137,10 +135,12 @@
     }
     <script>
         $(document).ready(function() {
-            let movieDuration = @(Model.Movie.DurationMinutes ?? 0);
+            let movieDuration = @(Model.Movie?.DurationMinutes ?? 0);
+            let movieReleaseDate = @Html.Raw(Model.Movie?.StartTime.HasValue == true ? $"new Date('{Model.Movie.StartTime.Value:yyyy-MM-dd}T00:00:00')" : "null");
+            let movieEndDate = @Html.Raw(Model.Movie?.EndTime.HasValue == true ? $"new Date('{Model.Movie.EndTime.Value:yyyy-MM-dd}T00:00:00')" : "null");
             let branchOpenHour = '';
             let branchCloseHour = '';
-            const currentBranchId = '@Model.Room.BranchID';
+            const currentBranchId = '@Model.Room?.BranchID';
             const currentShowTimeId = '@Model.ShowTimeID';
 
             // Set chi nhánh hiện tại
@@ -218,16 +218,25 @@
                 }
             });
 
-            // Load thời lượng phim khi chọn phim
+            // ✅ UPDATED: Load thời lượng, ngày khởi chiếu và ngày kết thúc phim khi chọn phim
             $('#movieSelect').change(function() {
                 const movieId = $(this).val();
 
                 if (movieId) {
                     $.get('@Url.Action("GetMovieDuration", "ShowTime")', { movieId: movieId }, function(data) {
                         movieDuration = data.duration;
+                        movieReleaseDate = data.releaseDate ? new Date(data.releaseDate + 'T00:00:00') : null;
+                        movieEndDate = data.endDate ? new Date(data.endDate + 'T00:00:00') : null; // ✅ NEW
                         calculateEndTime();
+                        validateMovieReleaseDate();
+                        validateMovieEndDate(); // ✅ NEW
                         loadTimeline();
                     });
+                } else {
+                    movieDuration = 0;
+                    movieReleaseDate = null;
+                    movieEndDate = null; // ✅ NEW
+                    $('#endTime').val('');
                 }
             });
 
@@ -239,6 +248,8 @@
             // Khi thay đổi giờ bắt đầu
             $('#startTime').on('change input blur', function() {
                 validateStartTime();
+                validateMovieReleaseDate();
+                validateMovieEndDate(); // ✅ NEW
                 calculateEndTime();
                 validateBranchHours();
                 loadTimeline();
@@ -274,6 +285,104 @@
                     }
 
                     // Kiểm tra nếu không có lỗi khác thì enable button
+                    if ($('#startTimeError:visible').length === 0 &&
+                        $('#endTimeError:visible').length === 0 &&
+                        !$('#conflictWarning').hasClass('show')) {
+                        $('#submitBtn').prop('disabled', false);
+                    }
+                    return true;
+                }
+            }
+
+            // ✅ Validation ngày khởi chiếu phim
+            function validateMovieReleaseDate() {
+                const startTime = $('#startTime').val();
+
+                if (!startTime || !movieReleaseDate) {
+                    const currentError = $('#startTimeError').text();
+                    if (currentError.includes('ngày khởi chiếu')) {
+                        $('#startTimeError').hide();
+                    }
+                    return true;
+                }
+
+                const selectedTime = new Date(startTime);
+                const selectedDate = new Date(selectedTime.getFullYear(),
+                                              selectedTime.getMonth(),
+                                              selectedTime.getDate());
+                const releaseDate = new Date(movieReleaseDate.getFullYear(),
+                                             movieReleaseDate.getMonth(),
+                                             movieReleaseDate.getDate());
+
+                if (selectedDate < releaseDate) {
+                    const day = String(movieReleaseDate.getDate()).padStart(2, '0');
+                    const month = String(movieReleaseDate.getMonth() + 1).padStart(2, '0');
+                    const year = movieReleaseDate.getFullYear();
+                    const formattedDate = `${day}/${month}/${year}`;
+
+                    $('#startTimeError')
+                        .text(`Giờ bắt đầu phải từ ngày khởi chiếu của phim (${formattedDate}) trở đi!`)
+                        .css('display', 'block')
+                        .css('color', '#dc3545')
+                        .css('font-weight', '500')
+                        .css('margin-top', '5px');
+                    $('#submitBtn').prop('disabled', true);
+                    return false;
+                } else {
+                    const currentError = $('#startTimeError').text();
+                    if (currentError.includes('ngày khởi chiếu')) {
+                        $('#startTimeError').hide();
+                    }
+
+                    if ($('#startTimeError:visible').length === 0 &&
+                        $('#endTimeError:visible').length === 0 &&
+                        !$('#conflictWarning').hasClass('show')) {
+                        $('#submitBtn').prop('disabled', false);
+                    }
+                    return true;
+                }
+            }
+
+            // ✅ NEW: Validation ngày kết thúc chiếu phim
+            function validateMovieEndDate() {
+                const startTime = $('#startTime').val();
+
+                if (!startTime || !movieEndDate) {
+                    const currentError = $('#startTimeError').text();
+                    if (currentError.includes('ngày kết thúc')) {
+                        $('#startTimeError').hide();
+                    }
+                    return true;
+                }
+
+                const selectedTime = new Date(startTime);
+                const selectedDate = new Date(selectedTime.getFullYear(),
+                                              selectedTime.getMonth(),
+                                              selectedTime.getDate());
+                const endDate = new Date(movieEndDate.getFullYear(),
+                                        movieEndDate.getMonth(),
+                                        movieEndDate.getDate());
+
+                if (selectedDate > endDate) {
+                    const day = String(movieEndDate.getDate()).padStart(2, '0');
+                    const month = String(movieEndDate.getMonth() + 1).padStart(2, '0');
+                    const year = movieEndDate.getFullYear();
+                    const formattedDate = `${day}/${month}/${year}`;
+
+                    $('#startTimeError')
+                        .text(`Giờ bắt đầu phải trước ngày kết thúc chiếu của phim (${formattedDate})!`)
+                        .css('display', 'block')
+                        .css('color', '#dc3545')
+                        .css('font-weight', '500')
+                        .css('margin-top', '5px');
+                    $('#submitBtn').prop('disabled', true);
+                    return false;
+                } else {
+                    const currentError = $('#startTimeError').text();
+                    if (currentError.includes('ngày kết thúc')) {
+                        $('#startTimeError').hide();
+                    }
+
                     if ($('#startTimeError:visible').length === 0 &&
                         $('#endTimeError:visible').length === 0 &&
                         !$('#conflictWarning').hasClass('show')) {
@@ -328,7 +437,9 @@
                         .css('margin-top', '5px');
                 } else {
                     const currentError = $('#startTimeError').text();
-                    if (!currentError.includes('giờ hiện tại')) {
+                    if (!currentError.includes('giờ hiện tại') &&
+                        !currentError.includes('ngày khởi chiếu') &&
+                        !currentError.includes('ngày kết thúc')) {
                         $('#startTimeError').hide();
                     }
                 }
@@ -532,12 +643,26 @@
                 return dayNames[date.getDay()] + ', ' + day + '/' + month + '/' + year;
             }
 
-            // Validate form khi submit
+            // ✅ UPDATED: Validate form khi submit
             $('#showtimeForm').submit(function(e) {
                 // Kiểm tra thời gian quá khứ
                 if (!validateStartTime()) {
                     e.preventDefault();
                     alert('Giờ bắt đầu phải lớn hơn giờ hiện tại!');
+                    return false;
+                }
+
+                // Kiểm tra ngày khởi chiếu
+                if (!validateMovieReleaseDate()) {
+                    e.preventDefault();
+                    alert('Giờ bắt đầu phải từ ngày khởi chiếu của phim trở đi!');
+                    return false;
+                }
+
+                // ✅ NEW: Kiểm tra ngày kết thúc chiếu
+                if (!validateMovieEndDate()) {
+                    e.preventDefault();
+                    alert('Giờ bắt đầu phải trước ngày kết thúc chiếu của phim!');
                     return false;
                 }
 

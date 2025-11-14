@@ -25,6 +25,18 @@ namespace Web.Controllers
 
         public IActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var customerIdStr = User.FindFirst("CustomerID")?.Value;
+                if (Guid.TryParse(customerIdStr, out Guid customerId))
+                {
+                    var customer = _context.Customers.FirstOrDefault(c => c.CustomerID == customerId && !c.IsDeleted);
+                    if (customer != null)
+                    {
+                        ViewData["LoggedCustomer"] = customer;
+                    }
+                }
+            }
             return View();
         }
 
@@ -396,8 +408,8 @@ namespace Web.Controllers
                             foreach (var invoiceTicket in invoice.InvoiceTickets)
                             {
                                 invoiceTicket.Ticket.Status = "Đã thanh toán";
-                                invoiceTicket.Ticket.LockedBy = null;
-                                invoiceTicket.Ticket.LockedAt = null;
+                                invoiceTicket.Ticket.LockedBy = invoice.CustomerID;
+                                invoiceTicket.Ticket.LockedAt = DateTime.Now;
                             }
 
                             // ✅ Tạo payment record

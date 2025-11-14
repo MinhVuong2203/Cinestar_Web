@@ -1,6 +1,9 @@
 ﻿@section Styles {
     <link rel="stylesheet" href="~/css/payment/payment.css" />
 }
+@{
+    var loggedCustomer = ViewData["LoggedCustomer"] as Web.Models.Customer;
+}
 
 <div class="container">
     <h1 class="page-title">TRANG THANH TOÁN</h1>
@@ -43,19 +46,22 @@
             <form asp-controller="Payment" asp-action="PaymentMethod" asp-area="" method="post">
                 <div class="form-group">
                     <label for="fullname">Họ và tên <span class="required">*</span></label>
-                    <input type="text" id="fullname" name="fullname" placeholder="Họ và tên" required>
+                    <input type="text" id="fullname" name="fullname" placeholder="Họ và tên" required
+                           value="@(loggedCustomer?.FullName ?? "")" disabled>
                     <span class="validation-message" id="fullname-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Số điện thoại <span class="required">*</span></label>
-                    <input type="tel" id="phone" name="phone" placeholder="Số điện thoại" required>
+                    <input type="tel" id="phone" name="phone" placeholder="Số điện thoại" required
+                            value="@(loggedCustomer?.Phone ?? "")" disabled>
                     <span class="validation-message" id="phone-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email <span class="required">*</span></label>
-                    <input type="email" id="email" name="email" placeholder="Email" required>
+                    <input type="email" id="email" name="email" placeholder="Email" required
+                            value="@(loggedCustomer?.Email ?? "")" disabled>
                     <span class="validation-message" id="email-error"></span>
                 </div>
 

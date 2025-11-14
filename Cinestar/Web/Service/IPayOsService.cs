@@ -71,7 +71,8 @@ namespace Web.Service
         string buyerName,
         string buyerEmail,
         string buyerPhone,
-        string description);
+        string description,
+        bool isAdminSale = false);
 
         Task<CreatePaymentResult?> CreateTicketPaymentLink(
         Guid invoiceId,
@@ -80,6 +81,7 @@ namespace Web.Service
         string buyerEmail,
         string buyerPhone,
         string description,
-        bool isAdminSale = false);
+        string cancelUrl,
+        string returnUrl);
     }
 }

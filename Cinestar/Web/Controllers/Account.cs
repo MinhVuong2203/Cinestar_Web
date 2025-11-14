@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Web.Data;
 using Web.Helper;
 using Web.Service;
 
@@ -10,10 +11,14 @@ namespace Web.Controllers
     public class Account : Controller
     {
         private readonly ILogin _login;
+        private readonly CineStarContext _context;
+        private readonly IPurchaseHistoryService _purchaseHistoryService;
 
-        public Account(ILogin login)
+        public Account(ILogin login, CineStarContext context, IPurchaseHistoryService purchaseHistoryService)
         {
             _login = login;
+            _context = context;
+            _purchaseHistoryService = purchaseHistoryService;
         }
 
         public IActionResult Login()
@@ -33,6 +38,25 @@ namespace Web.Controllers
 
         public IActionResult PurchaseHistory()
         {
+            var customerIdStr = User.FindFirst("CustomerID")?.Value;
+            if (User.Identity.IsAuthenticated)
+            {
+                if (Guid.TryParse(customerIdStr, out Guid customerId))
+                {
+                    var customer = _context.Customers.FirstOrDefault(c => c.CustomerID == customerId && !c.IsDeleted);
+                    if (customer != null)
+                    {
+                        ViewData["LoggedCustomer"] = customer;
+                    }
+
+                    // Lấy lịch sử mua vé của khách hàng
+                    var purchasedTickets = _purchaseHistoryService.GetPurchasedTicketsByCustomerId(customerId);
+                    if (purchasedTickets != null)
+                    {
+                        ViewData["PurchasedTickets"] = purchasedTickets;
+                    }
+                }
+            }
             return View();
         }
 
