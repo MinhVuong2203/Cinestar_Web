@@ -1,1 +1,67 @@
-﻿<div>Đây là trang chủ admin</div>
+﻿@{
+    ViewData["Title"] = "DashBoard";
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card.green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stats-card.orange {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stats-card.blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+</style>
+
+<!-- Cards Tổng Quan -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card">
+            <div class="stats-label">
+                <i class="fas fa-film"></i> Tổng Số Phim
+            </div>
+            <div class="stats-number">@ViewBag.TotalMovies</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card green">
+            <div class="stats-label">
+                <i class="fas fa-play-circle"></i> Đang Chiếu
+            </div>
+            <div class="stats-number">@ViewBag.NowShowing</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card orange">
+            <div class="stats-label">
+                <i class="fas fa-calendar-alt"></i> Sắp Chiếu
+            </div>
+            <div class="stats-number">@ViewBag.ComingSoon</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card blue">
+            <div class="stats-label">
+                <i class="fas fa-clock"></i> Thời Lượng TB
+            </div>
+            <div class="stats-number">@ViewBag.AvgDuration'</div>
+        </div>
+    </div>
+</div>
