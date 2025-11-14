@@ -18,6 +18,13 @@ builder.Services.AddControllersWithViews().AddRazorOptions(options =>
     options.AreaViewLocationFormats.Add("/Areas/{2}/Views/Shared/{0}.cshtml");
     options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
 });
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout 30 phút
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // GDPR compliance
+    options.Cookie.Name = ".CinestarWeb.Session";
+});
 
 // Configure PayOS Settings
 builder.Services.Configure<PayOsSettings>(builder.Configuration.GetSection("PayOS"));
@@ -84,6 +91,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<SeatHub>("/seatHub");
+app.UseSession();
 
 // Cấu hình router - THÊM ROUTE CHO CÁC ROLE
 app.MapControllerRoute(
