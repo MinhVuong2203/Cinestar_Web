@@ -4,14 +4,7 @@
     var employeeId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
 
     // Xác định prefix URL theo role
-    string urlPrefix = role switch
-    {
-        "Admin" => "admin",
-        "EmployeeSales" => "employee-sales",
-        "EmployeeTechnician" => "employee-technician",
-        "EmployeeMovies" => "employee-movies",
-        _ => "admin"
-    };
+    string urlPrefix = "admin";
 }
 
 <!DOCTYPE html>
@@ -42,7 +35,7 @@
                 <ul class="list-unstyled components">
                     <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
                         <a href="/@urlPrefix">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                            <i class="fas fa-tachometer-alt"></i> Tổng quan
                         </a>
                     </li>
                     <li class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Branch" ? "active" : "")">

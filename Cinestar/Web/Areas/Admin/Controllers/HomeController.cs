@@ -9,7 +9,7 @@ namespace Web.Areas.Admin.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        //[Authorize(Roles = "Admin, EmployeeSales, ")]
+        
 
         private readonly IHomeService _homeService;
 
@@ -17,6 +17,7 @@ namespace Web.Areas.Admin.Controllers
         {
             _homeService = homeService;
         }
+        [Authorize(Roles = "Admin, EmployeeSales, EmployeeMovies, EmployeeTechnician")]
         public async Task<IActionResult> IndexAsync()
         {
             try

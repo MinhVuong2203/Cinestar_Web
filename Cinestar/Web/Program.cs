@@ -36,7 +36,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/AccessDenied";
-        options.Cookie.MaxAge = null;
+        //options.Cookie.MaxAge = null;
         options.Cookie.Name = "CinestarAuth";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Strict;
@@ -68,7 +68,6 @@ builder.Services.Scan(scan => scan
 builder.Services.AddControllersWithViews(option =>
 {
     option.Filters.Add<LoadCinemaBranchesAttribute>();
-    option.Filters.Add<AreaPrefixFilter>(); // THÊM FILTER MỚI
 });
 
 // Đăng ký SignalR 
