@@ -9,6 +9,7 @@ using Web.Models;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin, EmployeeTechnician")]
     public class ScreeningRoomController : Controller
     {
         private readonly IScreeningRoomService _screeningRoomService;
