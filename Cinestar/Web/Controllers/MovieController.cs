@@ -208,5 +208,25 @@ namespace Web.Controllers
             return Json(ticket);
 
         }
+        public IActionResult showing()
+        {
+            var cities = _cinemaBranchService.GetListCityBranches();
+            ViewData["lstCity"] = cities;
+
+           
+            var nowShowingMovies = _movieService_Cus.GetNowShowingMoviesAsync(100).Result;
+
+            return View(nowShowingMovies);
+        }
+        public IActionResult upcoming()
+        {
+            var cities = _cinemaBranchService.GetListCityBranches();
+            ViewData["lstCity"] = cities;
+
+          
+            var comingSoonMovies = _movieService_Cus.GetComingSoonMoviesAsync(100).Result;
+
+            return View(comingSoonMovies);
+        }
     }
 }

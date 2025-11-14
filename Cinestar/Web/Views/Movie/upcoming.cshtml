@@ -1,0 +1,122 @@
+﻿@model List<Movie>
+@{
+    ViewData["Title"] = "Phim Sắp Chiếu";
+}
+
+@section styles {
+    <link href="~/css/Customer/homeCustomer.css" rel="stylesheet" />
+}
+
+<div class="showing-page">
+    <div class="container">
+        <!-- Page Header -->
+        <section class="page-header" style="text-align: center; padding: 60px 0 40px; margin-bottom: 40px;">
+            <h1 style="color: #fff; font-size: 3rem; font-weight: 900; letter-spacing: 3px; margin-bottom: 15px; text-transform: uppercase;">
+                PHIM SẮP CHIẾU
+            </h1>
+        </section>
+
+        <!-- Movies Grid -->
+        <section class="movies-section">
+            @if (Model != null && Model.Any())
+            {
+                <div class="movies-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto;">
+                    @foreach (var movie in Model)
+                    {
+                        <div class="movie-card">
+                            <div class="movie-poster">
+                                <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "~/image/movie/default-poster.webp" : movie.ImageUrl)"
+                                     alt="@movie.Title">
+
+                                <!-- Badges -->
+                                <div class="badge-container">
+                                    <div class="movie-type-badge">2D</div>
+                                    <div class="age-badge">@(string.IsNullOrEmpty(movie.AgeLimit) ? "P" : movie.AgeLimit)</div>
+                                </div>
+
+                                <!-- Overlay Info -->
+                                <div class="movie-info-overlay">
+                                    <h3 class="overlay-title">@movie.Title.ToUpper()</h3>
+
+                                    <div class="movie-info-item">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                        </svg>
+                                        <span>@(string.IsNullOrEmpty(movie.Genre) ? "Đang cập nhật" : movie.Genre)</span>
+                                    </div>
+
+                                    <div class="movie-info-item">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                                        </svg>
+                                        <span>@(movie.DurationMinutes.HasValue? movie.DurationMinutes + "'" : "N/A")</span>
+                                    </div>
+
+                                    <div class="movie-info-item">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                                        </svg>
+                                        <span>@(string.IsNullOrEmpty(movie.Language) ? "Đang cập nhật" : movie.Language)</span>
+                                    </div>
+
+                                    <div class="movie-info-item">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z" />
+                                        </svg>
+                                        <span>@(string.IsNullOrEmpty(movie.Sub) ? "Đang cập nhật" : movie.Sub)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Release Date -->
+                            @if (movie.StartTime.HasValue)
+                            {
+                                <h4 class="movie-date">Khởi Chiếu @movie.StartTime.Value.ToString("dd/MM/yyyy")</h4>
+                            }
+
+                            <!-- Movie Title -->
+                            <h3 class="movie-title">@movie.Title.ToUpper()</h3>
+
+                            <!-- Movie Actions -->
+                            <div class="movie-actions">
+                                @if (!string.IsNullOrEmpty(movie.LinkTrailer))
+                                {
+                                    <a href="@movie.LinkTrailer" target="_blank" class="btn-trailer">
+                                        <span class="play-icon">▶</span> Xem Trailer
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="#" class="btn-trailer" style="opacity: 0.5; cursor: not-allowed;">
+                                        <span class="play-icon">▶</span> Xem Trailer
+                                    </a>
+                                }
+                                <a href="@Url.Action("Details", "Movie", new { area = "", id = movie.MovieID })" class="btn-book">
+                                    TÌM HIỂU THÊM
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div style="text-align: center; padding: 80px 20px; color: #fff;">
+                    <div style="font-size: 5rem; margin-bottom: 20px;">🎬</div>
+                    <h3 style="font-size: 2rem; margin-bottom: 15px;">Hiện tại chưa có phim sắp chiếu</h3>
+                    <p style="color: #b0b0b0; margin-bottom: 30px;">Vui lòng quay lại sau hoặc xem phim đang chiếu</p>
+                    <a href="@Url.Action("showing", "Movie")" class="btn-view-more">
+                        Xem Phim Đang Chiếu
+                    </a>
+                </div>
+            }
+        </section>
+
+        <!-- Back to Home Button -->
+        <div style="text-align: center; margin-top: 60px;">
+            <a href="@Url.Action("","", new { area = ""})" class="btn-view-more">
+                ← Quay Lại Trang Chủ
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,241 +1,221 @@
-// ========== BOOKING SECTION ==========
-const cinema = document.getElementById('cinema');
-const movie = document.getElementById('movie');
-const date = document.getElementById('date');
-const time = document.getElementById('time');
-const bookBtn = document.getElementById('bookBtn');
+// ========== ĐỢI DOM LOAD XONG ==========
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('🎬 Home Customer JS loaded');
 
-cinema.disabled = false;
-cinema.classList.remove('combo-disabled');
+    // Khởi tạo các carousel
+    initMovieCarousel();
+    initComingSoonCarousel();
+    initPromotionCarousel();
+});
 
-function checkBookButton() {
-    const hasValue = cinema.value || movie.value || date.value || time.value;
-    bookBtn.disabled = !hasValue;
-}
+// ========== CAROUSEL PHIM ĐANG CHIẾU ==========
+function initMovieCarousel() {
+    const carouselTrack = document.getElementById('movieCarousel');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dotsContainer = document.getElementById('carouselDots');
 
-cinema.addEventListener('change', function() {
-    if (this.value) {
-        movie.disabled = false;
-        movie.classList.remove('combo-disabled');
-        date.disabled = true;
-        date.classList.add('combo-disabled');
-        time.disabled = true;
-        time.classList.add('combo-disabled');
-        movie.value = '';
-        date.value = '';
-        time.value = '';
+    if (!carouselTrack || !prevBtn || !nextBtn || !dotsContainer) {
+        console.log('⚠️ Carousel "Phim Đang Chiếu" không đầy đủ elements');
+        return;
     }
-    checkBookButton();
-});
 
-movie.addEventListener('change', function() {
-    if (this.value) {
-        date.disabled = false;
-        date.classList.remove('combo-disabled');
-        time.disabled = true;
-        time.classList.add('combo-disabled');
-        date.value = '';
-        time.value = '';
+    const slides = carouselTrack.querySelectorAll('.carousel-slide');
+    if (slides.length === 0) {
+        console.log('⚠️ Không có slide nào trong "Phim Đang Chiếu"');
+        return;
     }
-    checkBookButton();
-});
 
-date.addEventListener('change', function() {
-    if (this.value) {
-        time.disabled = false;
-        time.classList.remove('combo-disabled');
-        time.value = '';
+    console.log(`✅ Carousel "Phim Đang Chiếu" - ${slides.length} slides`);
+
+    let currentSlide = 0;
+
+    function createDots() {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < slides.length; i++) {
+            const dot = document.createElement('button');
+            dot.classList.add('dot');
+            dot.setAttribute('type', 'button');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
     }
-    checkBookButton();
-});
 
-time.addEventListener('change', function() {
-    checkBookButton();
-});
-
-bookBtn.addEventListener('click', function() {
-    let message = 'Đặt vé thành công!';
-    if (cinema.value) message += '\nRạp: ' + cinema.options[cinema.selectedIndex].text;
-    if (movie.value) message += '\nPhim: ' + movie.options[movie.selectedIndex].text;
-    if (date.value) message += '\nNgày: ' + date.options[date.selectedIndex].text;
-    if (time.value) message += '\nGiờ: ' + time.options[time.selectedIndex].text;
-    alert(message);
-});
-
-checkBookButton();
-
-// ========== MOVIE CAROUSEL SECTION 2 ==========
-const carouselTrack = document.getElementById('movieCarousel');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const dotsContainer = document.getElementById('carouselDots');
-const slides = carouselTrack.querySelectorAll('.carousel-slide');
-
-let currentSlide = 0;
-const totalSlides = slides.length;
-
-// Tạo dots
-function createDots() {
-    dotsContainer.innerHTML = '';
-    for (let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (i === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(i));
-        dotsContainer.appendChild(dot);
+    function updateDots() {
+        const dots = dotsContainer.querySelectorAll('.dot');
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
     }
-}
 
-// Cập nhật dots
-function updateDots() {
-    const dots = document.querySelectorAll('.dot');
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentSlide);
+    function updateButtons() {
+        prevBtn.disabled = (currentSlide === 0);
+        nextBtn.disabled = (currentSlide >= slides.length - 1);
+    }
+
+    function goToSlide(index) {
+        currentSlide = Math.max(0, Math.min(index, slides.length - 1));
+        const offset = -(currentSlide * 100);
+        carouselTrack.style.transform = `translateX(${offset}%)`;
+        updateDots();
+        updateButtons();
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentSlide > 0) goToSlide(currentSlide - 1);
     });
-}
 
-function updateButtons() {
-    prevBtn.disabled = currentSlide === 0;
-    nextBtn.disabled = currentSlide >= totalSlides - 1;
-}
+    nextBtn.addEventListener('click', () => {
+        if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
+    });
 
-function goToSlide(slideIndex) {
-    currentSlide = Math.max(0, Math.min(slideIndex, totalSlides - 1));
-    
-    const translateX = -(currentSlide * 100);
-    carouselTrack.style.transform = `translateX(${translateX}%)`;
-    carouselTrack.style.transition = 'transform 0.5s ease';
-    carouselTrack.style.height = 'auto';
-    
-    updateDots();
+    if (slides.length > 1) createDots();
     updateButtons();
 }
 
-// Nút Next
-nextBtn.addEventListener('click', () => {
-    if (currentSlide < totalSlides - 1) {
-        goToSlide(currentSlide + 1);
+// ========== CAROUSEL PHIM SẮP CHIẾU ==========
+function initComingSoonCarousel() {
+    const carouselTrack = document.getElementById('movieCarousel3');
+    const prevBtn = document.getElementById('prevBtn3');
+    const nextBtn = document.getElementById('nextBtn3');
+    const dotsContainer = document.getElementById('carouselDots3');
+
+    if (!carouselTrack || !prevBtn || !nextBtn || !dotsContainer) {
+        console.log('⚠️ Carousel "Phim Sắp Chiếu" không đầy đủ elements');
+        return;
     }
-});
 
-// Nút Previous
-prevBtn.addEventListener('click', () => {
-    if (currentSlide > 0) {
-        goToSlide(currentSlide - 1);
+    const slides = carouselTrack.querySelectorAll('.carousel-slide');
+    if (slides.length === 0) {
+        console.log('⚠️ Không có slide nào trong "Phim Sắp Chiếu"');
+        return;
     }
-});
 
-// Khởi tạo carousel
-if (totalSlides > 1) {
-    createDots();
-}
-updateButtons();
+    console.log(`✅ Carousel "Phim Sắp Chiếu" - ${slides.length} slides`);
 
-// Xử lý khi resize window
-window.addEventListener('resize', () => {
-    goToSlide(currentSlide);
-});
+    let currentSlide = 0;
 
-// ========== MOVIE CAROUSEL SECTION 3 ==========
-const carouselTrack3 = document.getElementById('movieCarousel3');
-const prevBtn3 = document.getElementById('prevBtn3');
-const nextBtn3 = document.getElementById('nextBtn3');
-const dotsContainer3 = document.getElementById('carouselDots3');
-const slides3 = document.querySelectorAll('.section-3 .carousel-slide');
-
-let currentSlide3 = 0;
-const totalSlides3 = slides3.length;
-
-// Tạo dots
-function createDots3() {
-    dotsContainer3.innerHTML = '';
-    for (let i = 0; i < totalSlides3; i++) {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (i === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide3(i));
-        dotsContainer3.appendChild(dot);
+    function createDots() {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < slides.length; i++) {
+            const dot = document.createElement('button');
+            dot.classList.add('dot');
+            dot.setAttribute('type', 'button');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
     }
-}
 
-// Cập nhật dots
-function updateDots3() {
-    const dots = document.querySelectorAll('.section-3 .dot');
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentSlide3);
+    function updateDots() {
+        const dots = dotsContainer.querySelectorAll('.dot');
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function updateButtons() {
+        prevBtn.disabled = (currentSlide === 0);
+        nextBtn.disabled = (currentSlide >= slides.length - 1);
+    }
+
+    function goToSlide(index) {
+        currentSlide = Math.max(0, Math.min(index, slides.length - 1));
+        const offset = -(currentSlide * 100);
+        carouselTrack.style.transform = `translateX(${offset}%)`;
+        updateDots();
+        updateButtons();
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentSlide > 0) goToSlide(currentSlide - 1);
     });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
+    });
+
+    if (slides.length > 1) createDots();
+    updateButtons();
 }
 
-function updateButtons3() {
-    prevBtn3.disabled = currentSlide3 === 0;
-    nextBtn3.disabled = currentSlide3 >= totalSlides3 - 1;
-}
-
-function goToSlide3(slideIndex) {
-    currentSlide3 = Math.max(0, Math.min(slideIndex, totalSlides3 - 1));
-    
-    const translateX = -(currentSlide3 * 100);
-    carouselTrack3.style.transform = `translateX(${translateX}%)`;
-    carouselTrack3.style.transition = 'transform 0.5s ease';
-    
-    updateDots3();
-    updateButtons3();
-}
-
-// Nút Next
-nextBtn3.addEventListener('click', () => {
-    if (currentSlide3 < totalSlides3 - 1) {
-        goToSlide3(currentSlide3 + 1);
-    }
-});
-
-// Nút Previous
-prevBtn3.addEventListener('click', () => {
-    if (currentSlide3 > 0) {
-        goToSlide3(currentSlide3 - 1);
-    }
-});
-
-// Khởi tạo carousel
-if (totalSlides3 > 1) {
-    createDots3();
-}
-updateButtons3();
-
-// Xử lý khi resize window
-window.addEventListener('resize', () => {
-    goToSlide3(currentSlide3);
-});
-
-//Hminh JSON
-
-document.addEventListener('DOMContentLoaded', function () {
+// ========== CAROUSEL KHUYẾN MÃI ==========
+function initPromotionCarousel() {
     const wrapper = document.querySelector('.cards-wrapper');
     const nextBtn = document.getElementById('nextSlide');
     const prevBtn = document.getElementById('prevSlide');
 
-    // Lấy tất cả các thẻ
-    const cards = document.querySelectorAll('.cards-wrapper > div');
-    const cardWidth = cards[0].offsetWidth; // Lấy chiều rộng của 1 thẻ
+    if (!wrapper || !nextBtn || !prevBtn) {
+        console.log('⚠️ Carousel "Khuyến Mãi" không đầy đủ elements');
+        return;
+    }
+
+    const cards = wrapper.querySelectorAll(':scope > div');
+    if (cards.length === 0) {
+        console.log('⚠️ Không có card nào trong "Khuyến Mãi"');
+        return;
+    }
+
+    console.log(`✅ Carousel "Khuyến Mãi" - ${cards.length} cards`);
 
     let currentIndex = 0;
-    // Tính toán số lần trượt tối đa (hiển thị 3 thẻ 1 lúc)
-    const maxIndex = cards.length - Math.floor(wrapper.parentElement.offsetWidth / cardWidth);
 
     function updateCarousel() {
-        // Dịch chuyển wrapper sang trái
+        const cardWidth = cards[0].offsetWidth;
+        const containerWidth = wrapper.parentElement.offsetWidth;
+        const visibleCards = Math.floor(containerWidth / cardWidth);
+        const maxIndex = Math.max(0, cards.length - visibleCards);
+
+        currentIndex = Math.min(currentIndex, maxIndex);
+
         wrapper.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+        wrapper.style.transition = 'transform 0.3s ease';
+
+        // Update button states
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex >= maxIndex;
     }
 
     nextBtn.addEventListener('click', () => {
-        // Tăng index, nếu vượt quá max thì quay về 0 (vòng lặp)
-        currentIndex = (currentIndex + 1) > maxIndex ? 0 : currentIndex + 1;
+        const cardWidth = cards[0].offsetWidth;
+        const containerWidth = wrapper.parentElement.offsetWidth;
+        const visibleCards = Math.floor(containerWidth / cardWidth);
+        const maxIndex = Math.max(0, cards.length - visibleCards);
+
+        if (currentIndex < maxIndex) {
+            currentIndex++;
+        } else {
+            currentIndex = 0; // Loop back
+        }
         updateCarousel();
     });
 
     prevBtn.addEventListener('click', () => {
-        // Giảm index, nếu nhỏ hơn 0 thì quay về max (vòng lặp)
-        currentIndex = (currentIndex - 1) < 0 ? maxIndex : currentIndex - 1;
+        const cardWidth = cards[0].offsetWidth;
+        const containerWidth = wrapper.parentElement.offsetWidth;
+        const visibleCards = Math.floor(containerWidth / cardWidth);
+        const maxIndex = Math.max(0, cards.length - visibleCards);
+
+        if (currentIndex > 0) {
+            currentIndex--;
+        } else {
+            currentIndex = maxIndex; // Loop to end
+        }
         updateCarousel();
     });
-});
+
+    // Initial setup
+    updateCarousel();
+
+    // Handle window resize
+    window.addEventListener('resize', updateCarousel);
+}

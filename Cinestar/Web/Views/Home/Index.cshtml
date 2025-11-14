@@ -136,7 +136,7 @@
 
             @if (nowShowingMovies != null && nowShowingMovies.Count > 0)
             {
-                <a href="@Url.Action("NowShowing", "Movie")" class="btn-view-more">XEM THÊM</a>
+                <a href="@Url.Action("showing", "Movie", new { area= " "})", class="btn-view-more">XEM THÊM</a>
             }
             else
             {
@@ -244,7 +244,7 @@
 
             @if (nowShowingMovies != null && nowShowingMovies.Count > 0)
             {
-                <a href="@Url.Action("NowShowing", "Movie")" class="btn-view-more">XEM THÊM</a>
+                <a href="@Url.Action("upcoming", "Movie", new { area = " " })" class="btn-view-more">XEM THÊM</a>
             }
             else
             {
