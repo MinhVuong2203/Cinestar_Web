@@ -25,6 +25,18 @@ namespace Web.Controllers
 
         public IActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var customerIdStr = User.FindFirst("CustomerID")?.Value;
+                if (Guid.TryParse(customerIdStr, out Guid customerId))
+                {
+                    var customer = _context.Customers.FirstOrDefault(c => c.CustomerID == customerId && !c.IsDeleted);
+                    if (customer != null)
+                    {
+                        ViewData["LoggedCustomer"] = customer;
+                    }
+                }
+            }
             return View();
         }
 
