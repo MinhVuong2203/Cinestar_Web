@@ -827,8 +827,6 @@ namespace Web.Areas.Admin.Controllers
                     return Json(new { success = false, message = "Không thể tạo link thanh toán" });
                 }
 
-                // ✅ Lưu OrderCode vào Invoice (cần thêm property OrderCode vào Invoice model)
-                // Tạm thời lưu vào một bảng riêng hoặc sử dụng field có sẵn
 
                 return Json(new
                 {
@@ -1074,6 +1072,7 @@ namespace Web.Areas.Admin.Controllers
 
         // ✅ Callback sau khi thanh toán PayOS thành công cho Product
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> ProductPayOsSuccess(string invoiceId, long orderCode)
         {
             try
