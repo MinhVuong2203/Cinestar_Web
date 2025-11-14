@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Areas.Admin.Service;
 using Web.Data;
@@ -27,6 +28,7 @@ namespace Web.Areas.Admin.Controllers
 
 
         // GET: Admin/ScreeningRoom/Index
+        [Authorize(Roles = "Admin, EmployeeTechnician")]
         public async Task<IActionResult> Index()
         {
             var rooms = await _screeningRoomService.GetScreeningRooms();
@@ -41,6 +43,7 @@ namespace Web.Areas.Admin.Controllers
 
 
         // GET: Admin/ScreeningRoom/Create
+        [Authorize(Roles = "Admin, EmployeeTechnician")]
         public async Task<IActionResult> Create()
         {
             await LoadBranchesForView();
@@ -49,6 +52,7 @@ namespace Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, EmployeeTechnician")]
         public async Task<IActionResult> Create(Room room, IFormFile? ImageFile)
         {
             try

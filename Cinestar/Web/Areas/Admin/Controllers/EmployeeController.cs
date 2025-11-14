@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Web.Areas.Admin.Service;
@@ -73,6 +74,7 @@ namespace Web.Areas.Admin.Controllers
 
 
         // GET: Employee/Index
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string branchId, string searchTerm, string role, string sortBy)
         {
             IEnumerable<Employee> employees;

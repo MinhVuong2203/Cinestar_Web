@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.Areas.Admin.Service;
 using Web.Models;
 
@@ -17,6 +18,7 @@ namespace Web.Areas.Admin.Controllers
         }
 
         // GET: Admin/Movies
+        [Authorize(Roles = "Admin, EmployeeMovies")]
         public async Task<IActionResult> Index(int page = 1, string? search = null, string? filter = "all")
         {
             const int pageSize = 12; // Số phim mỗi trang
