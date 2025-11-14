@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "DashBoard";
+    ViewData["Title"] = "Dashboard";
 }
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -11,6 +11,7 @@
         color: white;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         transition: transform 0.3s ease;
+        margin-bottom:20px;
     }
 
         .stats-card:hover {
@@ -28,40 +29,85 @@
         .stats-card.blue {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
+
+        .stats-card.gold {
+            background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+        }
+
+    .stats-number {
+        font-size: 2.8rem;
+        font-weight: bold;
+        margin: 8px 0;
+    }
+
+    .stats-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .growth {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+        .growth.positive {
+            color: #38ef7d;
+        }
+
+        .growth.negative {
+            color: #f5576c;
+        }
 </style>
 
-<!-- Cards Tổng Quan -->
-<div class="row mb-4">
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card">
-            <div class="stats-label">
-                <i class="fas fa-film"></i> Tổng Số Phim
-            </div>
-            <div class="stats-number">@ViewBag.TotalMovies</div>
+<div class="container-fluid py-4">
+
+    <!-- === PHẦN DOANH THU THÁNG (ĐẦU TRANG) === -->
+    <div class="stats-card gold text-center">
+        <h3 class="mb-0">
+            Doanh Thu Tháng @DateTime.Now.ToString("MM/yyyy")
+        </h3>
+        <div class="stats-number">@ViewBag.MonthlyRevenue ₫</div>
+        <div class="growth @(ViewBag.RevenueGrowth >= 0 ? "positive" : "negative")">
+            <i class="fas fa-arrow-@(ViewBag.RevenueGrowth >= 0 ? "up" : "down")"></i>
+            @ViewBag.RevenueGrowth% so với tháng trước
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card green">
-            <div class="stats-label">
-                <i class="fas fa-play-circle"></i> Đang Chiếu
+
+    <!-- === CARDS TỔNG QUAN === -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card">
+                <div class="stats-label">
+                    <i class="fas fa-film"></i> Tổng Số Phim
+                </div>
+                <div class="stats-number">@ViewBag.TotalMovies</div>
             </div>
-            <div class="stats-number">@ViewBag.NowShowing</div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card green">
+                <div class="stats-label">
+                    <i class="fas fa-play-circle"></i> Đang Chiếu
+                </div>
+                <div class="stats-number">@ViewBag.NowShowing</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card orange">
+                <div class="stats-label">
+                    <i class="fas fa-calendar-alt"></i> Sắp Chiếu
+                </div>
+                <div class="stats-number">@ViewBag.ComingSoon</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card blue">
+                <div class="stats-label">
+                    <i class="fas fa-clock"></i> Thời Lượng TB
+                </div>
+                <div class="stats-number">@ViewBag.AvgDuration phút</div>
+            </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card orange">
-            <div class="stats-label">
-                <i class="fas fa-calendar-alt"></i> Sắp Chiếu
-            </div>
-            <div class="stats-number">@ViewBag.ComingSoon</div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card blue">
-            <div class="stats-label">
-                <i class="fas fa-clock"></i> Thời Lượng TB
-            </div>
-            <div class="stats-number">@ViewBag.AvgDuration'</div>
-        </div>
-    </div>
+
+    <!-- Có thể thêm biểu đồ doanh thu theo ngày, top phim, v.v. -->
 </div>

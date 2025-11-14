@@ -17,7 +17,7 @@ namespace Web.Areas.Admin.Controllers
         {
             _homeService = homeService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
             try
             {
@@ -25,7 +25,15 @@ namespace Web.Areas.Admin.Controllers
                 ViewBag.NowShowing = _homeService.GetNowShowingMovies();
                 ViewBag.ComingSoon = _homeService.GetComingSoon();
                 ViewBag.AvgDuration = _homeService.GetAverageDuration();
+                var now = DateTime.Now;
+                var startOfMonth = new DateTime(now.Year, now.Month, 1);
+                var endOfMonth = startOfMonth.AddMonths(1).AddSeconds(-1);
 
+                var revenue = await _homeService.GetMonthlyRevenue(startOfMonth, endOfMonth);
+                ViewBag.MonthlyRevenue = revenue.ToString("N0");
+
+                var growth = await _homeService.GetRevenueGrowthPercentage(startOfMonth, endOfMonth);
+                ViewBag.RevenueGrowth = growth;
                 return View();
             }
             catch (Exception ex)
@@ -38,5 +46,6 @@ namespace Web.Areas.Admin.Controllers
                 return View();
             }
         }
+
     }
 }
