@@ -407,7 +407,7 @@ namespace Web.Controllers
                             // ✅ Cập nhật ticket status
                             foreach (var invoiceTicket in invoice.InvoiceTickets)
                             {
-                                invoiceTicket.Ticket.Status = "Đã thanh toán";
+                                invoiceTicket.Ticket.Status = "Đã đặt";
                                 invoiceTicket.Ticket.LockedBy = invoice.CustomerID;
                                 invoiceTicket.Ticket.LockedAt = DateTime.Now;
                             }
@@ -434,6 +434,12 @@ namespace Web.Controllers
                                     customer.Point = (customer.Point ?? 0) + pointsToAdd;
                                 }
                             }
+
+                            //cập nhât trạng thái tickets đã thanh toán
+                            //var tickets = invoice.InvoiceTickets.Select(it => it.InvoiceTicketID).ToList();
+                            //var ticketEntities = await _context.Tickets
+                            //    .Where(t => tickets.Contains(t.TicketID) && !t.IsDeleted)
+                            //    .ToListAsync();
 
                             await _context.SaveChangesAsync();
 
