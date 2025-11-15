@@ -110,31 +110,7 @@
                     <div class="nav-wrapper">
                         <!-- Left Navigation -->
                         <div class="nav-left">
-                            <div class="nav-link">
-                                <i class="fa-solid fa-location-dot"></i>
-                                <span>Chọn rạp</span>
-                                <div class="list-branch">
-                                    <div class="row">
-                                        
-                                        @{
-                                            @if (ViewBag.CinemaBranches != null)
-                                            {
-                                                @foreach (var item in ViewBag.CinemaBranches)
-                                                {
-                                                    <div class="col-md-6 col-lg-4 branch-item">
-                                                        <a href="/@item.BranchID" class="">@item.BranchName</a>
-                                                    </div>
-                                                }
-                                            }
-                                        }
-
-                                    </div>
-                                </div>
-                            </div>
-                            <a asp-controller="Showtimes" asp-action="Index" asp-area="" class="nav-link">
-                                <i class="fa-solid fa-location-dot"></i>
-                                <span>Lịch chiếu</span>
-                            </a>
+                            
                         </div>
 
                         <!-- Right Navigation -->
