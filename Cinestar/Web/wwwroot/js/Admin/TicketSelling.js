@@ -642,7 +642,7 @@ function renderSeats(seats) {
             td.dataset.seatId = seat.seatId;
 
             let seatClass = 'seat';
-            if (seat.status === 'Đã đặt') {
+            if (seat.status === 'Đã đặt' || seat.status === 'Đã thanh toán') {
                 seatClass += ' booked';
             } else {
                 if (seat.seatType === 'Ghế Couple' || seat.seatType === 'Ghế đôi') {
