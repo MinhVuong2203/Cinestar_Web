@@ -1,0 +1,50 @@
+﻿.success-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.success-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 40px;
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 5rem;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+
+.ticket-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .success-container * {
+        visibility: visible;
+    }
+
+    .success-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        background: #fff !important;
+        box-shadow: none !important;
+    }
+}

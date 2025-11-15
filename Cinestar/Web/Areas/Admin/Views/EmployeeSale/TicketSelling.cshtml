@@ -125,14 +125,19 @@
                         DateTime startDateTime = startTime is DateTime dt ? dt : DateTime.Parse(startTime.ToString());
                         string timeDisplay = startDateTime.ToString("HH:mm");
 
+						DateTime now = DateTime.Now;
+                        TimeSpan timeDifference = startDateTime - now;
+                        bool isExpired = timeDifference.TotalMinutes <= 15;
+
                         <div class="col-md-3 col-sm-4 col-6">
-                            <div class="time-slot"
+                            <div class="time-slot @(isExpired ? "time-slot-disabled" : "")"
                                  data-showtime-id="@showTimeId"
                                  data-time="@timeDisplay"
                                  data-room="@roomName"
                                  data-room-type="@roomType"
                                  data-movie-id="@movieId"
-                                 data-branch-id="@Model.BranchID">
+                                 data-branch-id="@Model.BranchID"
+                                 data-is-expired="@isExpired.ToString().ToLower()">
                                 <div class="time-slot-time">@timeDisplay</div>
                                 <div class="time-slot-room">@roomName (@roomType)</div>
                                 <div class="time-slot-seats @(availableSeats < 10 ? "text-warning" : "text-success")">

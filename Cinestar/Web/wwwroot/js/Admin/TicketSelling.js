@@ -239,6 +239,42 @@ function showStep2() {
     } else {
         console.error('❌ step2 element not found!');
     }
+
+    const timeSlots = document.querySelectorAll('.time-slot');
+
+    timeSlots.forEach(slot => {
+        slot.addEventListener('click', function (e) {
+            const isExpired = this.getAttribute('data-is-expired') === 'true';
+
+            // Ngăn chặn click vào slot đã hết hạn
+            if (isExpired) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert('Suất chiếu này đã hết hạn đặt vé.\nVui lòng chọn suất chiếu khác (ít nhất 15 phút trước giờ chiếu).');
+                return false;
+            }
+
+            // Xóa class active khỏi tất cả các slot khác
+            timeSlots.forEach(s => s.classList.remove('active'));
+
+            // Thêm class active vào slot được chọn
+            this.classList.add('active');
+
+            // Lấy thông tin từ data attributes
+            const showTimeId = this.getAttribute('data-showtime-id');
+            const time = this.getAttribute('data-time');
+            const room = this.getAttribute('data-room');
+            const roomType = this.getAttribute('data-room-type');
+
+            console.log('Đã chọn suất chiếu:', {
+                showTimeId,
+                time,
+                room,
+                roomType
+            });
+
+        });
+    });
 }
 
 // Initialize ticket types and prices from server data
