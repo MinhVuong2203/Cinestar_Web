@@ -229,6 +229,48 @@
         transform: translateY(-3px);
     }
 
+/*Quá 15 phút*/
+.time-slot-disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    background-color: #e9ecef !important;
+    position: relative;
+    filter: grayscale(50%);
+}
+
+    /* Overlay pattern cho slot bị disable */
+    .time-slot-disabled::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient( 45deg, transparent, transparent 8px, rgba(0, 0, 0, 0.04) 8px, rgba(0, 0, 0, 0.04) 16px );
+        pointer-events: none;
+        border-radius: inherit;
+    }
+
+/* Badge "Hết hạn" */
+.time-slot-expired-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 10;
+}
+
+    .time-slot-expired-badge i {
+        font-size: 10px;
+        margin-right: 3px;
+    }
+
 /* Time display - giờ chiếu */
 .time-slot-time {
     font-size: 1.4rem;

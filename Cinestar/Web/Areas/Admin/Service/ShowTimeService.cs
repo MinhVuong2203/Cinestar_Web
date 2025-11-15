@@ -159,7 +159,15 @@ namespace Web.Areas.Admin.Service
         }
 
         public async Task<List<Movie>> GetAllMoviesAsync()
-            => await _db.Movies.Where(m => !m.IsDeleted).OrderBy(m => m.Title).ToListAsync();
+        {
+            var today = DateTime.Now.Date;
+
+            return await _db.Movies
+                .Where(m => !m.IsDeleted
+                    && (!m.EndTime.HasValue || m.EndTime.Value.Date >= today))
+                .OrderBy(m => m.Title)
+                .ToListAsync();
+        }
 
         public async Task<List<CinemaBranch>> GetAllBranchesAsync()
             => await _db.CinemaBranches.Where(b => !b.IsDeleted).OrderBy(b => b.BranchName).ToListAsync();

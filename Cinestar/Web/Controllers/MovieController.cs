@@ -68,20 +68,22 @@ namespace Web.Controllers
             // Nếu là phim đang chiếu, load đầy đủ thông tin đặt vé
             if (!isComingSoon)
             {
-                // Lấy thành phố mặc định (thành phố đầu tiên)
-                var defaultCity = cities.FirstOrDefault() ?? "HỒ CHÍ MINH";
+                // Lấy thành phố mặc định
+                var defaultCity = cities.FirstOrDefault();
 
                 // Lấy danh sách rạp chiếu phim này ở thành phố mặc định
                 var branches = _cinemaBranchService.GetBranchesByCityAndMovie(defaultCity, id);
                 ViewData["Branches"] = branches;
                 ViewData["SelectedCity"] = defaultCity;
 
+                // ✅ THÊM: Lấy ngày hiện tại để load showtimes
+                ViewData["DefaultDate"] = DateTime.Today.ToString("yyyy-MM-dd");
+
                 // ===== LẤY DANH SÁCH SẢN PHẨM =====
                 try
                 {
                     Console.WriteLine("\n🎬 [CONTROLLER] ========== PRODUCT LOADING START ==========");
 
-                    // Kiểm tra service
                     if (_productService == null)
                     {
                         Console.WriteLine("❌ [CONTROLLER] _productService is NULL - Dependency Injection failed!");
@@ -92,10 +94,8 @@ namespace Web.Controllers
                     Console.WriteLine("✅ [CONTROLLER] _productService is injected successfully");
                     Console.WriteLine($"[CONTROLLER] Service type: {_productService.GetType().Name}");
 
-                    // Gọi service
                     var products = await _productService.GetAllProductsGroupedByTypeAsync();
 
-                    // Kiểm tra kết quả
                     Console.WriteLine($"\n[CONTROLLER] Received: {products?.Count ?? 0} categories");
 
                     if (products != null && products.Any())

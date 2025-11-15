@@ -8,35 +8,7 @@
 }
 
 @section Styles {
-    <style>
-        .success-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-
-        .success-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 40px;
-            text-align: center;
-        }
-
-        .success-icon {
-            font-size: 5rem;
-            color: #28a745;
-            margin-bottom: 20px;
-        }
-
-        .ticket-info {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: left;
-        }
-    </style>
+    <link href="~/css/Admin/PaymentSuccess.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
 }
 
 <div class="success-container">
@@ -55,7 +27,7 @@
             <p><strong>Tổng tiền:</strong> <span class="text-danger fw-bold">@Model.TotalAmount.ToString() ₫</span></p>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4 no-print">
             <a asp-controller="EmployeeSale" asp-action="Index" asp-area="Admin" class="btn btn-primary btn-lg">
                 <i class="fas fa-home"></i> Quay lại trang chủ
             </a>
