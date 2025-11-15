@@ -27,14 +27,10 @@ namespace Web.Areas.Admin.Controllers
             _context = context;
         }
 
-
-        // GET: Admin/ScreeningRoom/Index
         [Authorize(Roles = "Admin, EmployeeTechnician")]
         public async Task<IActionResult> Index()
         {
             var rooms = await _screeningRoomService.GetScreeningRooms();
-
-            // ✅ Chỉ thống kê tổng số (không cần active/deleted)
             ViewBag.TotalRooms = rooms.Count;
             ViewBag.TotalSeats = rooms.Sum(r => r.SeatCount ?? 0);
             ViewBag.AllBranches = await _screeningRoomService.GetActiveBranches();
@@ -43,7 +39,6 @@ namespace Web.Areas.Admin.Controllers
         }
 
 
-        // GET: Admin/ScreeningRoom/Create
         [Authorize(Roles = "Admin, EmployeeTechnician")]
         public async Task<IActionResult> Create()
         {
@@ -95,9 +90,6 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
-
-
-        // GET: Admin/ScreeningRoom/Edit/ROM-12345
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -126,7 +118,6 @@ namespace Web.Areas.Admin.Controllers
 
             try
             {
-                // *** TRÙNG TÊN PHÒNG TRONG CÙNG CHI NHÁNH ***
                 bool isDuplicate = await _context.Rooms
                     .AnyAsync(r =>
                         r.RoomName.ToLower() == room.RoomName.ToLower()
@@ -138,7 +129,6 @@ namespace Web.Areas.Admin.Controllers
                     await LoadBranchesForView();
                     return View(room);
                 }
-                // **********************************************
 
                 if (ModelState.IsValid)
                 {
@@ -165,8 +155,6 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
-
-        // POST: Admin/ScreeningRoom/Delete/ROM-12345
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
@@ -182,8 +170,6 @@ namespace Web.Areas.Admin.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-        // ===== HELPER METHODS =====
 
         private async Task LoadBranchesForView()
         {
@@ -221,16 +207,13 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
-
-        // GET: Admin/ScreeningRoom/Chart
         public async Task<IActionResult> Chart()
         {
             ViewBag.AllBranches = await _screeningRoomService.GetActiveBranches();
-            ViewBag.AllRooms = await _screeningRoomService.GetScreeningRooms(); // Lấy tất cả phòng để chọn
+            ViewBag.AllRooms = await _screeningRoomService.GetScreeningRooms();
             return View();
         }
 
-        // POST: Admin/ScreeningRoom/GetRoomChartData
         [HttpPost]
         public async Task<JsonResult> GetRoomChartData(string branchId, DateTime fromDate, DateTime toDate)
         {
@@ -241,7 +224,6 @@ namespace Web.Areas.Admin.Controllers
             return Json(new { labels, values });
         }
 
-        // POST: Admin/ScreeningRoom/GetSeatChartData
         [HttpPost]
         public async Task<JsonResult> GetSeatChartData(string roomId, DateTime fromDate, DateTime toDate)
         {

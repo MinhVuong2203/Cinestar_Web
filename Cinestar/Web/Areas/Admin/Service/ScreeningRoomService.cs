@@ -67,7 +67,7 @@ namespace Web.Areas.Admin.Service
             var insertStatements = new List<string>();
             int totalSeats = 0;
 
-            // Define danh sách hàng ghế (A→P, Q, R, ... tùy thực tế, hoặc tự sinh đến đủ seatCount)
+            // Đặt tên ghế
             List<char> rowList = new List<char>();
             for (char row = 'A'; totalSeats < seatCount && row <= 'Z'; row++)
             {
@@ -76,10 +76,9 @@ namespace Web.Areas.Admin.Service
                 totalSeats += seatPerRow;
             }
 
-            // Xác định 2 hàng cuối cùng làm couple
+            // Xác định hàng cuối cùng là ghế couple
             int rowCount = rowList.Count;
             char coupleRow1 = rowList[^1];
-            char coupleRow2 = rowList[^2];
 
             totalSeats = 0;
 
@@ -91,11 +90,8 @@ namespace Web.Areas.Admin.Service
                 for (int col = 1; col <= seatPerRow && totalSeats < seatCount; col++)
                 {
                     string seatType = "Ghế thường";
-
-                    // 2 hàng cuối (xa màn hình nhất) là couple
-                    if (row == coupleRow1 || row == coupleRow2)
+                    if (row == coupleRow1 || row == coupleRow1)
                         seatType = "Ghế đôi";
-                    // VIP: L->G col 4-14, F: col 3-13
                     else if (row >= 'G' && row <= 'L' && col >= 4 && col <= 14)
                         seatType = "Ghế VIP";
                     else if (row == 'F' && col >= 3 && col <= 13)
@@ -157,7 +153,6 @@ namespace Web.Areas.Admin.Service
             }
         }
 
-        // Lấy danh sách chi nhánh đang hoạt động
         public async Task<List<CinemaBranch>> GetActiveBranches()
         {
             List<CinemaBranch> branches = await _context.CinemaBranches
@@ -180,14 +175,14 @@ namespace Web.Areas.Admin.Service
                               && !r.IsDeleted
                               && inv.IssueDate >= fromDate.Date
                               && inv.IssueDate < toDate.Date.AddDays(1)
-                              && inv.Status == "Completed" // hoặc "Paid", "Success" → kiểm tra DB!
+                              && inv.Status == "Đã thanh toán"
                               && !inv.IsDeleted
                               && !t.IsDeleted
                         group it by new { r.RoomID, r.RoomName } into g
                         select new
                         {
                             RoomName = g.Key.RoomName,
-                            TicketCount = g.Sum(x => x.Quantity ?? 1) // Nếu có Quantity > 1
+                            TicketCount = g.Sum(x => x.Quantity ?? 1)
                         };
 
             var results = await query
@@ -198,7 +193,6 @@ namespace Web.Areas.Admin.Service
             return results.Select(x => (x.RoomName, x.TicketCount)).ToList();
         }
 
-        // Thống kê ghế có số lượt chọn (vé) cao nhất theo phòng và khoảng thời gian
         public async Task<List<(string SeatName, int TicketCount)>> GetTopSeatsByRoom(string roomId, DateTime fromDate, DateTime toDate)
         {
             var query = from it in _context.InvoiceTickets
@@ -208,7 +202,7 @@ namespace Web.Areas.Admin.Service
                         where st.RoomID == roomId
                               && inv.IssueDate >= fromDate.Date
                               && inv.IssueDate < toDate.Date.AddDays(1)
-                              && inv.Status == "Completed"
+                              && inv.Status == "Đã thanh toán"
                               && !inv.IsDeleted
                               && !t.IsDeleted
                         group it by new { t.SeatID, t.Seat.SeatName } into g
