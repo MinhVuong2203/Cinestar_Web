@@ -22,12 +22,10 @@ namespace Web.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Admin/SeatManagement/Index
         public async Task<IActionResult> Index()
         {
             var rooms = await _seatManagementService.GetAllRoomsWithSeats();
 
-            // Thống kê
             ViewBag.TotalRooms = rooms.Count;
             ViewBag.TotalSeats = rooms.Sum(r => r.Seats?.Count ?? 0);
             ViewBag.AllBranches = await _seatManagementService.GetActiveBranches();
@@ -35,7 +33,6 @@ namespace Web.Areas.Admin.Controllers
             return View(rooms);
         }
 
-        // GET: Admin/SeatManagement/Edit/ROM-12345
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -52,19 +49,16 @@ namespace Web.Areas.Admin.Controllers
             return View(room);
         }
 
-        // ✅ POST: Admin/SeatManagement/CreateSeat
         [HttpPost]
         public async Task<IActionResult> CreateSeat(string roomId, string seatName, string seatType)
         {
             try
             {
-                // Validate
                 if (string.IsNullOrWhiteSpace(seatName))
                 {
                     return Json(new { success = false, message = "Tên ghế không được để trống!" });
                 }
 
-                // Tạo ghế mới
                 var newSeat = new Seat
                 {
                     SeatName = seatName.Trim().ToUpper(),
@@ -89,7 +83,6 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
-        // POST: Admin/SeatManagement/UpdateSeatType
         [HttpPost]
         public async Task<IActionResult> UpdateSeat(string seatId, string seatName, string seatType)
         {
@@ -99,7 +92,7 @@ namespace Web.Areas.Admin.Controllers
 
                 if (seat != null)
                 {
-                    seat.SeatName = seatName;  // ✅ Cập nhật tên
+                    seat.SeatName = seatName; 
                     seat.SeatType = seatType;
                     _context.Update(seat);
                     await _context.SaveChangesAsync();
@@ -115,13 +108,11 @@ namespace Web.Areas.Admin.Controllers
             }
         }
 
-        // ✅ POST: Admin/SeatManagement/DeleteSeat
         [HttpPost]
         public async Task<IActionResult> DeleteSeat(string seatId)
         {
             try
             {
-                // Kiểm tra ghế có Ticket không
                 var hasTickets = await _context.Tickets.AnyAsync(t => t.SeatID == seatId);
 
                 if (hasTickets)
@@ -139,7 +130,7 @@ namespace Web.Areas.Admin.Controllers
                 {
                     success = true,
                     message = "Xóa ghế thành công!",
-                    reload = true  // Báo hiệu reload trang
+                    reload = true  
                 });
             }
             catch (Exception ex)
