@@ -605,10 +605,10 @@
                 td.dataset.seatId = seat.seatID;
                 td.dataset.seatType = seat.seatType;
 
-                // Xác định class theo trạng thái
+                // Xác định class theo trạng tháis
                 let seatClass = 'seat';
 
-                if (seat.status === 'Đã đặt') {
+                if (seat.status === 'Đã đặt' || seat.status === 'Đã thanh toán') {
                     seatClass += ' booked';
                 }
                 else if (seat.status === 'Đang được chọn') {
