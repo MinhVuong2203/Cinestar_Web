@@ -375,3 +375,5 @@ yarn-error.log
 *.db
 *.sqlite
 *.sqlite3
+# appsettings.json
+appsettings*.json
